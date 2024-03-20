@@ -1,30 +1,47 @@
-import React, { useEffect } from "react";
-import { DateField, Edit, useEditableTable, useTable } from "@refinedev/antd";
-import { HttpError, useGo, useList, useOne } from "@refinedev/core";
-import { GET_ALL_ORDERS_QUERY, Orders, Profiles } from "@repo/graphql";
+import {
+  DeleteButton,
+  Edit,
+  EditButton,
+  NumberField,
+  SaveButton,
+  useEditableTable,
+} from "@refinedev/antd";
+import { HttpError, useGo, useList, useOne, useUpdate } from "@refinedev/core";
+import {
+  GET_ALL_ORDERS_QUERY,
+  GET_ALL_STOCKS_QUERY,
+  Orders,
+  Profiles,
+} from "@repo/graphql";
 import {
   Button,
-  Col,
   Descriptions,
   Flex,
   Form,
-  Grid,
-  Row,
+  InputNumber,
+  Modal,
+  Select,
   Skeleton,
   Space,
   Table,
 } from "antd";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+import { OrderStatus } from "@repo/utility";
 
 export const EditOrders = () => {
   const go = useGo();
   const orderId = useLocation().pathname.split("/")[3];
-  const [orderDetails, setOrderDetails] = React.useState<{
-    request: [];
-    response: [];
-  }>({ request: [], response: [] });
-  const { tableProps, tableQueryResult: order } = useTable<Orders, HttpError>({
+  const {
+    tableProps,
+    tableQueryResult: order,
+    formProps,
+    isEditing,
+    setId: setEditId,
+    saveButtonProps,
+    cancelButtonProps,
+    editButtonProps,
+  } = useEditableTable<Orders, HttpError>({
     resource: "ORDERS",
     meta: {
       gqlQuery: GET_ALL_ORDERS_QUERY,
@@ -40,56 +57,260 @@ export const EditOrders = () => {
     },
   });
 
-  const { data: profile } = useOne<Profiles>({
+  const { data: profile, isLoading } = useOne<Profiles>({
     resource: "profiles",
     id: order.data?.data[0].distributor_id,
   });
-  useEffect(() => {
-    setOrderDetails(order.data?.data[0].order || {});
-  }, [order]);
+  const { data: products, isLoading: productsLoading } = useList({
+    resource: "PRODUCTS",
+    meta: {
+      gqlQuery: GET_ALL_ORDERS_QUERY,
+    },
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: order.data?.data[0].order.map((item: any) => item.product_id),
+      },
+    ],
+  });
+
+  const { mutate, isLoading: updateLoading } = useUpdate();
+
+  if (order.isLoading) {
+    return <Skeleton />;
+  }
+
+  const handleStatusChange = (value: string) => {
+    mutate({
+      resource: "ORDERS",
+      id: orderId,
+      values: {
+        status: value,
+      },
+    });
+  };
 
   return (
     <Edit>
-      <h2>Order Id: {orderId}</h2>
+      <Flex justify="space-between">
+        <h2>Order Id: {orderId}</h2>
+        <Select
+          size="large"
+          title="Order status"
+          defaultValue={order.data?.data[0].status}
+          onChange={(value) => {
+            Modal.confirm({
+              title: "Are you sure you want to change status?",
+              onOk: () => {
+                handleStatusChange(value);
+              },
+              type: "confirm",
+            });
+          }}
+          style={{ width: "10%" }}
+        >
+          <Select.Option value={OrderStatus.PENDING}>Pending</Select.Option>
+          <Select.Option value={OrderStatus.DEFECTED}>Defcted</Select.Option>
+          <Select.Option value={OrderStatus.FULFILLED}>
+            Fullfilled
+          </Select.Option>
+          <Select.Option value={OrderStatus.INPROCESS}>
+            In Process
+          </Select.Option>
+          <Select.Option value={OrderStatus.CANCELLED}>Cancelled</Select.Option>
+        </Select>
+      </Flex>
+      <Flex
+        justify="space-between"
+        align="center"
+        gap="20px"
+        style={{ marginTop: "20px" }}
+      >
+        <Space direction="vertical" style={{ marginTop: "20px" }}>
+          <Form
+            {...formProps}
+            onFinish={(values: any) => {
+              mutate({
+                resource: "ORDERS",
+                id: orderId,
+                values: {
+                  order: order.data?.data[0].order.map(
+                    (item: {
+                      key: number;
+                      product_id: string;
+                      quantity: number;
+                    }) =>
+                      item.key === values.key
+                        ? { ...item, quantity: values.quantity }
+                        : item
+                  ),
+                },
+              });
+              setEditId && setEditId("");
+            }}
+          >
+            <Table
+              {...tableProps}
+              dataSource={order.data?.data[0].order}
+              pagination={false}
+              rowKey="key"
+              loading={updateLoading}
+              onRow={(record: any) => ({
+                // eslint-disable-next-line
+                onClick: (event: any) => {
+                  if (event.target.nodeName === "TD") {
+                    setEditId && setEditId(record.key);
+                  }
+                },
+              })}
+              title={() => <h2>Products</h2>}
+              bordered
+              showHeader
+            >
+              <Table.Column
+                title="No"
+                dataIndex="key"
+                render={(value) => {
+                  if (isEditing(value)) {
+                    return (
+                      <Form.Item
+                        name="key"
+                        style={{ margin: 0 }}
+                        initialValue={value}
+                      >
+                        <InputNumber readOnly />
+                      </Form.Item>
+                    );
+                  }
+                  return <NumberField value={value} />;
+                }}
+              />
+              <Table.Column
+                title="Product"
+                dataIndex="product_id"
+                render={(value, record: any) => {
+                  return productsLoading ? (
+                    <Skeleton.Input />
+                  ) : (
+                    <Button
+                      type="dashed"
+                      onClick={() =>
+                        go({
+                          to: {
+                            action: "show",
+                            resource: "products",
+                            id: value,
+                          },
+                        })
+                      }
+                    >
+                      {
+                        products?.data.find((product) => product.id === value)
+                          ?.name
+                      }
+                    </Button>
+                  );
+                }}
+              />
+              <Table.Column
+                title="Quantity"
+                dataIndex={"quantity"}
+                render={(value, record: any) => {
+                  if (isEditing(record.key)) {
+                    return (
+                      <Form.Item
+                        name="quantity"
+                        style={{ margin: 0 }}
+                        initialValue={record.quantity}
+                      >
+                        <InputNumber />
+                      </Form.Item>
+                    );
+                  }
+                  return <NumberField value={value} />;
+                }}
+              />
+              <Table.Column
+                title="Actions"
+                dataIndex="actions"
+                render={(_, record: any) => {
+                  if (isEditing(record.key)) {
+                    return (
+                      <Space>
+                        <SaveButton
+                          {...saveButtonProps}
+                          hideText
+                          size="small"
+                        />
+                        <Button {...cancelButtonProps} size="small">
+                          Cancel
+                        </Button>
+                      </Space>
+                    );
+                  }
+                  return (
+                    <Space size="small">
+                      <EditButton
+                        {...editButtonProps(record.key)}
+                        hideText
+                        size="small"
+                      />
+                      <DeleteButton
+                        hideText
+                        size="small"
+                        recordItemId={record.key}
+                        mutationMode="pessimistic"
+                        onSuccess={() => setEditId("")}
+                        onError={() => setEditId("")}
+                      />
+                    </Space>
+                  );
+                }}
+              />
+            </Table>
+          </Form>
 
-      <Space direction="vertical">
-        <Descriptions
-          bordered
-          title="Distributor Details"
-          extra={
-            <Button
-              type="dashed"
-              onClick={() =>
-                go({
-                  to: {
-                    action: "show",
-                    resource: "profiles",
-                    id: order?.data?.distributor_id,
-                  },
-                })
+          <Space style={{ marginTop: "2.5rem" }} direction="vertical">
+            <Descriptions
+              bordered
+              title="Distributor Details"
+              extra={
+                <Button
+                  type="dashed"
+                  onClick={() =>
+                    go({
+                      to: {
+                        action: "show",
+                        resource: "profiles",
+                        id: order?.data?.data[0]?.distributor_id,
+                      },
+                    })
+                  }
+                >
+                  View
+                </Button>
               }
             >
-              View
-            </Button>
-          }
-        >
-          <Descriptions.Item label="Name">
-            {profile?.data?.username}
-          </Descriptions.Item>
-          <Descriptions.Item label="Email">
-            {profile?.data?.email}
-          </Descriptions.Item>
-          <Descriptions.Item label="Phone">
-            {profile?.data?.phone}
-          </Descriptions.Item>
-          <Descriptions.Item label="Full Name">
-            {profile?.data?.full_name}
-          </Descriptions.Item>
-          <Descriptions.Item label="Updated at">
-            {dayjs(profile?.data?.updated_at).format("DD-MM-YYYY hh:mm:ss")}
-          </Descriptions.Item>
-        </Descriptions>
-      </Space>
+              <Descriptions.Item label="Name">
+                {profile?.data?.username}
+              </Descriptions.Item>
+              <Descriptions.Item label="Email">
+                {profile?.data?.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phone">
+                {profile?.data?.phone}
+              </Descriptions.Item>
+              <Descriptions.Item label="Full Name">
+                {profile?.data?.full_name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Updated at">
+                {dayjs(profile?.data?.updated_at).format("DD-MM-YYYY hh:mm:ss")}
+              </Descriptions.Item>
+            </Descriptions>
+          </Space>
+        </Space>
+      </Flex>
     </Edit>
   );
 };

@@ -23,6 +23,14 @@ export const AllOrders = () => {
     meta: {
       gqlQuery: GET_ALL_ORDERS_QUERY,
     },
+    sorters:{
+      initial:[
+        {
+          field:"id",
+          order:"asc"
+        }
+      ]
+    }
   });
   const { data: profiles } = useList({
     resource: "profiles",
