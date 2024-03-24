@@ -51,6 +51,7 @@ import { SalesShow } from "./pages/sales/show";
 import { Header } from "./components/header/header";
 import { ShoppingCartProvider } from "./contexts/cart/ShoppingCartContext";
 import { InventoryD } from "./pages/inventory/inventory";
+import { AllOrders_D } from "./components/orders/AllOrders";
 
 function App() {
   const GetUserEmail = () => {
@@ -133,7 +134,7 @@ function App() {
                           <Route path=":id" element={<ProductPage />} />
                         </Route>
                         <Route path="/orders">
-                          <Route index element={<AllOrders />} />
+                          <Route index element={<AllOrders_D />} />
                           <Route path=":id" element={<ShowOrders />} />
                           {/* <Route path="edit/:id" element={<EditOrders />} /> */}
                         </Route>

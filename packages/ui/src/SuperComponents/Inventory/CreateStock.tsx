@@ -7,7 +7,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Modal,
   Skeleton,
 } from "antd";
 import { useLocation } from "react-router-dom";

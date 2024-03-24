@@ -35,7 +35,6 @@ import {
   authProvider,
   supabaseClient,
 } from "@repo/ui";
-import {} from "@repo/ui";
 import { resources } from "./config/resources";
 import { CreateUsers, ForgotPassord, Home, Users } from "./pages";
 import { Profile } from "./components/profile/Profile";
@@ -119,10 +118,7 @@ function App() {
                       <Route index element={<Home />} />
                       <Route path="/products">
                         <Route index element={<AllProducts />} />
-                        <Route
-                          path=":id"
-                          element={<ProductPage />}
-                        />
+                        <Route path=":id" element={<ProductPage />} />
                         <Route path="create" element={<>U r not su admin</>} />
                       </Route>
                       <Route path="/orders">

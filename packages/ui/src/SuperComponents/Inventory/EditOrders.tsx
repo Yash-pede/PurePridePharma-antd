@@ -28,6 +28,7 @@ import {
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import { OrderStatus } from "@repo/utility";
+import { useEffect } from "react";
 
 export const EditOrders = () => {
   const go = useGo();
@@ -56,6 +57,36 @@ export const EditOrders = () => {
       ],
     },
   });
+  const expandedRowRender = (record: any) => {
+    if (order.data?.data[0].status === OrderStatus.FULFILLED) {
+      const columns = [
+        {
+          title: "Batch ID",
+          dataIndex: "batch_id",
+          key: "batch_id",
+        },
+        {
+          title: "Quantity",
+          dataIndex: "quantity",
+          key: "quantity",
+        },
+      ];
+
+      return (
+        <Table
+          columns={columns}
+          dataSource={record.batch_info}
+          pagination={false}
+          bordered
+          showHeader
+        />
+      );
+    }
+
+    return null;
+  };
+
+  console.log(order.data?.data[0]);
 
   const { data: profile, isLoading } = useOne<Profiles>({
     resource: "profiles",
@@ -92,7 +123,7 @@ export const EditOrders = () => {
   };
 
   return (
-    <Edit>
+    <Edit saveButtonProps={{ hidden: true }}>
       <Flex justify="space-between">
         <h2>Order Id: {orderId}</h2>
         <Select
@@ -152,6 +183,7 @@ export const EditOrders = () => {
           >
             <Table
               {...tableProps}
+              expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
               dataSource={order.data?.data[0].order}
               pagination={false}
               rowKey="key"

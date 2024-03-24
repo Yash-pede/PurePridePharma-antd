@@ -1,0 +1,46 @@
+CREATE OR REPLACE FUNCTION update_order_on_fulfillment()
+RETURNS TRIGGER AS $$
+DECLARE
+    order_item JSONB;
+    stock_rows RECORD;
+    remaining_quantity INT;
+    quantity_to_deduct INT;
+BEGIN
+    IF NEW.status = 'Fulfilled' THEN
+        FOR order_item IN SELECT * FROM jsonb_array_elements(NEW.order) LOOP
+            -- Initialize remaining quantity to be deducted
+            remaining_quantity := (order_item->>'quantity')::INT;
+
+            -- Retrieve batches with available quantity for the product
+            FOR stock_rows IN 
+                SELECT * FROM "STOCKS"
+                WHERE product_id = (order_item->>'product_id')::UUID
+                AND avalable_quantity > 0
+                ORDER BY expiry_date ASC
+            LOOP
+                -- Check if remaining quantity to deduct is 0
+                EXIT WHEN remaining_quantity <= 0;
+
+                -- Calculate quantity to deduct from this batch
+                quantity_to_deduct := LEAST(remaining_quantity, stock_rows.avalable_quantity);
+
+                -- Update remaining quantity
+                remaining_quantity := remaining_quantity - quantity_to_deduct;
+
+                -- Update stock
+                UPDATE "STOCKS"
+                SET avalable_quantity = avalable_quantity - quantity_to_deduct,
+                    orderd_quantity = orderd_quantity + quantity_to_deduct
+                WHERE id = stock_rows.id;
+            END LOOP;
+        END LOOP;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER orders_fulfillment_trigger
+AFTER UPDATE ON "ORDERS"
+FOR EACH ROW
+EXECUTE FUNCTION update_order_on_fulfillment();

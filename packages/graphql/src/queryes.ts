@@ -106,3 +106,21 @@ export const GET_ALL_PROFILES_QUERY = gql`
     }
   }
 `;
+
+export const GET_ALL_D_INVENTORY_QUERY = gql`
+  query profilesConnection {
+    d_INVENTORYCollection {
+      edges {
+        node {
+          id
+          distributor_id
+          product_id
+          quantity
+          salesperson_id
+          batch_no
+          created_at
+        }
+      }
+    }
+  }
+`;

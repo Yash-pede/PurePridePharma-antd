@@ -37,12 +37,11 @@ export const ShoppingCart = ({ isOpen }: { isOpen: boolean }) => {
       mutate({
         resource: "ORDERS",
         values: {
-          order: {
-            request: cartItems.map((item) => ({
-              id: item.id,
-              quantity: item.quantity + item.quantity / 5,
-            })),
-          },
+          order: cartItems.map((item, index) => ({
+            key: index + 1,
+            quantity: item.quantity + item.quantity / 5,
+            product_id: item.id,
+          })),
           status: OrderStatus.PENDING,
           distributor_id: userId.id,
         },
