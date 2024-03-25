@@ -5,11 +5,13 @@ import {
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
+import { useGetIdentity } from "@refinedev/core";
 import { GET_ALL_PROFILES_QUERY, Profiles } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Space, Table } from "antd";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
+  const { data: User } = useGetIdentity<any>();
   const {
     tableProps,
     formProps,
@@ -33,7 +35,7 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
         {
           field: "boss_id",
           operator: "eq",
-          value: JSON.parse(localStorage.getItem("USER") || "{}").id as string,
+          value: User?.id,
         },
       ],
     },

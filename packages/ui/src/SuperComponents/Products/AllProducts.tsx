@@ -1,5 +1,6 @@
-import { useGo, useList } from "@refinedev/core";
+import { HttpError, useGo, useList } from "@refinedev/core";
 import {
+  Database,
   GET_ALL_pRODUCTS_QUERY,
   INSERT_INTO_PRODUCTS_MUTATION,
 } from "@repo/graphql";
@@ -23,7 +24,7 @@ import { supabaseClient } from "../../utility";
 import { ProductCardPublic } from "./ProductCard";
 
 export const AllProducts = () => {
-  const { data, isLoading } = useList({
+  const { data, isLoading } = useList<Database["public"]["Tables"]["PRODUCTS"], HttpError>({
     resource: "PRODUCTS",
     meta: {
       gqlQuery: GET_ALL_pRODUCTS_QUERY,

@@ -10,9 +10,9 @@ import {
 } from "@refinedev/antd";
 import { useExport, useGo, useList } from "@refinedev/core";
 import {
+  Database,
   GET_ALL_STOCKS_QUERY,
   GET_ALL_pRODUCTS_QUERY,
-  Stocks,
 } from "@repo/graphql";
 import { Button, Form, InputNumber, Skeleton, Space, Table } from "antd";
 import dayjs from "dayjs";
@@ -112,9 +112,9 @@ export const AllInventory = () => {
             },
           })}
         >
-          <Table.Column<Stocks> dataIndex={"id"} title="Batch No" />
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]> dataIndex={"id"} title="Batch No" />
 
-          <Table.Column<Stocks>
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"product_id"}
             title="product"
             render={(_value, record) => {
@@ -141,7 +141,7 @@ export const AllInventory = () => {
             }}
           />
 
-          {/* <Table.Column<Stocks>
+          {/* <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"selling_price"}
             title="Selling Price"
             render={(value, record) => {
@@ -155,7 +155,7 @@ export const AllInventory = () => {
               return <TextField value={value} />;
             }}
           /> */}
-          <Table.Column<Stocks>
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"avalable_quantity"}
             title="Avalable Quantity"
             render={(value, record) => {
@@ -169,7 +169,7 @@ export const AllInventory = () => {
               return <TextField value={value} />;
             }}
           />
-          <Table.Column<Stocks>
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"orderd_quantity"}
             title="Ordered Quantity"
             render={(value, record) => {
@@ -218,7 +218,7 @@ export const AllInventory = () => {
               </Space>
             )}
           /> */}
-          <Table.Column<Stocks>
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             title="Actions"
             dataIndex="actions"
             render={(_, record) => {

@@ -1,11 +1,14 @@
-import { Show, TextField, useTable } from "@refinedev/antd";
-import { useList } from "@refinedev/core";
-import { GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
-import { Table } from "antd";
-import React from "react";
+import { DateField, List, Show, TextField, useTable } from "@refinedev/antd";
+import { useGetIdentity, useGo, useList } from "@refinedev/core";
+import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
+import { Button, Table } from "antd";
 
 export const InventoryD = () => {
-  const { tableProps, tableQueryResult } = useTable({
+  const { data: User } = useGetIdentity<any>();
+  const go = useGo();
+  const { tableProps, tableQueryResult: inventory } = useTable<
+    Database["public"]["Tables"]["D_INVENTORY"]["Row"]
+  >({
     resource: "D_INVENTORY",
     meta: {
       gqlQuery: GET_ALL_D_INVENTORY_QUERY,
@@ -15,7 +18,7 @@ export const InventoryD = () => {
         {
           field: "distributor_id",
           operator: "eq",
-          value: JSON.parse(localStorage.getItem("USER") || "{}").id as string,
+          value: User?.id,
         },
       ],
     },
@@ -28,39 +31,69 @@ export const InventoryD = () => {
     filters: [
       {
         field: "id",
-        operator: "eq",
-        value: tableQueryResult.data?.data?.map(
-          (stock: any) => stock.product_id
-        ),
+        operator: "in",
+        value: inventory?.data?.data.map((stock: any) => stock.product_id),
       },
     ],
   });
+
   return (
-    <Show>
-      <pre>{JSON.stringify(tableQueryResult.data, null, 2)}</pre>
+    <List title="Inventory" breadcrumb>
       <Table {...tableProps}>
         <Table.Column
-          dataIndex="product_id"
-          title="Product Id"
-          render={(value) => (
-            <TextField
-              value={
-                products?.data?.find((product) => product.id === value)?.name
-              }
-            />
-          )}
+          dataIndex={"id"}
+          title="ID"
+          render={(value) => <TextField value={value} />}
         />
         <Table.Column
-          dataIndex="batch_no"
-          title="Batch No"
-          render={(value) => <TextField value={value} />}
+          dataIndex="product_id"
+          title="Product"
+          render={(value) => {
+            const product = products?.data.find(
+              (product: any) => product.id === value
+            );
+            return <TextField value={product?.name} />;
+          }}
         />
         <Table.Column
           dataIndex="quantity"
           title="Quantity"
-          render={(value) => <TextField value={value} />}
+          render={(value) => {
+            return <TextField value={value} />;
+          }}
+        />
+        <Table.Column
+          dataIndex={"updated_at"}
+          title="Last Updated"
+          render={(value) => {
+            return <DateField value={value} format="DD/MM/YYYY" />;
+          }}
+        />
+        <Table.Column<Database["public"]["Tables"]["D_INVENTORY"]["Row"]>
+          title="Actions  "
+          render={(_, resource) => {
+            return (
+              <>
+                <Button
+                  type="dashed"
+                  onClick={() =>
+                    go({
+                      to: {
+                        action: "show",
+                        id: resource.id,
+                        resource: "inventory",
+                      },
+                    })
+                  }
+                >
+                  View
+                </Button>
+              </>
+            );
+          }}
         />
       </Table>
-    </Show>
+      {/* <pre>{JSON.stringify(inventory?.data?.data, null, 2)}</pre> */}
+    </List>
   );
 };

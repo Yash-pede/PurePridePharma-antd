@@ -1,7 +1,7 @@
 import { Create } from "@refinedev/antd";
 import { Drawer, Form, Input, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import { useGo, useNotification, useUpdate } from "@refinedev/core";
+import { useGetIdentity, useGo, useNotification, useUpdate } from "@refinedev/core";
 import { CustomerHome } from ".";
 import { supabaseServiceRoleClient } from "@repo/ui";
 
@@ -10,6 +10,7 @@ export const CustomerCreate = () => {
   const [form] = Form.useForm();
   const go = useGo();
   const { status, mutate, isSuccess } = useUpdate();
+  const { data: User } = useGetIdentity<any>();
 
   const CreateSalesUser = async (
     email: string,
@@ -84,16 +85,13 @@ export const CustomerCreate = () => {
   };
   form.submit = async () => {
     const values = form.getFieldsValue();
-    const userId = JSON.parse(localStorage.getItem("USER") || "{}")
-      .id as string;
-    console.log(userId);
     CreateSalesUser(
       values.email,
       values.name,
       values.phone,
       values.password,
       values.full_name,
-      userId,
+      User.id,
     );
   };
   return (

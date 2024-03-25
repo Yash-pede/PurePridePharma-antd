@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const PROFILES_QUERY = gql`
+export const PROFILES_QUERY: any = gql`
   query Profiles(
     $filter: profilesFilter!
     $first: Int!
@@ -74,23 +74,6 @@ export const GET_ALL_ORDERS_QUERY = gql`
   }
 `;
 
-export const GET_ALL_INVENTORY_DISTRIBUTOR_QUERY = gql`
-  query d_INVENTORYCollection {
-    d_INVENTORYCollection {
-      edges {
-        node {
-          id
-          distributor_id
-          product_id
-          quantity
-          salesperson_id
-          id
-        }
-      }
-    }
-  }
-`;
-
 export const GET_ALL_PROFILES_QUERY = gql`
   query profilesConnection {
     profilesCollection {
@@ -107,8 +90,8 @@ export const GET_ALL_PROFILES_QUERY = gql`
   }
 `;
 
-export const GET_ALL_D_INVENTORY_QUERY = gql`
-  query profilesConnection {
+export const GET_ALL_D_INVENTORY_QUERY: any = gql`
+  query d_INVENTORYCollection {
     d_INVENTORYCollection {
       edges {
         node {
@@ -116,8 +99,7 @@ export const GET_ALL_D_INVENTORY_QUERY = gql`
           distributor_id
           product_id
           quantity
-          salesperson_id
-          batch_no
+          batch_info
           created_at
         }
       }

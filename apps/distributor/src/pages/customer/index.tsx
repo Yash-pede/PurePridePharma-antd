@@ -5,7 +5,7 @@ import {
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
-import { GET_ALL_PROFILES_QUERY, Profiles } from "@repo/graphql";
+import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Space, Table } from "antd";
 
@@ -18,7 +18,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
-  } = useEditableTable<Profiles>({
+  } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     meta: {
       gqlQuery: GET_ALL_PROFILES_QUERY,
@@ -63,7 +63,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
             >
               <Table.Column dataIndex="id" title="ID" hidden />
 
-              <Table.Column<Profiles>
+              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
                 dataIndex="username"
                 title="Username"
                 render={(value, record) => {
@@ -78,7 +78,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Profiles>
+              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
                 dataIndex="email"
                 title="Email"
                 render={(value, record) => {
@@ -93,7 +93,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Profiles>
+              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
                 dataIndex="phone"
                 title="Phone"
                 render={(value, record) => {
@@ -108,7 +108,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Profiles>
+              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
                 title="Actions"
                 dataIndex="actions"
                 render={(_, record) => {

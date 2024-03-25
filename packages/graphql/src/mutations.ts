@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const INSERT_INTO_PRODUCTS_MUTATION = gql`
+export const INSERT_INTO_PRODUCTS_MUTATION:any = gql`
   mutation insertIntoPRODUCTSCollection($objects: [PRODUCTSInsertInput!]!) {
     insertIntoPRODUCTSCollection(objects: $objects) {
       records {
@@ -14,7 +14,7 @@ export const INSERT_INTO_PRODUCTS_MUTATION = gql`
     }
   }
 `;
-export const INSERT_INTO_STOCKS_MUTATION = gql`
+export const INSERT_INTO_STOCKS_MUTATION:any = gql`
   mutation insertIntoSTOCKSCollection($objects: [STOCKSInsertInput!]!) {
     insertIntoSTOCKSCollection(objects: $objects) {
       records {

@@ -1,7 +1,7 @@
 import { Create } from "@refinedev/antd";
 import { Drawer, Form, Input, Select, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import { useGo, useNotification, useUpdate } from "@refinedev/core";
+import { useGetIdentity, useGo, useNotification, useUpdate } from "@refinedev/core";
 import { Users } from "./Users";
 import { supabaseServiceRoleClient } from "@repo/ui";
 
@@ -10,6 +10,7 @@ export const CreateUsers = () => {
   const [form] = Form.useForm();
   const go = useGo();
   const { status, mutate, isSuccess } = useUpdate();
+  const { data: User } = useGetIdentity<any>();
 
   const createUser = async (
     email: string,
@@ -85,9 +86,6 @@ export const CreateUsers = () => {
   };
   form.submit = async () => {
     const values = form.getFieldsValue();
-    const userId = JSON.parse(localStorage.getItem("USER") || "{}") // change this to boss id
-      .id as string;
-    console.log(userId);
     createUser(
       values.email,
       values.name,
@@ -95,7 +93,7 @@ export const CreateUsers = () => {
       values.password,
       values.full_name,
       values.userrole as UserRoleTypes,
-      userId,
+      User?.id,
     );
   };
   return (

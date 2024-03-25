@@ -1,5 +1,5 @@
 import { useGo } from "@refinedev/core";
-import { Products } from "@repo/graphql";
+import { Database } from "@repo/graphql";
 import { Card, Image, Typography } from "antd";
 
 export const ProductCardPublic = ({
@@ -7,7 +7,7 @@ export const ProductCardPublic = ({
   isLoading,
   RenderButton,
 }: {
-  product: Products;
+  product: Database["public"]["Tables"]["PRODUCTS"]["Row"];
   isLoading: boolean;
   RenderButton?: () => JSX.Element;
 }) => {

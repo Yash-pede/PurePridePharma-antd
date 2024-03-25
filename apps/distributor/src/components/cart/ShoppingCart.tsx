@@ -10,7 +10,7 @@ import {
   notification,
 } from "antd";
 import { ShoppingCartItem } from "./ShoppingCartItem";
-import { useList, useCreateMany, useCreate } from "@refinedev/core";
+import { useList, useCreate } from "@refinedev/core";
 import { GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
 import { IconShoppingBagCheck } from "@tabler/icons-react";
 import { authProvider } from "@repo/ui";

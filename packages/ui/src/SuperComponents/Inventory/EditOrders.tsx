@@ -7,12 +7,7 @@ import {
   useEditableTable,
 } from "@refinedev/antd";
 import { HttpError, useGo, useList, useOne, useUpdate } from "@refinedev/core";
-import {
-  GET_ALL_ORDERS_QUERY,
-  GET_ALL_STOCKS_QUERY,
-  Orders,
-  Profiles,
-} from "@repo/graphql";
+import { Database, GET_ALL_ORDERS_QUERY } from "@repo/graphql";
 import {
   Button,
   Descriptions,
@@ -28,7 +23,6 @@ import {
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import { OrderStatus } from "@repo/utility";
-import { useEffect } from "react";
 
 export const EditOrders = () => {
   const go = useGo();
@@ -42,7 +36,7 @@ export const EditOrders = () => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
-  } = useEditableTable<Orders, HttpError>({
+  } = useEditableTable<any, HttpError>({
     resource: "ORDERS",
     meta: {
       gqlQuery: GET_ALL_ORDERS_QUERY,
@@ -88,7 +82,10 @@ export const EditOrders = () => {
 
   console.log(order.data?.data[0]);
 
-  const { data: profile, isLoading } = useOne<Profiles>({
+  const { data: profile, isLoading } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"],
+    HttpError
+  >({
     resource: "profiles",
     id: order.data?.data[0].distributor_id,
   });
@@ -101,7 +98,7 @@ export const EditOrders = () => {
       {
         field: "id",
         operator: "in",
-        value: order.data?.data[0].order.map((item: any) => item.product_id),
+        value: order?.data?.data[0]?.order.map((item: any) => item.product_id),
       },
     ],
   });

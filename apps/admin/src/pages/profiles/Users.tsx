@@ -1,4 +1,4 @@
-import { PROFILES_QUERY, Profiles } from "@repo/graphql";
+import { Database, PROFILES_QUERY } from "@repo/graphql";
 import {
   CreateButton,
   EditButton,
@@ -25,7 +25,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     cancelButtonProps,
     editButtonProps,
     tableQueryResult,
-  } = useEditableTable({
+  } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     pagination: {
       pageSize: 10,
@@ -84,7 +84,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             },
           })}
         >
-          <Table.Column<Profiles>
+          <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
             dataIndex={"username"}
             title="Username"
             defaultFilteredValue={getDefaultFilter(
@@ -111,7 +111,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
               return <TextField value={value} />;
             }}
           />
-          <Table.Column<Profiles>
+          <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
             dataIndex={"email"}
             title="email"
             defaultFilteredValue={getDefaultFilter(
@@ -139,7 +139,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             }}
           />
 
-          <Table.Column<Profiles>
+          <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
             dataIndex={"userrole"}
             title="Role"
             defaultFilteredValue={getDefaultFilter(

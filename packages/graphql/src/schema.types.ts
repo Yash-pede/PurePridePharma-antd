@@ -128,17 +128,16 @@ export type CustomersUpdateResponse = {
 };
 
 export type D_Inventory = Node & {
-  batch_no: Scalars['String']['output'];
-  created_at: Scalars['Datetime']['output'];
+  batch_info?: Maybe<Scalars['JSON']['output']>;
+  created_at?: Maybe<Scalars['Datetime']['output']>;
   distributor_id: Scalars['UUID']['output'];
-  id: Scalars['BigInt']['output'];
+  id: Scalars['Int']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
   pRODUCTS: Products;
   product_id: Scalars['UUID']['output'];
-  quantity: Scalars['BigFloat']['output'];
-  sTOCKS: Stocks;
-  salesperson_id?: Maybe<Scalars['UUID']['output']>;
+  quantity?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Datetime']['output']>;
 };
 
 export type D_InventoryConnection = {
@@ -161,27 +160,26 @@ export type D_InventoryEdge = {
 export type D_InventoryFilter = {
   /** Returns true only if all its inner filters are true, otherwise returns false */
   and?: InputMaybe<Array<D_InventoryFilter>>;
-  batch_no?: InputMaybe<StringFilter>;
   created_at?: InputMaybe<DatetimeFilter>;
   distributor_id?: InputMaybe<UuidFilter>;
-  id?: InputMaybe<BigIntFilter>;
+  id?: InputMaybe<IntFilter>;
   nodeId?: InputMaybe<IdFilter>;
   /** Negates a filter */
   not?: InputMaybe<D_InventoryFilter>;
   /** Returns true if at least one of its inner filters is true, otherwise returns false */
   or?: InputMaybe<Array<D_InventoryFilter>>;
   product_id?: InputMaybe<UuidFilter>;
-  quantity?: InputMaybe<BigFloatFilter>;
-  salesperson_id?: InputMaybe<UuidFilter>;
+  quantity?: InputMaybe<IntFilter>;
+  updated_at?: InputMaybe<DatetimeFilter>;
 };
 
 export type D_InventoryInsertInput = {
-  batch_no?: InputMaybe<Scalars['String']['input']>;
+  batch_info?: InputMaybe<Scalars['JSON']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
   distributor_id?: InputMaybe<Scalars['UUID']['input']>;
   product_id?: InputMaybe<Scalars['UUID']['input']>;
-  quantity?: InputMaybe<Scalars['BigFloat']['input']>;
-  salesperson_id?: InputMaybe<Scalars['UUID']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
 export type D_InventoryInsertResponse = {
@@ -192,22 +190,21 @@ export type D_InventoryInsertResponse = {
 };
 
 export type D_InventoryOrderBy = {
-  batch_no?: InputMaybe<OrderByDirection>;
   created_at?: InputMaybe<OrderByDirection>;
   distributor_id?: InputMaybe<OrderByDirection>;
   id?: InputMaybe<OrderByDirection>;
   product_id?: InputMaybe<OrderByDirection>;
   quantity?: InputMaybe<OrderByDirection>;
-  salesperson_id?: InputMaybe<OrderByDirection>;
+  updated_at?: InputMaybe<OrderByDirection>;
 };
 
 export type D_InventoryUpdateInput = {
-  batch_no?: InputMaybe<Scalars['String']['input']>;
+  batch_info?: InputMaybe<Scalars['JSON']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
   distributor_id?: InputMaybe<Scalars['UUID']['input']>;
   product_id?: InputMaybe<Scalars['UUID']['input']>;
-  quantity?: InputMaybe<Scalars['BigFloat']['input']>;
-  salesperson_id?: InputMaybe<Scalars['UUID']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
 export type D_InventoryUpdateResponse = {
@@ -276,6 +273,7 @@ export type IntFilter = {
 
 /** The root type for creating and mutating data */
 export type Mutation = {
+  add_to_d_inventory?: Maybe<Scalars['Opaque']['output']>;
   /** Deletes zero or more records from the `CUSTOMERS` collection */
   deleteFromCUSTOMERSCollection: CustomersDeleteResponse;
   /** Deletes zero or more records from the `D_INVENTORY` collection */
@@ -312,6 +310,15 @@ export type Mutation = {
   updateSTOCKSCollection: StocksUpdateResponse;
   /** Updates zero or more records in the `profiles` collection */
   updateprofilesCollection: ProfilesUpdateResponse;
+};
+
+
+/** The root type for creating and mutating data */
+export type MutationAdd_To_D_InventoryArgs = {
+  batch_id?: InputMaybe<Scalars['String']['input']>;
+  batch_quantity?: InputMaybe<Scalars['Int']['input']>;
+  distributor_id?: InputMaybe<Scalars['UUID']['input']>;
+  product_id?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 
@@ -750,24 +757,13 @@ export type QuerySTocksCollectionArgs = {
 export type Stocks = Node & {
   avalable_quantity: Scalars['BigInt']['output'];
   created_at: Scalars['Datetime']['output'];
-  d_INVENTORYCollection?: Maybe<D_InventoryConnection>;
   expiry_date?: Maybe<Scalars['Date']['output']>;
   id: Scalars['String']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
   orderd_quantity: Scalars['BigInt']['output'];
-  pRODUCTS?: Maybe<Products>;
-  product_id?: Maybe<Scalars['UUID']['output']>;
-};
-
-
-export type Stocksd_InventoryCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  filter?: InputMaybe<D_InventoryFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<D_InventoryOrderBy>>;
+  pRODUCTS: Products;
+  product_id: Scalars['UUID']['output'];
 };
 
 export type StocksConnection = {

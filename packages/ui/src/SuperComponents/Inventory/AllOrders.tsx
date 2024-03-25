@@ -8,9 +8,9 @@ import {
 } from "@refinedev/antd";
 import { HttpError, useList, useExport } from "@refinedev/core";
 import {
+  Database,
   GET_ALL_ORDERS_QUERY,
   GET_ALL_PROFILES_QUERY,
-  Orders,
 } from "@repo/graphql";
 import { OrderStatus, UserRoleTypes } from "@repo/utility";
 import { Form, Select, Space, Table, Button } from "antd";
@@ -18,7 +18,10 @@ import React from "react";
 import dayjs from "dayjs";
 
 export const AllOrders = () => {
-  const { tableProps } = useTable<Orders, HttpError>({
+  const { tableProps } = useTable<
+    Database["public"]["Tables"]["ORDERS"]["Row"],
+    HttpError
+  >({
     resource: "ORDERS",
     meta: {
       gqlQuery: GET_ALL_ORDERS_QUERY,
@@ -77,21 +80,22 @@ export const AllOrders = () => {
       }
     >
       <Table {...tableProps}>
-        <Table.Column<Orders> dataIndex="id" title="ID" />
-        <Table.Column<Orders>
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
+          dataIndex="id"
+          title="ID"
+        />
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="username"
           render={(_, record) => {
             return (
               profiles?.data.find(
                 (profile) => profile.id === record.distributor_id
-              )?.username ||
-              record.distributor_id.full_name ||
-              "Unknown - " + record.distributor_id
+              )?.username || "Unknown - " + record.distributor_id
             );
           }}
         />
-        <Table.Column<Orders>
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="Full name"
           render={(_, record) => {
@@ -102,7 +106,7 @@ export const AllOrders = () => {
             );
           }}
         />
-        <Table.Column<Orders>
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex={"status"}
           title="Status"
           render={(_, record) => {
@@ -133,7 +137,7 @@ export const AllOrders = () => {
                 </Select>
               );
             }
-            return (  
+            return (
               <Select
                 value={record.status}
                 style={{ width: "10rem" }}
@@ -159,12 +163,12 @@ export const AllOrders = () => {
             );
           }}
         />
-        <Table.Column<Orders>
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
           render={(_, record) => <DateField value={record.created_at} />}
         />
-        <Table.Column<Orders>
+        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"
           dataIndex="id"
           render={(_, record) => (

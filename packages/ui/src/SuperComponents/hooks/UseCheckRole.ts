@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { HttpError, useGetIdentity, useOne } from "@refinedev/core";
 import { UserRoleTypes } from "@repo/utility";
-import { Profiles } from "@repo/graphql";
+import { Database } from "@repo/graphql";
 
 export const useUserRoleCheck = (email: string, userType: UserRoleTypes) => {
   const [isUserValid, setIsUserValid] = useState(false);
   const { data: user, isFetching: isUserFetching, error } = useGetIdentity<{ id: string; email: string }>();
-  const { data: User_DB } = useOne<Profiles, HttpError>({
+  const { data: User_DB } = useOne<Database["public"]["Tables"]["profiles"]["Row"], HttpError>({
     resource: "profiles",
     id: user?.id,
   });

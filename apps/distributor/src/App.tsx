@@ -52,6 +52,7 @@ import { Header } from "./components/header/header";
 import { ShoppingCartProvider } from "./contexts/cart/ShoppingCartContext";
 import { InventoryD } from "./pages/inventory/inventory";
 import { AllOrders_D } from "./components/orders/AllOrders";
+import { ShowInventoryD } from "./pages/inventory/ShowInventory";
 
 function App() {
   const GetUserEmail = () => {
@@ -150,7 +151,10 @@ function App() {
                           <Route path="create" element={<SalesCreate />} />
                           <Route path=":id" element={<SalesShow />} />
                         </Route>
-                        <Route path="/inventory" element={<InventoryD />} />
+                        <Route path="/inventory">
+                          <Route index element={<InventoryD />} />
+                          <Route path=":id" element={<ShowInventoryD />} />
+                        </Route>
                         <Route path="/me" element={<Profile />} />
                       </Route>
                     </Routes>

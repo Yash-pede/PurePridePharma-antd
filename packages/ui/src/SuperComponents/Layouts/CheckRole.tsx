@@ -26,7 +26,7 @@ export const CheckRole = ({
           If this page dosnt load redirect automatically, Try Refreshing the
           page
         </FloatButton>
-        <div className="main-terminal">
+        {/* <div className="main-terminal">
           <div className="terminal">
             <div className="terminal-header">
               <div className="buttons">
@@ -53,6 +53,9 @@ export const CheckRole = ({
               </div>
             </div>
           </div>
+        </div> */}
+        <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>
+          <div className="loader"></div>
         </div>
       </>
     );

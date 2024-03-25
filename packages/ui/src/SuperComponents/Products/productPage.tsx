@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { useGo, useList, useOne } from "@refinedev/core";
-import { GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
+import { HttpError, useGo, useList, useOne } from "@refinedev/core";
+import { Database, GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
 import { Button, Descriptions, Flex, Grid, Image, Row, Skeleton } from "antd";
 import { DateField, DeleteButton, Show } from "@refinedev/antd";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ export const ProductPage = () => {
   const { pathname } = useLocation();
   const id = pathname.split("/").pop();
   const go = useGo();
-  const { data: Product, isLoading } = useList({
+  const { data: Product, isLoading } = useList<Database["public"]["Tables"]["PRODUCTS"]["Row"], HttpError>({
     resource: "PRODUCTS",
     meta: {
       gqlQuery: GET_ALL_pRODUCTS_QUERY,
@@ -62,7 +62,7 @@ export const ProductPage = () => {
                   {Product?.data[0]?.mrp}
                 </Descriptions.Item>
                 <Descriptions.Item label="Updated at">
-                  <DateField value={Product?.data[0]?.updatedAt}></DateField>
+                  <DateField value={Product?.data[0]?.created_at}></DateField>
                 </Descriptions.Item>
               </Descriptions>
               {admin && (
@@ -122,7 +122,7 @@ export const ProductPage = () => {
                   {Product?.data[0]?.mrp}
                 </Descriptions.Item>
                 <Descriptions.Item label="Updated at">
-                  <DateField value={Product?.data[0]?.updatedAt}></DateField>
+                  <DateField value={Product?.data[0]?.created_at}></DateField>
                 </Descriptions.Item>
               </Descriptions>
               {admin && (

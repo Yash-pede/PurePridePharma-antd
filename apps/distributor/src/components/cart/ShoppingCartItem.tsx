@@ -1,6 +1,6 @@
 import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
 import { Button, Descriptions, Flex, Image, Statistic } from "antd";
-import { Products } from "@repo/graphql";
+import { Database } from "@repo/graphql";
 import { IconX } from "@tabler/icons-react";
 
 type ShoppingCartItemProps = {
@@ -15,7 +15,7 @@ export const ShoppingCartItem = ({
   products,
 }: ShoppingCartItemProps) => {
   const { removeFromCart } = useShoppingCart();
-  const item = products.find((product: Products) => product.id === id);
+  const item = products.find((product: Database["public"]["Tables"]["PRODUCTS"]["Row"]) => product.id === id);
   if (!item) return null;
   return (
     <Flex

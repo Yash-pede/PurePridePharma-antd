@@ -1,6 +1,6 @@
+import React from "react";
 import { useEditableTable } from "@refinedev/antd";
 import { GET_ALL_ORDERS_QUERY } from "@repo/graphql";
-import React from "react";
 import { useLocation } from "react-router-dom";
 
 export const ShowOrders = () => {
