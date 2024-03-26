@@ -13,3 +13,4 @@ export * from "./src/SuperComponents/Inventory/CreateStock";
 export * from "./src/SuperComponents/Layouts/Header";
 export * from "./src/SuperComponents/Layouts/CheckRole";
 export * from "./src/SuperComponents/Products/ProductCard"
+export * from "./src/SuperComponents/loader/Loader"

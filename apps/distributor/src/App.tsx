@@ -27,6 +27,7 @@ import {
   CheckRole,
   ColorModeContextProvider,
   CreateStock,
+  Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
   ShowOrders,
@@ -88,13 +89,22 @@ function App() {
                 >
                   <ShoppingCartProvider>
                     <Routes>
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/login" element={<Login />} />
+                      <Route
+                        loader={() => <Loader />}
+                        path="/register"
+                        element={<Register />}
+                      />
+                      <Route
+                        loader={() => <Loader />}
+                        path="/login"
+                        element={<Login />}
+                      />
                       <Route
                         path="/forgot-password"
                         element={<ForgotPassord />}
                       />
                       <Route
+                        loader={() => <Loader />}
                         element={
                           <Authenticated
                             key={"authenticated-layout"}
@@ -129,33 +139,41 @@ function App() {
                           </Authenticated>
                         }
                       >
-                        <Route index element={<Home />} />
-                        <Route path="/products">
+                        <Route
+                          loader={() => <Loader />}
+                          index
+                          element={<Home />}
+                        />
+                        <Route loader={() => <Loader />} path="/products">
                           <Route index element={<AllAvalableProducts />} />
                           <Route path=":id" element={<ProductPage />} />
                         </Route>
-                        <Route path="/orders">
+                        <Route loader={() => <Loader />} path="/orders">
                           <Route index element={<AllOrders_D />} />
                           <Route path=":id" element={<ShowOrders />} />
                           {/* <Route path="edit/:id" element={<EditOrders />} /> */}
                         </Route>
-                        <Route path="/customer">
+                        <Route loader={() => <Loader />} path="/customer">
                           <Route index element={<CustomerHome />} />
                           <Route path="edit/:id" element={<CustomerEdit />} />
                           <Route path="create" element={<CustomerCreate />} />
                           <Route path=":id" element={<CustomerShow />} />
                         </Route>
-                        <Route path="/sales">
+                        <Route loader={() => <Loader />} path="/sales">
                           <Route index element={<SalesHome />} />
                           <Route path="edit/:id" element={<SalesEdit />} />
                           <Route path="create" element={<SalesCreate />} />
                           <Route path=":id" element={<SalesShow />} />
                         </Route>
-                        <Route path="/inventory">
+                        <Route loader={() => <Loader />} path="/inventory">
                           <Route index element={<InventoryD />} />
                           <Route path=":id" element={<ShowInventoryD />} />
                         </Route>
-                        <Route path="/me" element={<Profile />} />
+                        <Route
+                          loader={() => <Loader />}
+                          path="/me"
+                          element={<Profile />}
+                        />
                       </Route>
                     </Routes>
                   </ShoppingCartProvider>

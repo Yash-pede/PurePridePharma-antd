@@ -13,7 +13,13 @@ import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Outlet,
+  HashRouter,
+} from "react-router-dom";
 import routerBindings, {
   CatchAllNavigate,
   UnsavedChangesNotifier,
@@ -29,6 +35,7 @@ import {
   ColorModeContextProvider,
   CreateStock,
   EditOrders,
+  Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
   ShowOrders,
@@ -53,7 +60,7 @@ function App() {
     }
   };
   return (
-    <BrowserRouter>
+    <HashRouter>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
@@ -81,6 +88,7 @@ function App() {
                       element={<ForgotPassord />}
                     />
                     <Route
+                      loader={() => <Loader />}
                       element={
                         <Authenticated
                           key={"authenticated-layout"}
@@ -115,22 +123,26 @@ function App() {
                         </Authenticated>
                       }
                     >
-                      <Route index element={<Home />} />
-                      <Route path="/products">
+                      <Route
+                        loader={() => <Loader />}
+                        index
+                        element={<Home />}
+                      />
+                      <Route loader={() => <Loader />} path="/products">
                         <Route index element={<AllProducts />} />
                         <Route path=":id" element={<ProductPage />} />
                         <Route path="create" element={<>U r not su admin</>} />
                       </Route>
-                      <Route path="/orders">
+                      <Route loader={() => <Loader />} path="/orders">
                         <Route index element={<AllOrders />} />
                         <Route path=":id" element={<ShowOrders />} />
                         <Route path="edit/:id" element={<EditOrders />} />
                       </Route>
-                      <Route path="/inventory">
+                      <Route loader={() => <Loader />} path="/inventory">
                         <Route index element={<AllInventory />} />
                         <Route path="create" element={<CreateStock />} />
                       </Route>
-                      <Route path="/profiles">
+                      <Route loader={() => <Loader />} path="/profiles">
                         <Route index element={<Users />} />
                         <Route path="create" element={<CreateUsers />} />
                       </Route>
@@ -147,7 +159,7 @@ function App() {
           </AntdApp>
         </ColorModeContextProvider>
       </RefineKbarProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
