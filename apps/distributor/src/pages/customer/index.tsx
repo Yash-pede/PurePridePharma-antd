@@ -5,11 +5,13 @@ import {
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
+import { useGetIdentity, useList } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Form, Input, Space, Table } from "antd";
+import { Button, Form, Input, Select, Space, Table } from "antd";
 
 export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
+  const { data: User } = useGetIdentity<any>();
   const {
     tableProps,
     formProps,
@@ -18,32 +20,50 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
-  } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
-    resource: "profiles",
-    meta: {
-      gqlQuery: GET_ALL_PROFILES_QUERY,
-    },
+  } = useEditableTable<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>({
+    resource: "CUSTOMERS",
     filters: {
       permanent: [
         {
-          field: "userrole",
+          field: "distributor_id",
           operator: "eq",
-          value: UserRoleTypes.SALES,
+          value: User?.id,
         },
       ],
     },
     sorters: {
       initial: [
         {
-          field: "username",
+          field: "id",
           order: "asc",
         },
       ],
     },
-    pagination: {
-      pageSize: 12,
-    },
   });
+  const { data: SalesUserList, isLoading: SalesUserListLoading } = useList<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User?.id,
+      },
+    ],
+    sorters: [
+      {
+        field: "id",
+        order: "asc",
+      }
+    ]
+  });
+
   return (
     <>
       <div>
@@ -63,13 +83,13 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
             >
               <Table.Column dataIndex="id" title="ID" hidden />
 
-              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
-                dataIndex="username"
-                title="Username"
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
+                dataIndex="full_name"
+                title="Full Name"
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
-                      <Form.Item name="username" style={{ margin: 0 }}>
+                      <Form.Item name="full_name" style={{ margin: 0 }}>
                         <Input />
                       </Form.Item>
                     );
@@ -78,7 +98,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="email"
                 title="Email"
                 render={(value, record) => {
@@ -93,7 +113,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="phone"
                 title="Phone"
                 render={(value, record) => {
@@ -108,7 +128,28 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                 }}
               />
 
-              <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
+                dataIndex="sales_id"
+                title="Sales Person"
+                render={(value, record) => {
+                  if (isEditing(record.id)) {
+                    return (
+                      <Form.Item name="sales_id" style={{ margin: 0 }}>
+                        <Select>
+                          {SalesUserList?.data.map((user) => (
+                            <Select.Option key={user.id} value={user.id}>
+                              {user.username}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    );
+                  }
+                  return  <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
+                }}
+              />
+
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 title="Actions"
                 dataIndex="actions"
                 render={(_, record) => {

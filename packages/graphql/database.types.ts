@@ -13,20 +13,29 @@ export type Database = {
         Row: {
           created_at: string
           distributor_id: string
+          email: string | null
+          full_name: string
           id: number
-          name: string
+          phone: number
+          sales_id: string
         }
         Insert: {
           created_at?: string
           distributor_id: string
+          email?: string | null
+          full_name: string
           id?: number
-          name: string
+          phone: number
+          sales_id: string
         }
         Update: {
           created_at?: string
           distributor_id?: string
+          email?: string | null
+          full_name?: string
           id?: number
-          name?: string
+          phone?: number
+          sales_id?: string
         }
         Relationships: [
           {
@@ -34,6 +43,13 @@ export type Database = {
             columns: ["distributor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_CUSTOMERS_sales_id_fkey"
+            columns: ["sales_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -147,6 +163,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          boss_id: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -156,6 +173,7 @@ export type Database = {
           userrole: Database["public"]["Enums"]["user_roles"] | null
         }
         Insert: {
+          boss_id?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -165,6 +183,7 @@ export type Database = {
           userrole?: Database["public"]["Enums"]["user_roles"] | null
         }
         Update: {
+          boss_id?: string | null
           email?: string | null
           full_name?: string | null
           id?: string

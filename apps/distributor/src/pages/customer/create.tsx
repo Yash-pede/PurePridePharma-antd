@@ -1,124 +1,88 @@
-import { Create } from "@refinedev/antd";
-import { Drawer, Form, Input, Space } from "antd";
+import { Create, ThemedTitleV2 } from "@refinedev/antd";
+import { Drawer, Form, Input, Select, Skeleton, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import { useGetIdentity, useGo, useNotification, useUpdate } from "@refinedev/core";
+import { useCreate, useGetIdentity, useGo, useList } from "@refinedev/core";
+import { UserSwitchOutlined } from "@ant-design/icons";
 import { CustomerHome } from ".";
-import { supabaseServiceRoleClient } from "@repo/ui";
 
 export const CustomerCreate = () => {
-  const { open, close } = useNotification();
   const [form] = Form.useForm();
   const go = useGo();
-  const { status, mutate, isSuccess } = useUpdate();
+  const { mutate } = useCreate();
   const { data: User } = useGetIdentity<any>();
 
-  const CreateSalesUser = async (
-    email: string,
-    name: string,
-    phNo: string,
-    password: string,
-    full_name: string,
-    boss_id: string,
-  ) => {
-    open &&
-      open({
-        key: "create-sales-user",
-        type: "progress",
-        message: "Creating User...",
-        description: "Please wait while we create your Sales user.",
-        undoableTimeout: 2000,
-      });
-    const { data, error } =
-      await supabaseServiceRoleClient.auth.admin.createUser({
-        email: email,
-        password: password,
-        email_confirm: true,
-        user_metadata: {
-          username: name,
-          phone: phNo,
-          full_name: full_name,
-          boss_id: boss_id,
-        },
-      });
-    console.log(data, error);
+  const { data: SalesUserList, isLoading: SalesUserListLoading } = useList({
+    resource: "profiles",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User?.id,
+      },
+    ],
+    sorters: [
+      {
+        field: "id",
+        order: "asc",
+      },
+    ],
+  });
 
-    if (data.user) {
-      close && close("create-sales-user");
-      await setSalesUserRole(data.user.id);
-      open &&
-        open({
-          key: "create-sales-user",
-          type: "success",
-          message: "Sales User Created",
-          description: "Sales User Created Successfully",
-        });
-      go({
-        to: { action: "list", resource: "sales" },
-        type: "push",
-      });
-    } else {
-      close && close("create-sales-user");
-      open &&
-        open({
-          key: "create-sales-user-error",
-          type: "error",
-          message: "Try entering different credentials",
-          description: "Sales User Creation Failed",
-        });
-      console.log(error);
-    }
-  };
-  const setSalesUserRole = async (userId: string) => {
+  const CreateCustomer = async (
+    email: string,
+    phone: string,
+    full_name: string,
+    userId: string,
+    sales_id: string
+  ) => {
+    // console.log("CreateCustomer", email, phone, full_name, userId, sales_id);
     mutate({
-      resource: "profiles",
-      id: userId,
+      resource: "CUSTOMERS",
       values: {
-        userrole: UserRoleTypes.SALES,
+        full_name,
+        distributor_id: userId,
+        sales_id,
+        phone,
+        email,
       },
     });
-
-    if (status === "success" && isSuccess) {
-      console.log("User role set to SALES successfully");
-    } else {
-      console.error("Failed to set user role to SALES");
-    }
   };
   form.submit = async () => {
     const values = form.getFieldsValue();
-    CreateSalesUser(
+    CreateCustomer(
       values.email,
-      values.name,
       values.phone,
-      values.password,
       values.full_name,
-      User.id,
+      User?.id,
+      values.sales_id
     );
+
+    go({
+      to: { action: "list", resource: "customer" },
+      type: "push",
+    });
   };
   return (
     <CustomerHome>
       <Drawer
+        open
         onClose={() => {
           go({
-            to: { action: "list", resource: "sales" },
+            to: { action: "list", resource: "customer" },
             type: "push",
           });
         }}
-        open
       >
         <Create
-          title="Create Sales User"
+          title="Create Customer"
           saveButtonProps={{ onClick: () => form.submit(), htmlType: "submit" }}
         >
-          <Form form={form} layout="vertical">
-            <Form.Item
-              label="User Name"
-              name={"name"}
-              rules={[
-                { required: true, message: "Name is required", type: "string" },
-              ]}
-            >
-              <Input placeholder="Name" type="text" />
-            </Form.Item>
+          <Form form={form} layout="vertical" >
             <Form.Item
               label="Email"
               name={"email"}
@@ -149,42 +113,34 @@ export const CustomerCreate = () => {
                 <Input
                   style={{ width: "20%" }}
                   defaultValue="+91"
+                  readOnly
                   contentEditable={false}
                 />
                 <Input style={{ width: "80%" }} placeholder="123456789" />
               </Space.Compact>
             </Form.Item>
             <Form.Item
-              label="Password"
-              name={"password"}
-              rules={[
-                {
-                  required: true,
-                  max: 8,
-                  min: 4,
-                  type: "string",
-                  message: "Password is required",
-                  validator(rule, value) {
-                    if (value.trim().length < 4 || value.trim().length > 8) {
-                      rule.message =
-                        "Password length should be between 4 and 8 Characters";
-                    }
-                  },
-                  transform(value: any) {
-                    return value.trim().replace(/\s/g, "");
-                  },
-                },
-              ]}
+              name="sales_id"
+              label={
+                <ThemedTitleV2
+                  text="Assign Sales Person"
+                  collapsed={false}
+                  icon={<UserSwitchOutlined />}
+                />
+              }
             >
-              <Input.Password placeholder="Password" type="password" />
+              {SalesUserListLoading ? (
+                <Skeleton.Input style={{ width: "100%" }} active />
+              ) : (
+                <Select>
+                  {SalesUserList?.data.map((user) => (
+                    <Select.Option key={user.id} value={user.id}>
+                      {user.username}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
-            {/* <Button
-              onClick={() => form.submit()}
-              type="primary"
-              htmlType="submit"
-            >
-              Create User
-            </Button> */}
           </Form>
         </Create>
       </Drawer>

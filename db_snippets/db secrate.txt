@@ -1,1 +1,37 @@
 sbp_98d65a84eeae1191a33dd3e5e1bb11bfc75c83eb 
+//order
+CREATE OR REPLACE FUNCTION add_batch_info_to_order(
+    order_id BIGINT,
+    product_id UUID,
+    key_value INT,
+    batch_id TEXT,
+    quantity_value INT
+)
+RETURNS VOID AS $$
+DECLARE
+    batch_info_obj JSONB;
+    updated_order JSONB[];
+BEGIN
+    -- Construct the batch information object
+    batch_info_obj := jsonb_build_object('batch_id', batch_id, 'quantity', quantity_value);
+
+    -- Retrieve the existing order JSONB array
+    updated_order := ARRAY(
+        SELECT CASE 
+                   WHEN (order_item->>'key')::INT = key_value THEN 
+                       jsonb_set(order_item, '{batch_info}', 
+                                 COALESCE(order_item->'batch_info', '[]'::JSONB) || batch_info_obj, 
+                                 true)
+                   ELSE order_item 
+               END
+        FROM (SELECT jsonb_array_elements("order") AS order_item FROM "ORDERS" WHERE id = order_id) AS order_items
+        WHERE order_item->>'product_id' = product_id::TEXT
+    );
+
+    -- Update the order JSONB with the updated order array
+    UPDATE "ORDERS"
+    SET "order" = (SELECT jsonb_agg(elem) FROM unnest(updated_order) AS elem)
+    WHERE id = order_id;
+
+END;
+$$ LANGUAGE plpgsql;

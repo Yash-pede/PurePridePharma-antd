@@ -36,7 +36,8 @@ export const AllOrders_D = () => {
   });
   const { mutate, isLoading: updateLoading } = useUpdate();
 
-  const handleStatusChange = (value: string, orderId: number) => {
+  const handleStatusChange = (value: string, orderId: string) => {
+    console.log(value,orderId);
     mutate({
       resource: "ORDERS",
       id: orderId,
@@ -74,7 +75,7 @@ export const AllOrders_D = () => {
                     Modal.confirm({
                       title: "Are you sure you want to change status?",
                       onOk: () => {
-                        handleStatusChange(value, record.id);
+                        handleStatusChange(value, record.id.toString());
                       },
                       type: "confirm",
                     });

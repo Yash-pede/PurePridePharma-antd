@@ -64,7 +64,7 @@ export const CreateStock = () => {
             label="Product"
           >
             {isLoadingProductById ? (
-              <Skeleton.Input style={{ width: "100%" }} />
+              <Skeleton.Input active style={{ width: "100%" }} />
             ) : (
               <Input
                 style={{ width: "100%" }}

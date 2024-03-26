@@ -1,7 +1,12 @@
 import { Create } from "@refinedev/antd";
 import { Drawer, Form, Input, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import { useGetIdentity, useGo, useNotification, useUpdate } from "@refinedev/core";
+import {
+  useGetIdentity,
+  useGo,
+  useNotification,
+  useUpdate,
+} from "@refinedev/core";
 import { SalesHome } from ".";
 import { supabaseServiceRoleClient } from "@repo/ui";
 
@@ -18,7 +23,7 @@ export const SalesCreate = () => {
     phNo: string,
     password: string,
     full_name: string,
-    boss_id: string,
+    boss_id: string
   ) => {
     open &&
       open({
@@ -91,19 +96,19 @@ export const SalesCreate = () => {
       values.phone,
       values.password,
       values.full_name,
-      User?.id,
+      User?.id
     );
   };
   return (
     <SalesHome>
       <Drawer
+        open
         onClose={() => {
           go({
             to: { action: "list", resource: "sales" },
             type: "push",
           });
         }}
-        open
       >
         <Create
           title="Create Sales User"
@@ -148,7 +153,7 @@ export const SalesCreate = () => {
               <Space.Compact>
                 <Input
                   style={{ width: "20%" }}
-                  defaultValue="+91"
+                  defaultValue="+91" readOnly
                   contentEditable={false}
                 />
                 <Input style={{ width: "80%" }} placeholder="123456789" />

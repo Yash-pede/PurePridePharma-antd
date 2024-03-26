@@ -106,7 +106,7 @@ export const EditOrders = () => {
   const { mutate, isLoading: updateLoading } = useUpdate();
 
   if (order.isLoading) {
-    return <Skeleton />;
+    return <Skeleton active />;
   }
 
   const handleStatusChange = (value: string) => {
@@ -220,7 +220,7 @@ export const EditOrders = () => {
                 dataIndex="product_id"
                 render={(value, record: any) => {
                   return productsLoading ? (
-                    <Skeleton.Input />
+                    <Skeleton.Input active />
                   ) : (
                     <Button
                       type="dashed"

@@ -41,7 +41,7 @@ export const ProductPage = () => {
   const breakpoint = Grid.useBreakpoint();
   const isMobile =
     typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
-  if (isLoading || isLoadingUser) return <Skeleton />;
+  if (isLoading || isLoadingUser) return <Skeleton active />;
   return (
     <>
       <Show>

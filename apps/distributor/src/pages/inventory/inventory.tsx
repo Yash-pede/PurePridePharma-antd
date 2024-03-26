@@ -1,7 +1,7 @@
 import { DateField, List, Show, TextField, useTable } from "@refinedev/antd";
 import { useGetIdentity, useGo, useList } from "@refinedev/core";
 import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
-import { Button, Table } from "antd";
+import { Button, Skeleton, Table } from "antd";
 
 export const InventoryD = () => {
   const { data: User } = useGetIdentity<any>();
@@ -49,6 +49,7 @@ export const InventoryD = () => {
           dataIndex="product_id"
           title="Product"
           render={(value) => {
+            if (isLoadingProducts) return <Skeleton.Input active />;
             const product = products?.data.find(
               (product: any) => product.id === value
             );

@@ -16,9 +16,9 @@ export const Home = () => {
         Link to Orders
       </Button>
       <Flex>
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
+        <Skeleton active />
+        <Skeleton active />
+        <Skeleton active />
       </Flex>
     </div>
   );

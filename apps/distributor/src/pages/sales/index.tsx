@@ -1,17 +1,25 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
+  DateField,
   EditButton,
+  FilterDropdown,
   List,
   SaveButton,
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
-import { useGetIdentity } from "@refinedev/core";
-import { GET_ALL_PROFILES_QUERY, Profiles } from "@repo/graphql";
+import { getDefaultFilter, useGetIdentity, useGo } from "@refinedev/core";
+import {
+  Database,
+  GET_ALL_PROFILES_QUERY,
+  PROFILES_QUERY,
+  Profiles,
+} from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Form, Input, Space, Table } from "antd";
+import { Button, Form, Input, InputNumber, Select, Space, Table } from "antd";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
-  const { data: User } = useGetIdentity<any>();
+  const go = useGo();
   const {
     tableProps,
     formProps,
@@ -20,10 +28,14 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
-  } = useEditableTable<Profiles>({
+    tableQueryResult,
+  } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
+    pagination: {
+      pageSize: 10,
+    },
     meta: {
-      gqlQuery: GET_ALL_PROFILES_QUERY,
+      gqlQuery: PROFILES_QUERY,
     },
     filters: {
       permanent: [
@@ -32,120 +44,164 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
           operator: "eq",
           value: UserRoleTypes.SALES,
         },
-        {
-          field: "boss_id",
-          operator: "eq",
-          value: User?.id,
-        },
       ],
     },
     sorters: {
       initial: [
         {
-          field: "username",
+          field: "updated_at",
           order: "asc",
         },
       ],
     },
-    pagination: {
-      pageSize: 12,
-    },
   });
   return (
     <>
-      <div>
-        <List>
-          <Form {...formProps}>
-            <Table
-              {...tableProps}
-              rowKey="id"
-              onRow={(record) => ({
-                // eslint-disable-next-line
-                onClick: (event: any) => {
-                  if (event.target.nodeName === "TD") {
-                    setEditId && setEditId(record.id);
-                  }
-                },
-              })}
-            >
-              <Table.Column dataIndex="id" title="ID" hidden />
-
-              <Table.Column<Profiles>
-                dataIndex="username"
-                title="Username"
-                render={(value, record) => {
-                  if (isEditing(record.id)) {
-                    return (
-                      <Form.Item name="username" style={{ margin: 0 }}>
-                        <Input />
-                      </Form.Item>
-                    );
-                  }
-                  return <TextField value={value} />;
-                }}
-              />
-
-              <Table.Column<Profiles>
-                dataIndex="email"
-                title="Email"
-                render={(value, record) => {
-                  if (isEditing(record.id)) {
-                    return (
-                      <Form.Item name="email" style={{ margin: 0 }}>
-                        <Input />
-                      </Form.Item>
-                    );
-                  }
-                  return <TextField value={value} />;
-                }}
-              />
-
-              <Table.Column<Profiles>
-                dataIndex="phone"
-                title="Phone"
-                render={(value, record) => {
-                  if (isEditing(record.id)) {
-                    return (
-                      <Form.Item name="phone" style={{ margin: 0 }}>
-                        <Input />
-                      </Form.Item>
-                    );
-                  }
-                  return <TextField value={"+91  " + value} />;
-                }}
-              />
-
-              <Table.Column<Profiles>
-                title="Actions"
-                dataIndex="actions"
-                render={(_, record) => {
-                  if (isEditing(record.id)) {
-                    return (
-                      <Space>
-                        <SaveButton
-                          {...saveButtonProps}
-                          hideText
-                          size="small"
-                        />
-                        <Button {...cancelButtonProps} size="small">
-                          Cancel
-                        </Button>
-                      </Space>
-                    );
-                  }
+      <List
+        createButtonProps={{
+          onClick: () => go({ to: { action: "create", resource: "sales" } }),
+        }}
+      >
+        <Form {...formProps}>
+          <Table
+            {...tableProps}
+            key={"id"}
+            bordered
+            rowKey="id"
+            onRow={(record) => ({
+              // eslint-disable-next-line
+              onClick: (event: any) => {
+                if (event.target.nodeName === "TD") {
+                  setEditId && setEditId(record.id);
+                }
+              },
+            })}
+          >
+            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              dataIndex={"username"}
+              title="Username"
+              defaultFilteredValue={getDefaultFilter(
+                "username",
+                tableQueryResult?.data?.filters
+              )}
+              filterIcon={<SearchOutlined />}
+              filterDropdown={(props) => (
+                <FilterDropdown
+                  {...props}
+                  filters={tableQueryResult?.data?.filters}
+                >
+                  <Input placeholder="Search username" />
+                </FilterDropdown>
+              )}
+              render={(value, record) => {
+                if (isEditing(record.id)) {
                   return (
+                    <Form.Item name="username" style={{ margin: 0 }}>
+                      <Input />
+                    </Form.Item>
+                  );
+                }
+                return <TextField value={value} />;
+              }}
+            />
+            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              dataIndex={"email"}
+              title="email"
+              defaultFilteredValue={getDefaultFilter(
+                "email",
+                tableQueryResult?.data?.filters
+              )}
+              filterIcon={<SearchOutlined />}
+              filterDropdown={(props) => (
+                <FilterDropdown
+                  {...props}
+                  filters={tableQueryResult?.data?.filters}
+                >
+                  <Input placeholder="Search email" />
+                </FilterDropdown>
+              )}
+              render={(value, record) => {
+                if (isEditing(record.id)) {
+                  return (
+                    <Form.Item name="email" style={{ margin: 0 }}>
+                      <Input />
+                    </Form.Item>
+                  );
+                }
+                return <TextField value={value} />;
+              }}
+            />
+
+            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              dataIndex={"userrole"}
+              title="Role"
+              defaultFilteredValue={getDefaultFilter(
+                "userrole",
+                tableQueryResult?.data?.filters
+              )}
+              render={(value, record) => {
+                return (
+                  <Select
+                    style={{ width: "100%" }}
+                    value={value}
+                    dropdownStyle={{ display: "none" }}
+                  />
+                );
+              }}
+            />
+
+            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              dataIndex={"phone"}
+              title="phone"
+              render={(value, record) => {
+                if (isEditing(record.id)) {
+                  return (
+                    <Form.Item name="phone" style={{ margin: 0 }}>
+                      <InputNumber style={{ width: "100%" }} />
+                    </Form.Item>
+                  );
+                }
+                return <TextField value={value} />;
+              }}
+            />
+
+            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+              dataIndex={"updated_at"}
+              title="Updated At"
+              render={(value, record) => {
+                return <DateField value={value} format="DD/MM/YYYY" />;
+              }}
+            />
+
+            <Table.Column
+              title="Actions"
+              dataIndex="actions"
+              render={(_, record: any) => {
+                if (isEditing(record.id)) {
+                  return (
+                    <Space>
+                      <SaveButton {...saveButtonProps} hideText size="small" />
+                      <Button {...cancelButtonProps} size="small">
+                        Cancel
+                      </Button>
+                    </Space>
+                  );
+                }
+                return (
+                  <Space size="small">
                     <EditButton
                       {...editButtonProps(record.id)}
                       hideText
                       size="small"
                     />
-                  );
-                }}
-              />
-            </Table>
-          </Form>
-        </List>
-      </div>
+                    {/* <DeleteButton hideText size="small" /> */}
+                  </Space>
+                );
+              }}
+            />
+          </Table>
+        </Form>
+      </List>
       {children}
     </>
   );

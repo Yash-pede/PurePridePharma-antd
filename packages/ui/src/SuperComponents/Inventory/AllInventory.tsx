@@ -119,7 +119,7 @@ export const AllInventory = () => {
             title="product"
             render={(_value, record) => {
               if (isLoadingProducts) {
-                return <Skeleton.Input />;
+                return <Skeleton.Input active />;
               }
               return (
                 <Button

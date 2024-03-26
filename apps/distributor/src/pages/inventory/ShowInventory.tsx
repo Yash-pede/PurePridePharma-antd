@@ -1,29 +1,17 @@
-import { Show, useTable } from "@refinedev/antd";
-import {
-  HttpError,
-  useGetIdentity,
-  useGo,
-  useList,
-  useOne,
-} from "@refinedev/core";
-import {
-  Database,
-  GET_ALL_D_INVENTORY_QUERY,
-  GET_ALL_pRODUCTS_QUERY,
-} from "@repo/graphql";
+import React from "react";
+import { Show } from "@refinedev/antd";
+import { HttpError, useOne } from "@refinedev/core";
+import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
 import { ProductCardPublic } from "@repo/ui";
-import { Button, Divider, Flex, Table } from "antd";
+import { Button, Divider, Flex, Skeleton, Table } from "antd";
 import { AnyObject } from "antd/es/_util/type";
 import Paragraph from "antd/es/typography/Paragraph";
 import Title from "antd/lib/typography/Title";
-import React from "react";
 import { useLocation } from "react-router-dom";
 
 export const ShowInventoryD = () => {
-  const { data: User } = useGetIdentity<any>();
-  const go = useGo();
   const inventoryId = useLocation().pathname.split("/").pop();
-  const { data: inventory } = useOne<
+  const { data: inventory, isLoading } = useOne<
     Database["public"]["Tables"]["D_INVENTORY"]["Row"],
     HttpError
   >({
@@ -58,29 +46,36 @@ export const ShowInventoryD = () => {
       <Divider />
       <Title level={4}>Product Details</Title>
       <Flex wrap="wrap" justify="space-around" align="start">
-        <Table
-        size="large"
-          style={{ width: "50%" }}
-          dataSource={
-            (inventory?.data?.batch_info as readonly AnyObject[]) || []
-          }
-          pagination={false}
-          bordered
-          showHeader
-          columns={[
-            {
-              title: "Batch ID",
-              dataIndex: "batch_id",
-              key: "batch_id",
-            },
-            {
-              title: "Quantity",
-              dataIndex: "quantity",
-              key: "quantity",
-            },
-          ]}
-        />
-        {products?.data && (
+        {isLoading ? (
+          <Skeleton active style={{ width: "40%" }} />
+        ) : (
+          <Table
+            size="large"
+            style={{ width: "50%" }}
+            dataSource={
+              (inventory?.data?.batch_info as readonly AnyObject[]) || []
+            }
+            pagination={false}
+            bordered
+            showHeader
+            columns={[
+              {
+                title: "Batch ID",
+                dataIndex: "batch_id",
+                key: "batch_id",
+              },
+              {
+                title: "Quantity",
+                dataIndex: "quantity",
+                key: "quantity",
+              },
+            ]}
+          />
+        )}
+
+        {isLoadingProducts ? (
+          <Skeleton.Image active />
+        ) : (
           <ProductCardPublic
             isLoading={isLoadingProducts}
             product={products?.data as any}
