@@ -3,18 +3,28 @@ import {
   DeleteButton,
   EditButton,
   ExportButton,
+  FilterDropdown,
   SaveButton,
   Show,
   TextField,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
-import { useExport, useGo, useList } from "@refinedev/core";
+import { getDefaultFilter, useExport, useGo, useList } from "@refinedev/core";
 import {
   Database,
   GET_ALL_STOCKS_QUERY,
   GET_ALL_pRODUCTS_QUERY,
 } from "@repo/graphql";
-import { Button, Form, InputNumber, Skeleton, Space, Table } from "antd";
+import {
+  Button,
+  Form,
+  InputNumber,
+  Select,
+  Skeleton,
+  Space,
+  Table,
+} from "antd";
 import dayjs from "dayjs";
 
 export const AllInventory = () => {
@@ -28,6 +38,7 @@ export const AllInventory = () => {
     cancelButtonProps,
     editButtonProps,
     tableQueryResult,
+    filters,
   } = useEditableTable({
     resource: "STOCKS",
     meta: {
@@ -90,6 +101,18 @@ export const AllInventory = () => {
       filename: "inventory",
     },
   });
+  const { selectProps } = useSelect({
+    resource: "STOCKS",
+    optionLabel: "id",
+    optionValue: "id",
+    defaultValue: getDefaultFilter("STOCKS.id", filters, "in"),
+  });
+  const { selectProps: ProductSelectProps } = useSelect({
+    resource: "PRODUCTS",
+    optionLabel: "name",
+    optionValue: "id",
+    defaultValue: getDefaultFilter("PRODUCTS.id", filters, "in"),
+  });
 
   return (
     <Show
@@ -112,11 +135,32 @@ export const AllInventory = () => {
             },
           })}
         >
-          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]> dataIndex={"id"} title="Batch No" />
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
+            dataIndex={"id"}
+            title="Batch No"
+            filterDropdown={(props) => (
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectProps}
+                />
+              </FilterDropdown>
+            )}
+          />
 
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"product_id"}
             title="product"
+            filterDropdown={(props) => (
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...ProductSelectProps}
+                />
+              </FilterDropdown>
+            )}
             render={(_value, record) => {
               if (isLoadingProducts) {
                 return <Skeleton.Input active />;
