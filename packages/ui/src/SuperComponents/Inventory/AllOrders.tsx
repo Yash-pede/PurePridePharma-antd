@@ -5,6 +5,8 @@ import {
   List,
   useTable,
   ExportButton,
+  getDefaultSortOrder,
+  FilterDropdown,
 } from "@refinedev/antd";
 import { HttpError, useList, useExport } from "@refinedev/core";
 import {
@@ -18,7 +20,7 @@ import React from "react";
 import dayjs from "dayjs";
 
 export const AllOrders = () => {
-  const { tableProps } = useTable<
+  const { tableProps, sorter } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -83,6 +85,8 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="id"
           title="ID"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
@@ -109,6 +113,30 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex={"status"}
           title="Status"
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Select
+                style={{ width: "10rem" }}
+                defaultValue={OrderStatus.PENDING}
+              >
+                <Select.Option value={OrderStatus.PENDING}>
+                  Pending
+                </Select.Option>
+                <Select.Option value={OrderStatus.INPROCESS}>
+                  In Process
+                </Select.Option>
+                <Select.Option value={OrderStatus.FULFILLED}>
+                  Fulfilled
+                </Select.Option>
+                <Select.Option value={OrderStatus.CANCELLED}>
+                  Cancelled
+                </Select.Option>
+                <Select.Option value={OrderStatus.DEFECTED}>
+                  Defected
+                </Select.Option>
+              </Select>
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             if (record.status === OrderStatus.PENDING) {
               return (
@@ -166,6 +194,8 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
+          sorter={{ multiple: 1 }}
+          defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
           render={(_, record) => <DateField value={record.created_at} />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>

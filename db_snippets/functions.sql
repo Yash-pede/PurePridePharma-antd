@@ -11,8 +11,10 @@ DECLARE
     batch_info_obj JSONB;
     updated_order JSONB[];
 BEGIN
+    -- Construct the batch information object
     batch_info_obj := jsonb_build_object('batch_id', batch_id, 'quantity', quantity_value);
 
+    -- Retrieve the existing order JSONB array
     updated_order := ARRAY(
         SELECT CASE 
                    WHEN (order_item->>'key')::INT = key_value THEN 
@@ -25,13 +27,13 @@ BEGIN
         WHERE order_item->>'product_id' = product_id::TEXT
     );
 
+    -- Update the order JSONB with the updated order array
     UPDATE "ORDERS"
     SET "order" = (SELECT jsonb_agg(elem) FROM unnest(updated_order) AS elem)
     WHERE id = order_id;
 
 END;
 $$ LANGUAGE plpgsql;
-
 
 
 
