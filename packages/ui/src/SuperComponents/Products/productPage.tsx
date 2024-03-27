@@ -62,7 +62,7 @@ export const ProductPage = () => {
                 {Product?.data[0]?.mrp}
               </Descriptions.Item>
               <Descriptions.Item label="Updated at">
-                <DateField value={Product?.data[0]?.updatedAt}></DateField>
+                <DateField value={Product?.data[0]?.updatedAt} format="DD/MM/YYYY"></DateField>
               </Descriptions.Item>
             </Descriptions>
             {admin && (

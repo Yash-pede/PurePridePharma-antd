@@ -71,19 +71,25 @@ export const AllInventory = () => {
         value: tableQueryResult?.data?.data?.map((item) => item.product_id),
       },
     ],
+    sorters:[
+      {
+        field: "expiry_date",
+        order: "asc",
+      }
+    ],
     download: true,
     onError(error) {
       console.error(error);
     },
     mapData: (record) => {
       return {
-        product_id: record.product_id,
         id: record.id,
         // selling_price: record.selling_price,
         avalable_quantity: record.avalable_quantity,
         orderd_quantity: record.orderd_quantity,
         expiry_date: dayjs(record.expiry_date).format("DD-MM-YYYY"),
         created_at: dayjs(record.created_at).format("DD-MM-YYYY"),
+        product_id: record.product_id,
       };
     },
     exportOptions: {
@@ -190,7 +196,7 @@ export const AllInventory = () => {
               return (
                 <Space>
                   {/* <DatePicker defaultValue={dayjs(value)} /> */}
-                  <DateField value={value} />
+                  <DateField value={value} format="DD/MM/YYYY"/>
                 </Space>
               );
             }}
@@ -202,7 +208,7 @@ export const AllInventory = () => {
               return (
                 <Space>
                   {/* <DatePicker defaultValue={dayjs(value)} /> */}
-                  <DateField value={value} />
+                  <DateField value={value} format="DD/MM/YYYY"/>
                 </Space>
               );
             }}

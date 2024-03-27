@@ -123,7 +123,7 @@ export const AllOrders = () => {
         <Table.Column<Orders>
           dataIndex="created_at"
           title="Created At"
-          render={(_, record) => <DateField value={record.created_at} />}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY"/>}
         />
         <Table.Column<Orders>
           title="Action"
@@ -134,13 +134,6 @@ export const AllOrders = () => {
                 recordItemId={record.id}
                 size="small"
                 title="Edit"
-              />
-              <DeleteButton
-                recordItemId={record.id}
-                hideText
-                resource="ORDERS"
-                title="Delete"
-                size="small"
               />
             </Space>
           )}

@@ -157,7 +157,7 @@ export const ShowOrders = () => {
           <Table.Column<Orders>
             dataIndex={"created_at"}
             title="Created At"
-            render={(_value, record) => <DateField value={record.created_at} />}
+            render={(_value, record) => <DateField value={record.created_at} format="DD/MM/YYYY"/>}
           />
           <Table.Column
             title="Actions"
