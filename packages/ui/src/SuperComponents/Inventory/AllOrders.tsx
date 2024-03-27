@@ -1,6 +1,5 @@
 import {
   DateField,
-  DeleteButton,
   EditButton,
   List,
   useTable,
@@ -73,6 +72,7 @@ export const AllOrders = () => {
       filename: "orders",
     },
   });
+  
   return (
     <List
       headerButtons={
@@ -166,7 +166,7 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
-          render={(_, record) => <DateField value={record.created_at} />}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY"/>}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"
@@ -174,13 +174,6 @@ export const AllOrders = () => {
           render={(_, record) => (
             <Space>
               <EditButton recordItemId={record.id} size="small" title="Edit" />
-              <DeleteButton
-                recordItemId={record.id}
-                hideText
-                resource="ORDERS"
-                title="Delete"
-                size="small"
-              />
             </Space>
           )}
         />

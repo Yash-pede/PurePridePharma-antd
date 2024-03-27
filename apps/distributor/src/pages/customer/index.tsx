@@ -1,14 +1,16 @@
 import {
   EditButton,
+  ExportButton,
   List,
   SaveButton,
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
-import { useGetIdentity, useList } from "@refinedev/core";
+import { useExport, useGetIdentity, useList } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Select, Space, Table } from "antd";
+import dayjs from "dayjs";
 
 export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
   const { data: User } = useGetIdentity<any>();
@@ -64,10 +66,47 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     ]
   });
 
+  const { isLoading, triggerExport } = useExport({
+    resource: "CUSTOMERS",
+    filters: [
+      {
+        field: "distributor_id",
+        operator: "eq",
+        value: User?.id,
+      }
+    ],
+    sorters: [
+      {
+        field: "id",
+        order: "asc",
+      }
+    ],
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        id: record.id,
+        full_name: record.full_name,
+        phone: record.phone || "-",
+        email: record.email || "-",
+        created_at: dayjs(record.created_at).format("DD/MM/YYYY"),
+        distributor_id: record.distributor_id,
+        sales_id: record.sales_id,
+      }
+    },
+    exportOptions: {
+      filename: "Customer Details",
+    },
+  })
+
   return (
     <>
       <div>
-        <List>
+        <List headerButtons={
+          <ExportButton onClick={triggerExport} loading={isLoading} />
+        }>
           <Form {...formProps}>
             <Table
               {...tableProps}
@@ -145,7 +184,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                       </Form.Item>
                     );
                   }
-                  return  <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
+                  return <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
                 }}
               />
 

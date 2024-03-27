@@ -67,7 +67,7 @@ export const InventoryD = () => {
           dataIndex={"updated_at"}
           title="Last Updated"
           render={(value) => {
-            return <DateField value={value} format="DD/MM/YYYY" />;
+            return <DateField value={value} format="DD/MM/YYYY"/>;
           }}
         />
         <Table.Column<Database["public"]["Tables"]["D_INVENTORY"]["Row"]>

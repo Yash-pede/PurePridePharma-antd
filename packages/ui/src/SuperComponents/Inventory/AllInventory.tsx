@@ -190,7 +190,7 @@ export const AllInventory = () => {
               return (
                 <Space>
                   {/* <DatePicker defaultValue={dayjs(value)} /> */}
-                  <DateField value={value} />
+                  <DateField value={value} format="DD/MM/YYYY" />
                 </Space>
               );
             }}
@@ -202,7 +202,7 @@ export const AllInventory = () => {
               return (
                 <Space>
                   {/* <DatePicker defaultValue={dayjs(value)} /> */}
-                  <DateField value={value} />
+                  <DateField value={value} format="DD/MM/YYYY"/>
                 </Space>
               );
             }}

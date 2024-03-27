@@ -1,7 +1,9 @@
-import { Database, PROFILES_QUERY } from "@repo/graphql";
+import { Database, GET_ALL_PROFILES_QUERY, PROFILES_QUERY } from "@repo/graphql";
 import {
   CreateButton,
+  DeleteButton,
   EditButton,
+  ExportButton,
   FilterDropdown,
   List,
   SaveButton,
@@ -10,7 +12,7 @@ import {
   useEditableTable,
 } from "@refinedev/antd";
 import { Button, Form, Input, Select, Space, Table } from "antd";
-import { getDefaultFilter } from "@refinedev/core";
+import { getDefaultFilter, useExport } from "@refinedev/core";
 import { SearchOutlined } from "@ant-design/icons";
 import React from "react";
 import { UserRoleTypes } from "@repo/utility";
@@ -67,8 +69,34 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
       ],
     },
   });
+
+  const { triggerExport, isLoading: exportLoading } = useExport({
+    resource: "profiles",
+    metaData: {
+      gqlQuery: GET_ALL_PROFILES_QUERY,
+    },
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        username: record.username||"-",
+        email: record.email,
+        role: record.userrole,
+      };
+    },
+    exportOptions: {
+      filename: "Profiles",
+    },
+  });
+
   return (
-    <List canCreate>
+    <List
+      headerButtons={
+        <ExportButton onClick={triggerExport} loading={exportLoading} />
+      }
+    >
       <Form {...formProps}>
         <Table
           {...tableProps}
@@ -231,6 +259,22 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                     size="small"
                   />
                   {/* <DeleteButton hideText size="small" /> */}
+                  <DeleteButton
+                    hideText
+                    size="small"
+                    recordItemId={record.id}
+                    resource="STOCKS"
+                    mutationMode="undoable"
+                    errorNotification={{
+                      message: "Failed to delete",
+                      description:
+                        "Please ensure their is no stock in the batch",
+                      type: "error",
+                    }}
+                  />
+                  <Button type="primary" danger ghost>
+                    Ban
+                  </Button>
                 </Space>
               );
             }}

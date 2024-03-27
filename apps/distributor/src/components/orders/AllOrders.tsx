@@ -106,7 +106,7 @@ export const AllOrders_D = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
-          render={(_, record) => <DateField value={record.created_at} />}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY"/>}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"
