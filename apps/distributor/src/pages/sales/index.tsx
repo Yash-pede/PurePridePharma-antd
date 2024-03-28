@@ -93,7 +93,6 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
   return (
     <>
       <List
-
         headerButtons={
           <Flex gap={16}>
             <ExportButton loading={isLoading} onClick={triggerExport} />
