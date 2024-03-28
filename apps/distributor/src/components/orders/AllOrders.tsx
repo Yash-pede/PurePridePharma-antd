@@ -1,4 +1,4 @@
-import { DateField, List, useTable } from "@refinedev/antd";
+import { DateField, FilterDropdown, List, getDefaultSortOrder, useTable } from "@refinedev/antd";
 import { HttpError, useGetIdentity, useGo, useUpdate } from "@refinedev/core";
 import { Database, GET_ALL_ORDERS_QUERY } from "@repo/graphql";
 import { OrderStatus } from "@repo/utility";
@@ -8,7 +8,7 @@ import React from "react";
 export const AllOrders_D = () => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
-  const { tableProps } = useTable<
+  const { tableProps, sorter,tableQueryResult, } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -37,7 +37,7 @@ export const AllOrders_D = () => {
   const { mutate, isLoading: updateLoading } = useUpdate();
 
   const handleStatusChange = (value: string, orderId: string) => {
-    console.log(value,orderId);
+    console.log(value, orderId);
     mutate({
       resource: "ORDERS",
       id: orderId,
@@ -60,10 +60,44 @@ export const AllOrders_D = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="id"
           title="ID"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex={"status"}
           title="Status"
+          filterDropdown={(props) => (
+            <FilterDropdown
+              {...props}
+              filters={tableQueryResult?.data?.filters}
+            >
+              <Select style={{ width: "10rem" }}
+                placeholder="Select a role"
+                options={[
+                  {
+                    label: OrderStatus.INPROCESS,
+                    value: OrderStatus.INPROCESS,
+                  },
+                  {
+                    label: OrderStatus.FULFILLED,
+                    value: OrderStatus.FULFILLED,
+                  },
+                  {
+                    label: OrderStatus.DEFECTED,
+                    value: OrderStatus.DEFECTED,
+                  },
+                  {
+                    label: OrderStatus.PENDING,
+                    value: OrderStatus.PENDING,
+                  },
+                  {
+                    label: OrderStatus.CANCELLED,
+                    value: OrderStatus.CANCELLED,
+                  },
+                ]}
+              />
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             if (record.status === OrderStatus.INPROCESS) {
               return (
@@ -106,7 +140,9 @@ export const AllOrders_D = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
-          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY"/>}
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY" />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"

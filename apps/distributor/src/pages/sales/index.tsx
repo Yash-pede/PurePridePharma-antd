@@ -8,7 +8,9 @@ import {
   List,
   SaveButton,
   TextField,
+  getDefaultSortOrder,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
 import { getDefaultFilter, useExport, useGetIdentity, useGo } from "@refinedev/core";
 import {
@@ -32,6 +34,8 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     cancelButtonProps,
     editButtonProps,
     tableQueryResult,
+    filters,
+    sorter,
   } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     pagination: {
@@ -62,10 +66,10 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
   const { isLoading, triggerExport } = useExport({
     resource: "profiles",
     filters: [{
-          field: "userrole",
-          operator: "eq",
-          value: UserRoleTypes.SALES,
-        },],
+      field: "userrole",
+      operator: "eq",
+      value: UserRoleTypes.SALES,
+    },],
     sorters: [
       {
         field: "updated_at",
@@ -80,7 +84,7 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
       return {
         username: record.username,
         email: record.email || "-",
-        userrole:record.userrole,
+        userrole: record.userrole,
         phone: record.phone || "-",
         updated_at: dayjs(record.updated_at).format("DD/MM/YYYY"),
       }
@@ -90,13 +94,34 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     },
   })
 
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
+  const { selectProps: selectEmailProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "email",
+    optionValue: "email",
+    defaultValue: getDefaultFilter("profiles.email", filters, "in"),
+  });
+
+  const { selectProps: selectPhoneProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "phone",
+    optionValue: "phone",
+    defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
+  });
+
   return (
     <>
       <List
         headerButtons={
           <Flex gap={16}>
             <ExportButton loading={isLoading} onClick={triggerExport} />
-            <CreateButton/>
+            <CreateButton />
           </Flex>
         }
       >
@@ -124,11 +149,12 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
               )}
               filterIcon={<SearchOutlined />}
               filterDropdown={(props) => (
-                <FilterDropdown
-                  {...props}
-                  filters={tableQueryResult?.data?.filters}
-                >
-                  <Input placeholder="Search username" />
+                <FilterDropdown {...props} mapValue={(value) => value}>
+                  <Select
+                    style={{ minWidth: 200 }}
+                    mode="multiple"
+                    {...selectProps}
+                  />
                 </FilterDropdown>
               )}
               render={(value, record) => {
@@ -151,11 +177,12 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
               )}
               filterIcon={<SearchOutlined />}
               filterDropdown={(props) => (
-                <FilterDropdown
-                  {...props}
-                  filters={tableQueryResult?.data?.filters}
-                >
-                  <Input placeholder="Search email" />
+                <FilterDropdown {...props} mapValue={(value) => value}>
+                  <Select
+                    style={{ minWidth: 200 }}
+                    mode="multiple"
+                    {...selectEmailProps}
+                  />
                 </FilterDropdown>
               )}
               render={(value, record) => {
@@ -177,6 +204,30 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
                 "userrole",
                 tableQueryResult?.data?.filters
               )}
+              filterDropdown={(props) => (
+                <FilterDropdown
+                  {...props}
+                  filters={tableQueryResult?.data?.filters}
+                >
+                  <Select style={{ width: "10rem" }}
+                    placeholder="Select a role"
+                    options={[
+                      {
+                        label: UserRoleTypes.CUSTOMERS,
+                        value: UserRoleTypes.CUSTOMERS,
+                      },
+                      {
+                        label: UserRoleTypes.SALES,
+                        value: UserRoleTypes.SALES,
+                      },
+                      {
+                        label: UserRoleTypes.DISTRIBUTORS,
+                        value: UserRoleTypes.DISTRIBUTORS,
+                      },
+                    ]}
+                  />
+                </FilterDropdown>
+              )}
               render={(value, record) => {
                 return (
                   <Select
@@ -191,6 +242,15 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
             <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
               dataIndex={"phone"}
               title="phone"
+              filterDropdown={(props) => (
+                <FilterDropdown {...props} mapValue={(value) => value}>
+                  <Select
+                    style={{ minWidth: 200 }}
+                    mode="multiple"
+                    {...selectPhoneProps}
+                  />
+                </FilterDropdown>
+              )}
               render={(value, record) => {
                 if (isEditing(record.id)) {
                   return (
@@ -206,6 +266,8 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
             <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
               dataIndex={"updated_at"}
               title="Updated At"
+              sorter={{ multiple: 2 }}
+              defaultSortOrder={getDefaultSortOrder("id", sorter)}
               render={(value, record) => {
                 return <DateField value={value} format="DD/MM/YYYY" />;
               }}

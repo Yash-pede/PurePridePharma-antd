@@ -1,12 +1,14 @@
 import {
   EditButton,
   ExportButton,
+  FilterDropdown,
   List,
   SaveButton,
   TextField,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
-import { useExport, useGetIdentity, useList } from "@refinedev/core";
+import { getDefaultFilter, useExport, useGetIdentity, useList } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Select, Space, Table } from "antd";
@@ -22,6 +24,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
+    filters,
   } = useEditableTable<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>({
     resource: "CUSTOMERS",
     filters: {
@@ -101,6 +104,34 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     },
   })
 
+  const { selectProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "full_name",
+    optionValue: "full_name",
+    defaultValue: getDefaultFilter("CUSTOMERS.full_name", filters, "in"),
+  });
+
+  const { selectProps: selectEmailProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "email",
+    optionValue: "email",
+    defaultValue: getDefaultFilter("CUSTOMERS.email", filters, "in"),
+  });
+
+  const { selectProps: selectPhoneProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "phone",
+    optionValue: "phone",
+    defaultValue: getDefaultFilter("CUSTOMERS.phone", filters, "in"),
+  });
+
+  const { selectProps: selectPersonProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
   return (
     <>
       <div>
@@ -125,6 +156,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="full_name"
                 title="Full Name"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -140,6 +180,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="email"
                 title="Email"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectEmailProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -155,6 +204,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="phone"
                 title="Phone"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectPhoneProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -170,6 +228,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="sales_id"
                 title="Sales Person"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectPersonProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
