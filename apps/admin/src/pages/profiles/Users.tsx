@@ -79,6 +79,13 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     defaultValue: getDefaultFilter("profiles.email", filters, "in"),
   });
 
+  const { selectProps: selectUsernameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
   const { triggerExport, isLoading: exportLoading } = useExport({
     resource: "profiles",
     metaData: {
@@ -90,7 +97,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     },
     mapData: (record) => {
       return {
-        username: record.username||"-",
+        username: record.username || "-",
         email: record.email,
         role: record.userrole,
       };
@@ -130,11 +137,12 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
-              <FilterDropdown
-                {...props}
-                filters={tableQueryResult?.data?.filters}
-              >
-                <Input placeholder="Search username" />
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectUsernameProps}
+                />
               </FilterDropdown>
             )}
             render={(value, record) => {
@@ -282,9 +290,9 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                       type: "error",
                     }}
                   />
-                  <Button  style={{
-                    borderColor:"#F4C430",
-                    color:" #F4C430"
+                  <Button style={{
+                    borderColor: "#F4C430",
+                    color: " #F4C430"
                   }} type="dashed" size="small">
                     Ban
                   </Button>

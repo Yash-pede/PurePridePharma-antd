@@ -6,8 +6,9 @@ import {
   ExportButton,
   getDefaultSortOrder,
   FilterDropdown,
+  useSelect,
 } from "@refinedev/antd";
-import { HttpError, useList, useExport } from "@refinedev/core";
+import { HttpError, useList, useExport, getDefaultFilter } from "@refinedev/core";
 import {
   Database,
   GET_ALL_ORDERS_QUERY,
@@ -19,7 +20,7 @@ import React from "react";
 import dayjs from "dayjs";
 
 export const AllOrders = () => {
-  const { tableProps, sorter } = useTable<
+  const { tableProps, sorter, filters, } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -49,6 +50,21 @@ export const AllOrders = () => {
       },
     ],
   });
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
+  const { selectProps: selectFullnameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "full_name",
+    defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
+  });
+
   const { isLoading: exportLoading, triggerExport } = useExport({
     resource: "ORDERS",
     meta: {
@@ -74,7 +90,7 @@ export const AllOrders = () => {
       filename: "orders",
     },
   });
-  
+
   return (
     <List
       headerButtons={
@@ -91,6 +107,15 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="username"
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select
+                style={{ minWidth: 200 }}
+                mode="multiple"
+                {...selectProps}
+              />
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             return (
               profiles?.data.find(
@@ -102,6 +127,15 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="Full name"
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select
+                style={{ minWidth: 200 }}
+                mode="multiple"
+                {...selectFullnameProps}
+              />
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             return (
               profiles?.data.find(
@@ -194,7 +228,9 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
-          render={(_, record) => <DateField value={record.created_at} />}
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM//YYYY" />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"

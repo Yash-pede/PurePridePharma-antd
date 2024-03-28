@@ -7,6 +7,7 @@ import {
   SaveButton,
   Show,
   TextField,
+  getDefaultSortOrder,
   useEditableTable,
   useSelect,
 } from "@refinedev/antd";
@@ -39,6 +40,7 @@ export const AllInventory = () => {
     editButtonProps,
     tableQueryResult,
     filters,
+    sorter,
   } = useEditableTable({
     resource: "STOCKS",
     meta: {
@@ -202,6 +204,8 @@ export const AllInventory = () => {
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"avalable_quantity"}
             title="Avalable Quantity"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("id", sorter)}
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
@@ -216,6 +220,8 @@ export const AllInventory = () => {
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"orderd_quantity"}
             title="Ordered Quantity"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("id", sorter)}
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
@@ -230,6 +236,8 @@ export const AllInventory = () => {
           <Table.Column
             dataIndex={"created_at"}
             title="Created At"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("id", sorter)}
             render={(value) => {
               return (
                 <Space>
@@ -242,11 +250,13 @@ export const AllInventory = () => {
           <Table.Column
             dataIndex={"expiry_date"}
             title="Expiry At"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("id", sorter)}
             render={(value) => {
               return (
                 <Space>
                   {/* <DatePicker defaultValue={dayjs(value)} /> */}
-                  <DateField value={value} format="DD/MM/YYYY"/>
+                  <DateField value={value} format="DD/MM/YYYY" />
                 </Space>
               );
             }}
