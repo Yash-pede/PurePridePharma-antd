@@ -1,14 +1,16 @@
 import { SearchOutlined } from "@ant-design/icons";
 import {
+  CreateButton,
   DateField,
   EditButton,
+  ExportButton,
   FilterDropdown,
   List,
   SaveButton,
   TextField,
   useEditableTable,
 } from "@refinedev/antd";
-import { getDefaultFilter, useGetIdentity, useGo } from "@refinedev/core";
+import { getDefaultFilter, useExport, useGetIdentity, useGo } from "@refinedev/core";
 import {
   Database,
   GET_ALL_PROFILES_QUERY,
@@ -16,7 +18,8 @@ import {
   Profiles,
 } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Form, Input, InputNumber, Select, Space, Table } from "antd";
+import { Button, Flex, Form, Input, InputNumber, Select, Space, Table } from "antd";
+import dayjs from "dayjs";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
   const go = useGo();
@@ -55,12 +58,48 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
       ],
     },
   });
+
+  const { isLoading, triggerExport } = useExport({
+    resource: "profiles",
+    filters: [{
+          field: "userrole",
+          operator: "eq",
+          value: UserRoleTypes.SALES,
+        },],
+    sorters: [
+      {
+        field: "updated_at",
+        order: "asc",
+      },
+    ],
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        username: record.username,
+        email: record.email || "-",
+        userrole:record.userrole,
+        phone: record.phone || "-",
+        updated_at: dayjs(record.updated_at).format("DD/MM/YYYY"),
+      }
+    },
+    exportOptions: {
+      filename: "Sales Details",
+    },
+  })
+
   return (
     <>
       <List
-        createButtonProps={{
-          onClick: () => go({ to: { action: "create", resource: "sales" } }),
-        }}
+
+        headerButtons={
+          <Flex gap={16}>
+            <ExportButton loading={isLoading} onClick={triggerExport} />
+            <CreateButton/>
+          </Flex>
+        }
       >
         <Form {...formProps}>
           <Table

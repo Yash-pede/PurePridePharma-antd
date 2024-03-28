@@ -10,6 +10,7 @@ import {
   Show,
   TextField,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
 import { Button, Form, Input, Select, Space, Table } from "antd";
 import { getDefaultFilter, useExport } from "@refinedev/core";
@@ -27,6 +28,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     cancelButtonProps,
     editButtonProps,
     tableQueryResult,
+    filters,
   } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     pagination: {
@@ -68,6 +70,13 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
         },
       ],
     },
+  });
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "email",
+    optionValue: "email",
+    defaultValue: getDefaultFilter("profiles.email", filters, "in"),
   });
 
   const { triggerExport, isLoading: exportLoading } = useExport({
@@ -148,11 +157,12 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
-              <FilterDropdown
-                {...props}
-                filters={tableQueryResult?.data?.filters}
-              >
-                <Input placeholder="Search email" />
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectProps}
+                />
               </FilterDropdown>
             )}
             render={(value, record) => {
@@ -272,7 +282,10 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                       type: "error",
                     }}
                   />
-                  <Button type="primary" danger ghost>
+                  <Button  style={{
+                    borderColor:"#F4C430",
+                    color:" #F4C430"
+                  }} type="dashed" size="small">
                     Ban
                   </Button>
                 </Space>
