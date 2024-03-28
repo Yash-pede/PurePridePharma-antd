@@ -7,14 +7,12 @@ import {
   ThemedLayoutV2,
   ThemedTitleV2,
   RefineThemes,
-  ThemedSiderV2,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
 import {
-  BrowserRouter,
   Route,
   Routes,
   Outlet,
@@ -41,6 +39,7 @@ import {
   ShowOrders,
   authProvider,
   supabaseClient,
+  CustomSidebar,
 } from "@repo/ui";
 import { resources } from "./config/resources";
 import { CreateUsers, ForgotPassord, Home, Users } from "./pages";
@@ -65,7 +64,7 @@ function App() {
         <ColorModeContextProvider>
           <AntdApp>
             <DevtoolsProvider>
-              <ConfigProvider>
+              <ConfigProvider theme={RefineThemes.Magenta}>
                 <Refine
                   dataProvider={dataProvider(supabaseClient)}
                   liveProvider={liveProvider(supabaseClient)}
@@ -74,6 +73,7 @@ function App() {
                   notificationProvider={useNotificationProvider}
                   resources={resources}
                   options={{
+                    liveMode: "auto",
                     syncWithLocation: true,
                     warnWhenUnsavedChanges: true,
                     useNewQueryKeys: true,
@@ -101,7 +101,7 @@ function App() {
                             <ThemedLayoutV2
                               Header={() => <Header appName="Admin" />}
                               Sider={() => (
-                                <ThemedSiderV2
+                                <CustomSidebar
                                   Title={() => (
                                     <ThemedTitleV2
                                       collapsed={false}

@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout as AntdLayout, Space, theme, Button, Grid } from "antd";
+import React, { useContext } from "react";
+import { Layout as AntdLayout, Space, theme, Button, Grid, Switch } from "antd";
 import {
   pickNotDeprecated,
   useActiveAuthProvider,
@@ -8,6 +8,7 @@ import {
 import { useThemedLayoutContext } from "@refinedev/antd";
 import { BarsOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
+import { ColorModeContext } from "@repo/ui";
 
 const { useToken } = theme;
 
@@ -17,6 +18,15 @@ interface HeaderProps {
   appName?: string;
 }
 export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
+  const { mode, setMode } = useContext(ColorModeContext);
+  const changeTheme = () => {
+    if (mode === "light") {
+      setMode("dark");
+    } else {
+      setMode("light");
+    }
+  };
+
   const { openCart } = useShoppingCart();
   const breakpoint = Grid.useBreakpoint();
   const { token } = useToken();
@@ -62,17 +72,26 @@ export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
         )}
       </Space>
       {shouldRenderHeader && (
-        <Button
-          size="large"
-          type="dashed"
-          shape="round"
-          onClick={() => {
-            openCart();
-          }}
-        >
-          <ShoppingCartOutlined />
-          {!isMobile && "Cart"}
-        </Button>
+        <Space>
+          <Switch
+            checkedChildren="🌛"
+            unCheckedChildren="🔆"
+            title="Theme"
+            defaultValue={mode === "dark"}
+            onChange={changeTheme}
+          />
+          <Button
+            size="large"
+            type="dashed"
+            shape="default"
+            onClick={() => {
+              openCart();
+            }}
+          >
+            <ShoppingCartOutlined />
+            {!isMobile && "Cart"}
+          </Button>
+        </Space>
       )}
     </AntdLayout.Header>
   );

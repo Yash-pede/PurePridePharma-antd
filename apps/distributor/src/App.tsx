@@ -8,6 +8,7 @@ import {
   ThemedTitleV2,
   RefineThemes,
   ThemedSiderV2,
+  ThemedHeaderV2,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
@@ -21,12 +22,8 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
 import {
-  AllInventory,
-  AllOrders,
-  AllProducts,
   CheckRole,
   ColorModeContextProvider,
-  CreateStock,
   Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
@@ -34,9 +31,8 @@ import {
   authProvider,
   supabaseClient,
 } from "@repo/ui";
-import {} from "@repo/ui";
 import { resources } from "./config/resources";
-import { CreateUsers, ForgotPassord, Home, Users } from "./pages";
+import { ForgotPassord, Home } from "./pages";
 import { Profile } from "./components/profile/Profile";
 import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
@@ -72,7 +68,7 @@ function App() {
         <ColorModeContextProvider>
           <AntdApp>
             <DevtoolsProvider>
-              <ConfigProvider>
+              <ConfigProvider theme={RefineThemes.Purple}>
                 <Refine
                   dataProvider={dataProvider(supabaseClient)}
                   liveProvider={liveProvider(supabaseClient)}
@@ -81,6 +77,7 @@ function App() {
                   notificationProvider={useNotificationProvider}
                   resources={resources}
                   options={{
+                    liveMode: "auto",
                     syncWithLocation: true,
                     warnWhenUnsavedChanges: true,
                     useNewQueryKeys: true,
@@ -115,7 +112,10 @@ function App() {
                               userType={UserRoleTypes.DISTRIBUTORS}
                             >
                               <ThemedLayoutV2
-                                Header={() => <Header appName="Distributor" />}
+                                Header={() => <>
+                                {/* <Header appName="Distributor" /> */}
+                                <ThemedHeaderV2/>
+                                </>}
                                 Sider={() => (
                                   <ThemedSiderV2
                                     Title={() => (

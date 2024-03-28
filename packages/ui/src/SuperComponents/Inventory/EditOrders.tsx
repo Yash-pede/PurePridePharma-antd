@@ -80,7 +80,7 @@ export const EditOrders = () => {
     return null;
   };
 
-  console.log(order.data?.data[0]);
+  // console.log(order.data?.data[0]);
 
   const { data: profile, isLoading } = useOne<
     Database["public"]["Tables"]["profiles"]["Row"],

@@ -1,34 +1,27 @@
 import React, { useContext } from "react";
 import {
   Layout as AntdLayout,
-  Typography,
   Space,
   theme,
-  Button,
-  Grid,
   Switch,
+  Grid,
+  Button,
+  Flex,
 } from "antd";
 import {
   pickNotDeprecated,
   useActiveAuthProvider,
   useGetIdentity,
 } from "@refinedev/core";
-import { useThemedLayoutContext } from "@refinedev/antd";
-import { BarsOutlined } from "@ant-design/icons";
 import { ColorModeContext } from "@repo/ui";
-
-const { useToken } = theme;
-
+import { BarsOutlined } from "@ant-design/icons";
+import { useThemedLayoutContext } from "@refinedev/antd";
 interface HeaderProps {
   isSticky?: boolean | undefined;
   sticky?: boolean | undefined;
   appName?: string;
 }
-export const Header: React.FC<HeaderProps> = ({
-  isSticky,
-  sticky,
-  appName,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
   const { mode, setMode } = useContext(ColorModeContext);
   const changeTheme = () => {
     if (mode === "light") {
@@ -37,16 +30,15 @@ export const Header: React.FC<HeaderProps> = ({
       setMode("light");
     }
   };
-
-  const breakpoint = Grid.useBreakpoint();
-  const { token } = useToken();
   const { setMobileSiderOpen } = useThemedLayoutContext();
+  const breakpoint = Grid.useBreakpoint();
+  const { token } = theme.useToken();
 
   const authProvider = useActiveAuthProvider();
   const { data: user } = useGetIdentity({
     v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
   });
-  const { Title } = Typography;
+
   const shouldRenderHeader = user && (user.name || user.avatar);
 
   if (!shouldRenderHeader) {
@@ -56,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     padding: "0px 24px",
     height: "64px",
@@ -72,8 +64,23 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      <Space>{isMobile && <Title level={3}>{appName}</Title>}</Space>
-      <Space align="center" size="large" >
+      {isMobile && (
+        <Flex align="center" justify="space-between" style={{ width: "100%" }}>
+          <Button
+            size="large"
+            onClick={() => setMobileSiderOpen(true)}
+            icon={<BarsOutlined />}
+          />
+          <Switch
+            checkedChildren="🌛"
+            unCheckedChildren="🔆"
+            title="Theme"
+            defaultValue={mode === "dark"}
+            onChange={changeTheme}
+          />
+        </Flex>
+      )}
+      {!isMobile && (
         <Switch
           checkedChildren="🌛"
           unCheckedChildren="🔆"
@@ -81,14 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
           defaultValue={mode === "dark"}
           onChange={changeTheme}
         />
-        {isMobile && (
-          <Button
-            size="large"
-            onClick={() => setMobileSiderOpen(true)}
-            icon={<BarsOutlined />}
-          />
-        )}
-      </Space>
+      )}
     </AntdLayout.Header>
   );
 };
