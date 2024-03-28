@@ -1,14 +1,18 @@
 import {
   EditButton,
+  ExportButton,
+  FilterDropdown,
   List,
   SaveButton,
   TextField,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
-import { useGetIdentity, useList } from "@refinedev/core";
+import { getDefaultFilter, useExport, useGetIdentity, useList } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Select, Space, Table } from "antd";
+import dayjs from "dayjs";
 
 export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
   const { data: User } = useGetIdentity<any>();
@@ -20,6 +24,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
+    filters,
   } = useEditableTable<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>({
     resource: "CUSTOMERS",
     filters: {
@@ -64,10 +69,75 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     ]
   });
 
+  const { isLoading, triggerExport } = useExport({
+    resource: "CUSTOMERS",
+    filters: [
+      {
+        field: "distributor_id",
+        operator: "eq",
+        value: User?.id,
+      }
+    ],
+    sorters: [
+      {
+        field: "id",
+        order: "asc",
+      }
+    ],
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        id: record.id,
+        full_name: record.full_name,
+        phone: record.phone || "-",
+        email: record.email || "-",
+        created_at: dayjs(record.created_at).format("DD/MM/YYYY"),
+        distributor_id: record.distributor_id,
+        sales_id: record.sales_id,
+      }
+    },
+    exportOptions: {
+      filename: "Customer Details",
+    },
+  })
+
+  const { selectProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "full_name",
+    optionValue: "full_name",
+    defaultValue: getDefaultFilter("CUSTOMERS.full_name", filters, "in"),
+  });
+
+  const { selectProps: selectEmailProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "email",
+    optionValue: "email",
+    defaultValue: getDefaultFilter("CUSTOMERS.email", filters, "in"),
+  });
+
+  const { selectProps: selectPhoneProps } = useSelect({
+    resource: "CUSTOMERS",
+    optionLabel: "phone",
+    optionValue: "phone",
+    defaultValue: getDefaultFilter("CUSTOMERS.phone", filters, "in"),
+  });
+
+  const { selectProps: selectPersonProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
   return (
     <>
       <div>
-        <List>
+        <List headerButtons={
+          <ExportButton onClick={triggerExport} loading={isLoading} />
+        }>
           <Form {...formProps}>
             <Table
               {...tableProps}
@@ -86,6 +156,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="full_name"
                 title="Full Name"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -101,6 +180,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="email"
                 title="Email"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectEmailProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -116,6 +204,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="phone"
                 title="Phone"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectPhoneProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -131,6 +228,15 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="sales_id"
                 title="Sales Person"
+                filterDropdown={(props) => (
+                  <FilterDropdown {...props} mapValue={(value) => value}>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      mode="multiple"
+                      {...selectPersonProps}
+                    />
+                  </FilterDropdown>
+                )}
                 render={(value, record) => {
                   if (isEditing(record.id)) {
                     return (
@@ -145,7 +251,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                       </Form.Item>
                     );
                   }
-                  return  <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
+                  return <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
                 }}
               />
 
