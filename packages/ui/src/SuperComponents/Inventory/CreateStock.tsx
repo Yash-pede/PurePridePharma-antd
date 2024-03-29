@@ -10,10 +10,11 @@ import {
   Skeleton,
 } from "antd";
 import { useLocation } from "react-router-dom";
-import { useBack, useOne } from "@refinedev/core";
+import { useBack, useGo, useOne } from "@refinedev/core";
 
 export const CreateStock = () => {
   const back = useBack();
+  const go = useGo();
   const { formProps, drawerProps, saveButtonProps } = useDrawerForm({
     defaultVisible: true,
     action: "create",
@@ -37,7 +38,11 @@ export const CreateStock = () => {
     <>
       <Drawer
         {...drawerProps}
-        onClose={() => back()}
+        onClose={() =>
+          go({
+            to: { action: "list", resource: "inventory" },
+          })
+        }
         footer={
           <Button {...saveButtonProps} type="primary" htmlType="submit">
             Create
@@ -121,7 +126,7 @@ export const CreateStock = () => {
               },
             ]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
           </Form.Item>
         </Form>
       </Drawer>
