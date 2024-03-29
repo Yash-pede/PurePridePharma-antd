@@ -1,31 +1,51 @@
-import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import { useGetIdentity } from "@refinedev/core";
+import React, { useContext } from "react";
 import {
-  Avatar,
   Layout as AntdLayout,
   Space,
-  Switch,
   theme,
-  Typography,
+  Switch,
+  Grid,
+  Button,
+  Flex,
 } from "antd";
-import React, { useContext } from "react";
+import {
+  pickNotDeprecated,
+  useActiveAuthProvider,
+  useGetIdentity,
+} from "@refinedev/core";
 import { ColorModeContext } from "../../contexts/color-mode";
-
-const { Text } = Typography;
-const { useToken } = theme;
-
-type IUser = {
-  id: number;
-  name: string;
-  avatar: string;
-};
-
-export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
-  sticky,
-}) => {
-  const { token } = useToken();
-  const { data: user } = useGetIdentity<IUser>();
+import { BarsOutlined } from "@ant-design/icons";
+import { useThemedLayoutContext } from "@refinedev/antd";
+interface HeaderProps {
+  isSticky?: boolean | undefined;
+  sticky?: boolean | undefined;
+  appName?: string;
+}
+export const Header: React.FC<
+  HeaderProps
+> = ({ isSticky, sticky, appName }) => {
   const { mode, setMode } = useContext(ColorModeContext);
+  const changeTheme = () => {
+    if (mode === "light") {
+      setMode("dark");
+    } else {
+      setMode("light");
+    }
+  };
+  const { setMobileSiderOpen } = useThemedLayoutContext();
+  const breakpoint = Grid.useBreakpoint();
+  const { token } = theme.useToken();
+
+  const authProvider = useActiveAuthProvider();
+  const { data: user } = useGetIdentity({
+    v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
+  });
+
+  const shouldRenderHeader = user && (user.name || user.avatar);
+
+  if (!shouldRenderHeader) {
+    return null;
+  }
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
@@ -36,26 +56,45 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     height: "64px",
   };
 
-  if (sticky) {
+  if (pickNotDeprecated(sticky, isSticky)) {
     headerStyles.position = "sticky";
     headerStyles.top = 0;
     headerStyles.zIndex = 1;
   }
+  const isMobile =
+    typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      <Space>
-        <Switch
-          checkedChildren="🌛"
-          unCheckedChildren="🔆"
-          onChange={() => setMode(mode === "light" ? "dark" : "light")}
-          defaultChecked={mode === "dark"}
-        />
-        <Space style={{ marginLeft: "8px" }} size="middle">
-          {user?.name && <Text strong>{user.name}</Text>}
-          {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
+      {isMobile && (
+        <Flex align="center" justify="space-between" style={{ width: "100%" }}>
+          <Button
+            size="large"
+            onClick={() => setMobileSiderOpen(true)}
+            icon={<BarsOutlined />}
+          />
+          <Space size="small">
+            <Switch
+              checkedChildren="🌛"
+              unCheckedChildren="🔆"
+              title="Theme"
+              defaultValue={mode === "dark"}
+              onChange={changeTheme}
+            />
+          </Space>
+        </Flex>
+      )}
+      {!isMobile && (
+        <Space size="middle">
+          <Switch
+            checkedChildren="🌛"
+            unCheckedChildren="🔆"
+            title="Theme"
+            defaultValue={mode === "dark"}
+            onChange={changeTheme}
+          />
         </Space>
-      </Space>
+      )}
     </AntdLayout.Header>
   );
 };

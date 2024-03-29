@@ -8,6 +8,7 @@ import {
   ThemedTitleV2,
   ThemedSiderV2,
   ThemedHeaderV2,
+  RefineThemes,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
@@ -23,6 +24,7 @@ import { UserRoleTypes } from "@repo/utility";
 import {
   CheckRole,
   ColorModeContextProvider,
+  CustomSidebar,
   Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
@@ -44,11 +46,11 @@ import { SalesHome } from "./pages/sales";
 import { SalesEdit } from "./pages/sales/Edit";
 import { SalesCreate } from "./pages/sales/create";
 import { SalesShow } from "./pages/sales/show";
-import { Header } from "./components/header/header";
 import { ShoppingCartProvider } from "./contexts/cart/ShoppingCartContext";
 import { InventoryD } from "./pages/inventory/inventory";
 import { AllOrders_D } from "./components/orders/AllOrders";
 import { ShowInventoryD } from "./pages/inventory/ShowInventory";
+import { Header } from "./components/header/header";
 
 function App() {
   const GetUserEmail = () => {
@@ -112,11 +114,10 @@ function App() {
                             >
                               <ThemedLayoutV2
                                 Header={() => <>
-                                {/* <Header appName="Distributor" /> */}
-                                <ThemedHeaderV2/>
+                                <Header appName="Distributor"/>
                                 </>}
                                 Sider={() => (
-                                  <ThemedSiderV2
+                                  <CustomSidebar
                                     Title={() => (
                                       <ThemedTitleV2
                                         collapsed={false}

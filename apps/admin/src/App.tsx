@@ -24,7 +24,7 @@ import routerBindings, {
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
-import { Header } from "./components/header";
+import { Header } from "@repo/ui/src/components/header";
 import {
   AllInventory,
   AllOrders,

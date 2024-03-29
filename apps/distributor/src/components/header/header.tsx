@@ -1,23 +1,32 @@
 import React, { useContext } from "react";
-import { Layout as AntdLayout, Space, theme, Button, Grid, Switch } from "antd";
+import {
+  Layout as AntdLayout,
+  Space,
+  theme,
+  Switch,
+  Grid,
+  Button,
+  Flex,
+} from "antd";
 import {
   pickNotDeprecated,
   useActiveAuthProvider,
   useGetIdentity,
 } from "@refinedev/core";
-import { useThemedLayoutContext } from "@refinedev/antd";
-import { BarsOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
 import { ColorModeContext } from "@repo/ui";
-
-const { useToken } = theme;
-
+import { BarsOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { useThemedLayoutContext } from "@refinedev/antd";
+import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
 interface HeaderProps {
   isSticky?: boolean | undefined;
   sticky?: boolean | undefined;
   appName?: string;
 }
-export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
+export const Header: React.FC<HeaderProps> = ({
+  isSticky,
+  sticky,
+  appName,
+}) => {
   const { mode, setMode } = useContext(ColorModeContext);
   const changeTheme = () => {
     if (mode === "light") {
@@ -26,16 +35,17 @@ export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
       setMode("light");
     }
   };
-
   const { openCart } = useShoppingCart();
-  const breakpoint = Grid.useBreakpoint();
-  const { token } = useToken();
+
   const { setMobileSiderOpen } = useThemedLayoutContext();
+  const breakpoint = Grid.useBreakpoint();
+  const { token } = theme.useToken();
 
   const authProvider = useActiveAuthProvider();
   const { data: user } = useGetIdentity({
     v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
   });
+
   const shouldRenderHeader = user && (user.name || user.avatar);
 
   if (!shouldRenderHeader) {
@@ -45,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     padding: "0px 24px",
     height: "64px",
@@ -61,18 +71,37 @@ export const Header: React.FC<HeaderProps> = ({ isSticky, sticky }) => {
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      {/* <Space>{isMobile && <Title level={3}>{appName}</Title>}</Space> */}
-      <Space align="center">
-        {isMobile && (
+      {isMobile && (
+        <Flex align="center" justify="space-between" style={{ width: "100%" }}>
           <Button
             size="large"
             onClick={() => setMobileSiderOpen(true)}
             icon={<BarsOutlined />}
           />
-        )}
-      </Space>
-      {shouldRenderHeader && (
-        <Space>
+          <Space size="small">
+            <Switch
+              checkedChildren="🌛"
+              unCheckedChildren="🔆"
+              title="Theme"
+              defaultValue={mode === "dark"}
+              onChange={changeTheme}
+            />
+            <Button
+              size="large"
+              type="dashed"
+              shape="default"
+              onClick={() => {
+                openCart();
+              }}
+            >
+              <ShoppingCartOutlined />
+              {!isMobile && "Cart"}
+            </Button>
+          </Space>
+        </Flex>
+      )}
+      {!isMobile && (
+        <Space size="middle">
           <Switch
             checkedChildren="🌛"
             unCheckedChildren="🔆"
