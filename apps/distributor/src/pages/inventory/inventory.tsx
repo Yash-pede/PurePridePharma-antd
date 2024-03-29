@@ -1,15 +1,32 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { DateField, FilterDropdown, List, Show, TextField, getDefaultSortOrder, useSelect, useTable } from "@refinedev/antd";
-import { getDefaultFilter, useGetIdentity, useGo, useList } from "@refinedev/core";
+import {
+  DateField,
+  FilterDropdown,
+  List,
+  Show,
+  TextField,
+  getDefaultSortOrder,
+  useSelect,
+  useTable,
+} from "@refinedev/antd";
+import {
+  getDefaultFilter,
+  useGetIdentity,
+  useGo,
+  useList,
+} from "@refinedev/core";
 import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
-import { Button, Skeleton, Table, Select } from "antd";
+import { Button, Skeleton, Table, Select, Input } from "antd";
 
 export const InventoryD = () => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
-  const { tableProps, tableQueryResult: inventory, sorter, filters, } = useTable<
-    Database["public"]["Tables"]["D_INVENTORY"]["Row"]
-  >({
+  const {
+    tableProps,
+    tableQueryResult: inventory,
+    sorter,
+    filters,
+  } = useTable<Database["public"]["Tables"]["D_INVENTORY"]["Row"]>({
     resource: "D_INVENTORY",
     meta: {
       gqlQuery: GET_ALL_D_INVENTORY_QUERY,
@@ -53,6 +70,12 @@ export const InventoryD = () => {
           title="ID"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} filters={inventory?.data?.filters}>
+              <Input placeholder="Enter ID" />
+            </FilterDropdown>
+          )}
+          filterIcon={<SearchOutlined />}
           render={(value) => <TextField value={value} />}
         />
         <Table.Column
@@ -91,7 +114,7 @@ export const InventoryD = () => {
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("updated_at", sorter)}
           render={(value) => {
-            return <DateField value={value} format="DD/MM/YYYY"/>;
+            return <DateField value={value} format="DD/MM/YYYY" />;
           }}
         />
         <Table.Column<Database["public"]["Tables"]["D_INVENTORY"]["Row"]>

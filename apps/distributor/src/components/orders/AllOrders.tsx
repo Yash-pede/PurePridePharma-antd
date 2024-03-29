@@ -1,14 +1,21 @@
-import { DateField, FilterDropdown, List, getDefaultSortOrder, useTable } from "@refinedev/antd";
+import { SearchOutlined } from "@ant-design/icons";
+import {
+  DateField,
+  FilterDropdown,
+  List,
+  getDefaultSortOrder,
+  useTable,
+} from "@refinedev/antd";
 import { HttpError, useGetIdentity, useGo, useUpdate } from "@refinedev/core";
 import { Database, GET_ALL_ORDERS_QUERY } from "@repo/graphql";
 import { OrderStatus } from "@repo/utility";
-import { Button, Modal, Select, Table } from "antd";
+import { Button, Input, Modal, Select, Table } from "antd";
 import React from "react";
 
 export const AllOrders_D = () => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
-  const { tableProps, sorter,tableQueryResult, } = useTable<
+  const { tableProps, sorter, tableQueryResult } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -62,6 +69,15 @@ export const AllOrders_D = () => {
           title="ID"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterDropdown={(props) => (
+            <FilterDropdown
+              {...props}
+              filters={tableQueryResult?.data?.filters}
+            >
+              <Input placeholder="Enter ID"  />
+            </FilterDropdown>
+          )}
+          filterIcon={<SearchOutlined/>}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex={"status"}
@@ -71,7 +87,8 @@ export const AllOrders_D = () => {
               {...props}
               filters={tableQueryResult?.data?.filters}
             >
-              <Select style={{ width: "10rem" }}
+              <Select
+                style={{ width: "10rem" }}
                 placeholder="Select a role"
                 options={[
                   {
@@ -142,7 +159,9 @@ export const AllOrders_D = () => {
           title="Created At"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
-          render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY" />}
+          render={(_, record) => (
+            <DateField value={record.created_at} format="DD/MM/YYYY" />
+          )}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"

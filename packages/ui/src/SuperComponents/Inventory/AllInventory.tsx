@@ -29,7 +29,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 
-export const AllInventory = () => {
+export const AllInventory = ({children}:{children?:React.ReactNode}) => {
   const go = useGo();
   const {
     tableProps,
@@ -118,6 +118,7 @@ export const AllInventory = () => {
   });
 
   return (
+    <>
     <Show
       headerButtons={
         <ExportButton onClick={triggerExport} loading={exportLoading} />
@@ -316,5 +317,7 @@ export const AllInventory = () => {
         </Table>
       </Form>
     </Show>
+    {children}
+    </>
   );
 };

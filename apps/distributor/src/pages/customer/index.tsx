@@ -9,7 +9,12 @@ import {
   useEditableTable,
   useSelect,
 } from "@refinedev/antd";
-import { getDefaultFilter, useExport, useGetIdentity, useList } from "@refinedev/core";
+import {
+  getDefaultFilter,
+  useExport,
+  useGetIdentity,
+  useList,
+} from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Form, Input, Select, Space, Table } from "antd";
@@ -66,8 +71,8 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
       {
         field: "id",
         order: "asc",
-      }
-    ]
+      },
+    ],
   });
 
   const { isLoading, triggerExport } = useExport({
@@ -77,13 +82,13 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
         field: "distributor_id",
         operator: "eq",
         value: User?.id,
-      }
+      },
     ],
     sorters: [
       {
         field: "id",
         order: "asc",
-      }
+      },
     ],
     download: true,
     onError(error) {
@@ -98,17 +103,24 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
         created_at: dayjs(record.created_at).format("DD/MM/YYYY"),
         distributor_id: record.distributor_id,
         sales_id: record.sales_id,
-      }
+      };
     },
     exportOptions: {
       filename: "Customer Details",
     },
-  })
+  });
 
   const { selectProps } = useSelect({
     resource: "CUSTOMERS",
     optionLabel: "full_name",
     optionValue: "full_name",
+    filters: [
+      {
+        field: "distributor_id",
+        operator: "eq",
+        value: User.id,
+      },
+    ],
     defaultValue: getDefaultFilter("CUSTOMERS.full_name", filters, "in"),
   });
 
@@ -116,6 +128,13 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "CUSTOMERS",
     optionLabel: "email",
     optionValue: "email",
+    filters: [
+      {
+        field: "distributor_id",
+        operator: "eq",
+        value: User?.id,
+      },
+    ],
     defaultValue: getDefaultFilter("CUSTOMERS.email", filters, "in"),
   });
 
@@ -123,6 +142,13 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "CUSTOMERS",
     optionLabel: "phone",
     optionValue: "phone",
+    filters: [
+      {
+        field: "distributor_id",
+        operator: "eq",
+        value: User?.id,
+      },
+    ],
     defaultValue: getDefaultFilter("CUSTOMERS.phone", filters, "in"),
   });
 
@@ -130,20 +156,29 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "username",
     optionValue: "username",
-    filters: [{
-      field: "userrole",
-      operator: "eq",
-      value: UserRoleTypes.SALES,
-    },],
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User.id,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
   return (
     <>
       <div>
-        <List headerButtons={
-          <ExportButton onClick={triggerExport} loading={isLoading} />
-        }>
+        <List
+          headerButtons={
+            <ExportButton onClick={triggerExport} loading={isLoading} />
+          }
+        >
           <Form {...formProps}>
             <Table
               {...tableProps}
@@ -261,7 +296,14 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                       </Form.Item>
                     );
                   }
-                  return <TextField value={SalesUserList?.data.find((user) => user.id === value)?.username} />
+                  return (
+                    <TextField
+                      value={
+                        SalesUserList?.data.find((user) => user.id === value)
+                          ?.username
+                      }
+                    />
+                  );
                 }}
               />
 

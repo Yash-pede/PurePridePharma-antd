@@ -1,4 +1,4 @@
-import { useDrawerForm } from "@refinedev/antd";
+import { ErrorComponent, useDrawerForm } from "@refinedev/antd";
 import { INSERT_INTO_STOCKS_MUTATION } from "@repo/graphql";
 import {
   Button,
@@ -10,10 +10,10 @@ import {
   Skeleton,
 } from "antd";
 import { useLocation } from "react-router-dom";
-import { useBack, useGo, useOne } from "@refinedev/core";
+import { useGo, useOne } from "@refinedev/core";
+import { AllInventory } from "./AllInventory";
 
 export const CreateStock = () => {
-  const back = useBack();
   const go = useGo();
   const { formProps, drawerProps, saveButtonProps } = useDrawerForm({
     defaultVisible: true,
@@ -24,18 +24,27 @@ export const CreateStock = () => {
       mutationMode: "pessimistic",
       gqlQuery: INSERT_INTO_STOCKS_MUTATION,
     },
+    onMutationSuccess: () => {
+      go({
+        to: { action: "list", resource: "inventory" },
+      })
+    }
   });
-  const productIdFromUrl = useLocation().search.split("=")[1];
+  // const productIdFromUrl = useLocation().search.split("=")[1];
+  const queryParams = useLocation().search;
+  const productIdFromUrl = queryParams.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+
+  if (!productIdFromUrl) return <ErrorComponent />
 
   const { data: productById, isLoading: isLoadingProductById } = useOne({
     resource: "PRODUCTS",
-    id: productIdFromUrl,
+    id: productIdFromUrl[0],
     queryOptions: {
       enabled: !!productIdFromUrl,
     },
   });
   return (
-    <>
+    <AllInventory>
       <Drawer
         {...drawerProps}
         onClose={() =>
@@ -130,6 +139,6 @@ export const CreateStock = () => {
           </Form.Item>
         </Form>
       </Drawer>
-    </>
+    </AllInventory>
   );
 };

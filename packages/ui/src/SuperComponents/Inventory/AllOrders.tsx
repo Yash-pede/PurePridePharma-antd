@@ -15,7 +15,7 @@ import {
   GET_ALL_PROFILES_QUERY,
 } from "@repo/graphql";
 import { OrderStatus, UserRoleTypes } from "@repo/utility";
-import { Form, Select, Space, Table, Button } from "antd";
+import { Form, Select, Space, Table, Button, Input } from "antd";
 import React from "react";
 import dayjs from "dayjs";
 import { SearchOutlined } from "@ant-design/icons";
@@ -55,7 +55,7 @@ export const AllOrders = () => {
   const { selectProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
-    optionValue: "username",
+    optionValue: "id",
     filters: [
       {
         field: "userrole",
@@ -69,7 +69,7 @@ export const AllOrders = () => {
   const { selectProps: selectFullnameProps } = useSelect({
     resource: "profiles",
     optionLabel: "full_name",
-    optionValue: "full_name",
+    optionValue: "id",
     filters: [
       {
         field: "userrole",
@@ -118,6 +118,12 @@ export const AllOrders = () => {
           title="ID"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input placeholder="Enter ID"/>
+            </FilterDropdown>
+          )}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"

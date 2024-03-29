@@ -24,6 +24,7 @@ import { Button, Flex, Form, Input, InputNumber, Select, Space, Table } from "an
 import dayjs from "dayjs";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
+  const { data: User } = useGetIdentity<any>();
   const go = useGo();
   const {
     tableProps,
@@ -47,10 +48,11 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     filters: {
       permanent: [
         {
-          field: "userrole",
+          field: "boss_id",
           operator: "eq",
-          value: UserRoleTypes.SALES,
+          value: User?.id,
         },
+        
       ],
     },
     sorters: {
@@ -99,10 +101,15 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     optionLabel: "username",
     optionValue: "username",
     filters: [{
+      field: "boss_id",
+      operator: "eq",
+      value: User.id,
+    },
+    {
       field: "userrole",
       operator: "eq",
       value: UserRoleTypes.SALES,
-    },],
+    }],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
@@ -111,10 +118,15 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     optionLabel: "email",
     optionValue: "email",
     filters: [{
+      field: "boss_id",
+      operator: "eq",
+      value: User.id,
+    },
+    {
       field: "userrole",
       operator: "eq",
       value: UserRoleTypes.SALES,
-    },],
+    }],
     defaultValue: getDefaultFilter("profiles.email", filters, "in"),
   });
 
@@ -123,10 +135,15 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     optionLabel: "phone",
     optionValue: "phone",
     filters: [{
+      field: "boss_id",
+      operator: "eq",
+      value: User.id,
+    },
+    {
       field: "userrole",
       operator: "eq",
       value: UserRoleTypes.SALES,
-    },],
+    }],
     defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
   });
 
