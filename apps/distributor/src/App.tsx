@@ -6,14 +6,13 @@ import {
   useNotificationProvider,
   ThemedLayoutV2,
   ThemedTitleV2,
-  RefineThemes,
   ThemedSiderV2,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Outlet, HashRouter } from "react-router-dom";
 import routerBindings, {
   CatchAllNavigate,
   UnsavedChangesNotifier,
@@ -21,12 +20,8 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
 import {
-  AllInventory,
-  AllOrders,
-  AllProducts,
   CheckRole,
   ColorModeContextProvider,
-  CreateStock,
   Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
@@ -36,7 +31,7 @@ import {
 } from "@repo/ui";
 import {} from "@repo/ui";
 import { resources } from "./config/resources";
-import { CreateUsers, ForgotPassord, Home, Users } from "./pages";
+import { ForgotPassord, Home } from "./pages";
 import { Profile } from "./components/profile/Profile";
 import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
@@ -67,7 +62,7 @@ function App() {
     }
   };
   return (
-    <BrowserRouter>
+    <HashRouter>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
@@ -187,7 +182,7 @@ function App() {
           </AntdApp>
         </ColorModeContextProvider>
       </RefineKbarProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
