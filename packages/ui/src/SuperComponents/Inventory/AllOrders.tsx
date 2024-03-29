@@ -1,26 +1,27 @@
 import {
   DateField,
-  DeleteButton,
   EditButton,
   List,
   useTable,
   ExportButton,
   getDefaultSortOrder,
   FilterDropdown,
+  useSelect,
 } from "@refinedev/antd";
-import { HttpError, useList, useExport } from "@refinedev/core";
+import { HttpError, useList, useExport, getDefaultFilter } from "@refinedev/core";
 import {
   Database,
   GET_ALL_ORDERS_QUERY,
   GET_ALL_PROFILES_QUERY,
 } from "@repo/graphql";
 import { OrderStatus, UserRoleTypes } from "@repo/utility";
-import { Form, Select, Space, Table, Button } from "antd";
+import { Form, Select, Space, Table, Button, Input } from "antd";
 import React from "react";
 import dayjs from "dayjs";
+import { SearchOutlined } from "@ant-design/icons";
 
 export const AllOrders = () => {
-  const { tableProps, sorter } = useTable<
+  const { tableProps, sorter, filters, } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -50,6 +51,35 @@ export const AllOrders = () => {
       },
     ],
   });
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.DISTRIBUTORS,
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
+  const { selectProps: selectFullnameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "id",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.DISTRIBUTORS,
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
+  });
+
   const { isLoading: exportLoading, triggerExport } = useExport({
     resource: "ORDERS",
     meta: {
@@ -75,6 +105,7 @@ export const AllOrders = () => {
       filename: "orders",
     },
   });
+
   return (
     <List
       headerButtons={
@@ -87,10 +118,26 @@ export const AllOrders = () => {
           title="ID"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input placeholder="Enter ID"/>
+            </FilterDropdown>
+          )}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="username"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select
+                style={{ minWidth: 200 }}
+                mode="multiple"
+                {...selectProps}
+              />
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             return (
               profiles?.data.find(
@@ -102,6 +149,16 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="Full name"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select
+                style={{ minWidth: 200 }}
+                mode="multiple"
+                {...selectFullnameProps}
+              />
+            </FilterDropdown>
+          )}
           render={(_, record) => {
             return (
               profiles?.data.find(
@@ -194,9 +251,9 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="created_at"
           title="Created At"
-          sorter={{ multiple: 1 }}
+          sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
-          render={(_, record) => <DateField value={record.created_at} />}
+          render={(_, record) => <DateField value={record.created_at} format="DD/MM//YYYY" />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"
@@ -204,13 +261,6 @@ export const AllOrders = () => {
           render={(_, record) => (
             <Space>
               <EditButton recordItemId={record.id} size="small" title="Edit" />
-              <DeleteButton
-                recordItemId={record.id}
-                hideText
-                resource="ORDERS"
-                title="Delete"
-                size="small"
-              />
             </Space>
           )}
         />

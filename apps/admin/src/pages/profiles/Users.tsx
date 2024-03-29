@@ -1,16 +1,19 @@
-import { Database, PROFILES_QUERY } from "@repo/graphql";
+import { Database, GET_ALL_PROFILES_QUERY, PROFILES_QUERY } from "@repo/graphql";
 import {
   CreateButton,
+  DeleteButton,
   EditButton,
+  ExportButton,
   FilterDropdown,
   List,
   SaveButton,
   Show,
   TextField,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
 import { Button, Form, Input, Select, Space, Table } from "antd";
-import { getDefaultFilter } from "@refinedev/core";
+import { getDefaultFilter, useExport } from "@refinedev/core";
 import { SearchOutlined } from "@ant-design/icons";
 import React from "react";
 import { UserRoleTypes } from "@repo/utility";
@@ -25,6 +28,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     cancelButtonProps,
     editButtonProps,
     tableQueryResult,
+    filters,
   } = useEditableTable<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     pagination: {
@@ -67,8 +71,48 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
       ],
     },
   });
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "email",
+    optionValue: "email",
+    defaultValue: getDefaultFilter("profiles.email", filters, "in"),
+  });
+
+  const { selectProps: selectUsernameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
+  const { triggerExport, isLoading: exportLoading } = useExport({
+    resource: "profiles",
+    metaData: {
+      gqlQuery: GET_ALL_PROFILES_QUERY,
+    },
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        username: record.username || "-",
+        email: record.email,
+        role: record.userrole,
+      };
+    },
+    exportOptions: {
+      filename: "Profiles",
+    },
+  });
+
   return (
-    <List canCreate>
+    <List
+      headerButtons={
+        <ExportButton onClick={triggerExport} loading={exportLoading} />
+      }
+    >
       <Form {...formProps}>
         <Table
           {...tableProps}
@@ -93,11 +137,12 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
-              <FilterDropdown
-                {...props}
-                filters={tableQueryResult?.data?.filters}
-              >
-                <Input placeholder="Search username" />
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectUsernameProps}
+                />
               </FilterDropdown>
             )}
             render={(value, record) => {
@@ -120,11 +165,12 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
-              <FilterDropdown
-                {...props}
-                filters={tableQueryResult?.data?.filters}
-              >
-                <Input placeholder="Search email" />
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectProps}
+                />
               </FilterDropdown>
             )}
             render={(value, record) => {
@@ -146,7 +192,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
               "userrole",
               tableQueryResult?.data?.filters
             )}
-            filterIcon={<SearchOutlined />}
+            // filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
               <FilterDropdown
                 {...props}
@@ -231,6 +277,25 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                     size="small"
                   />
                   {/* <DeleteButton hideText size="small" /> */}
+                  <DeleteButton
+                    hideText
+                    size="small"
+                    recordItemId={record.id}
+                    resource="STOCKS"
+                    mutationMode="undoable"
+                    errorNotification={{
+                      message: "Failed to delete",
+                      description:
+                        "Please ensure their is no stock in the batch",
+                      type: "error",
+                    }}
+                  />
+                  <Button style={{
+                    borderColor: "#F4C430",
+                    color: " #F4C430"
+                  }} type="dashed" size="small">
+                    Ban
+                  </Button>
                 </Space>
               );
             }}

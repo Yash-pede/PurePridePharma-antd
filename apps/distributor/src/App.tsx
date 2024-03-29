@@ -6,7 +6,6 @@ import {
   useNotificationProvider,
   ThemedLayoutV2,
   ThemedTitleV2,
-  RefineThemes,
   ThemedSiderV2,
   ThemedHeaderV2,
 } from "@refinedev/antd";
@@ -14,7 +13,7 @@ import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Outlet, HashRouter } from "react-router-dom";
 import routerBindings, {
   CatchAllNavigate,
   UnsavedChangesNotifier,
@@ -63,7 +62,7 @@ function App() {
     }
   };
   return (
-    <BrowserRouter>
+    <HashRouter>
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
@@ -187,7 +186,7 @@ function App() {
           </AntdApp>
         </ColorModeContextProvider>
       </RefineKbarProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
