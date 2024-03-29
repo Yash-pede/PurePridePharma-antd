@@ -56,6 +56,13 @@ export const AllOrders = () => {
     resource: "profiles",
     optionLabel: "username",
     optionValue: "username",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.DISTRIBUTORS,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
@@ -63,6 +70,13 @@ export const AllOrders = () => {
     resource: "profiles",
     optionLabel: "full_name",
     optionValue: "full_name",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.DISTRIBUTORS,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
   });
 
