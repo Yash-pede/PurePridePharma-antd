@@ -98,6 +98,11 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "username",
     optionValue: "username",
+    filters: [{
+      field: "userrole",
+      operator: "eq",
+      value: UserRoleTypes.SALES,
+    },],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
@@ -105,6 +110,11 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "email",
     optionValue: "email",
+    filters: [{
+      field: "userrole",
+      operator: "eq",
+      value: UserRoleTypes.SALES,
+    },],
     defaultValue: getDefaultFilter("profiles.email", filters, "in"),
   });
 
@@ -112,6 +122,11 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "phone",
     optionValue: "phone",
+    filters: [{
+      field: "userrole",
+      operator: "eq",
+      value: UserRoleTypes.SALES,
+    },],
     defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
   });
 
@@ -198,50 +213,9 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
             />
 
             <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
-              dataIndex={"userrole"}
-              title="Role"
-              defaultFilteredValue={getDefaultFilter(
-                "userrole",
-                tableQueryResult?.data?.filters
-              )}
-              filterDropdown={(props) => (
-                <FilterDropdown
-                  {...props}
-                  filters={tableQueryResult?.data?.filters}
-                >
-                  <Select style={{ width: "10rem" }}
-                    placeholder="Select a role"
-                    options={[
-                      {
-                        label: UserRoleTypes.CUSTOMERS,
-                        value: UserRoleTypes.CUSTOMERS,
-                      },
-                      {
-                        label: UserRoleTypes.SALES,
-                        value: UserRoleTypes.SALES,
-                      },
-                      {
-                        label: UserRoleTypes.DISTRIBUTORS,
-                        value: UserRoleTypes.DISTRIBUTORS,
-                      },
-                    ]}
-                  />
-                </FilterDropdown>
-              )}
-              render={(value, record) => {
-                return (
-                  <Select
-                    style={{ width: "100%" }}
-                    value={value}
-                    dropdownStyle={{ display: "none" }}
-                  />
-                );
-              }}
-            />
-
-            <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
               dataIndex={"phone"}
               title="phone"
+              filterIcon={<SearchOutlined />}
               filterDropdown={(props) => (
                 <FilterDropdown {...props} mapValue={(value) => value}>
                   <Select
@@ -267,7 +241,7 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
               dataIndex={"updated_at"}
               title="Updated At"
               sorter={{ multiple: 2 }}
-              defaultSortOrder={getDefaultSortOrder("id", sorter)}
+              defaultSortOrder={getDefaultSortOrder("updated_at", sorter)}
               render={(value, record) => {
                 return <DateField value={value} format="DD/MM/YYYY" />;
               }}

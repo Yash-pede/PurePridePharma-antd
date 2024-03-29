@@ -1,3 +1,4 @@
+import { SearchOutlined } from "@ant-design/icons";
 import { DateField, FilterDropdown, List, Show, TextField, getDefaultSortOrder, useSelect, useTable } from "@refinedev/antd";
 import { getDefaultFilter, useGetIdentity, useGo, useList } from "@refinedev/core";
 import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
@@ -57,6 +58,7 @@ export const InventoryD = () => {
         <Table.Column
           dataIndex="product_id"
           title="Product"
+          filterIcon={<SearchOutlined />}
           filterDropdown={(props) => (
             <FilterDropdown {...props} mapValue={(value) => value}>
               <Select
@@ -87,7 +89,7 @@ export const InventoryD = () => {
           dataIndex={"updated_at"}
           title="Last Updated"
           sorter={{ multiple: 2 }}
-          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          defaultSortOrder={getDefaultSortOrder("updated_at", sorter)}
           render={(value) => {
             return <DateField value={value} format="DD/MM/YYYY"/>;
           }}

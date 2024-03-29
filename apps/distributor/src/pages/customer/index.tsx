@@ -1,3 +1,4 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
   EditButton,
   ExportButton,
@@ -129,6 +130,11 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "username",
     optionValue: "username",
+    filters: [{
+      field: "userrole",
+      operator: "eq",
+      value: UserRoleTypes.SALES,
+    },],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
@@ -156,6 +162,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="full_name"
                 title="Full Name"
+                filterIcon={<SearchOutlined />}
                 filterDropdown={(props) => (
                   <FilterDropdown {...props} mapValue={(value) => value}>
                     <Select
@@ -180,6 +187,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="email"
                 title="Email"
+                filterIcon={<SearchOutlined />}
                 filterDropdown={(props) => (
                   <FilterDropdown {...props} mapValue={(value) => value}>
                     <Select
@@ -204,6 +212,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="phone"
                 title="Phone"
+                filterIcon={<SearchOutlined />}
                 filterDropdown={(props) => (
                   <FilterDropdown {...props} mapValue={(value) => value}>
                     <Select
@@ -228,6 +237,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="sales_id"
                 title="Sales Person"
+                filterIcon={<SearchOutlined />}
                 filterDropdown={(props) => (
                   <FilterDropdown {...props} mapValue={(value) => value}>
                     <Select

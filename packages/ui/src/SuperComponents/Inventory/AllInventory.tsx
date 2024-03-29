@@ -1,3 +1,4 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
   DateField,
   DeleteButton,
@@ -140,6 +141,7 @@ export const AllInventory = () => {
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"id"}
             title="Batch No"
+            filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
               <FilterDropdown {...props} mapValue={(value) => value}>
                 <Select
@@ -154,6 +156,7 @@ export const AllInventory = () => {
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"product_id"}
             title="product"
+            filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
               <FilterDropdown {...props} mapValue={(value) => value}>
                 <Select

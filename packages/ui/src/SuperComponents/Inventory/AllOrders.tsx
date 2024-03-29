@@ -18,6 +18,7 @@ import { OrderStatus, UserRoleTypes } from "@repo/utility";
 import { Form, Select, Space, Table, Button } from "antd";
 import React from "react";
 import dayjs from "dayjs";
+import { SearchOutlined } from "@ant-design/icons";
 
 export const AllOrders = () => {
   const { tableProps, sorter, filters, } = useTable<
@@ -107,6 +108,7 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="username"
+          filterIcon={<SearchOutlined />}
           filterDropdown={(props) => (
             <FilterDropdown {...props} mapValue={(value) => value}>
               <Select
@@ -127,6 +129,7 @@ export const AllOrders = () => {
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="distributor_id"
           title="Full name"
+          filterIcon={<SearchOutlined />}
           filterDropdown={(props) => (
             <FilterDropdown {...props} mapValue={(value) => value}>
               <Select
@@ -229,7 +232,7 @@ export const AllOrders = () => {
           dataIndex="created_at"
           title="Created At"
           sorter={{ multiple: 2 }}
-          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
           render={(_, record) => <DateField value={record.created_at} format="DD/MM//YYYY" />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>

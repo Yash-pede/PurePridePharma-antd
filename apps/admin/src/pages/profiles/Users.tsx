@@ -192,7 +192,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
               "userrole",
               tableQueryResult?.data?.filters
             )}
-            filterIcon={<SearchOutlined />}
+            // filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
               <FilterDropdown
                 {...props}

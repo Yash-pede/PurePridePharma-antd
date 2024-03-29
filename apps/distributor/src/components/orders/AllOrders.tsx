@@ -141,7 +141,7 @@ export const AllOrders_D = () => {
           dataIndex="created_at"
           title="Created At"
           sorter={{ multiple: 2 }}
-          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
           render={(_, record) => <DateField value={record.created_at} format="DD/MM/YYYY" />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
