@@ -12,6 +12,7 @@ export type Database = {
       challan: {
         Row: {
           created_at: string
+          customer_id: number | null
           distributor_id: string
           id: number
           pending_amt: number
@@ -22,6 +23,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          customer_id?: number | null
           distributor_id: string
           id?: number
           pending_amt: number
@@ -32,6 +34,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          customer_id?: number | null
           distributor_id?: string
           id?: number
           pending_amt?: number
@@ -41,6 +44,13 @@ export type Database = {
           total_amt?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "public_challan_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "CUSTOMERS"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "public_challan_distributor_id_fkey"
             columns: ["distributor_id"]

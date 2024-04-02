@@ -114,6 +114,7 @@ const CreateChallan = () => {
         total_amt: totalAmount,
         received_amt: 0,
         pending_amt: totalAmount,
+        customer_id: customer,
       },
     });
     if (!isError) {
