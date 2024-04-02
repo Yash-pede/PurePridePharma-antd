@@ -1,5 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
 import {
+  CreateButton,
   EditButton,
   ExportButton,
   FilterDropdown,
@@ -176,7 +177,10 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
       <div>
         <List
           headerButtons={
-            <ExportButton onClick={triggerExport} loading={isLoading} />
+            <>
+              <ExportButton onClick={triggerExport} loading={isLoading} />
+              <CreateButton />
+            </>
           }
         >
           <Form {...formProps}>

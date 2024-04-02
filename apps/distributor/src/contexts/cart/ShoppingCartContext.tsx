@@ -10,8 +10,8 @@ type ShoppingCartContext = {
   openCart: () => void;
   closeCart: () => void;
   getItemsQuantity: (id: string) => number;
-  increaseCartQuantity: (id: string) => void;
-  decreaseCartQuantity: (id: string) => void;
+  increaseCartQuantity: (id: string, quantityToAdd: number) => void;
+  decreaseCartQuantity: (id: string, quantityToDecrease: number) => void;
   removeFromCart: (id: string) => void;
   cartQuantity: number;
   cartItems: CartItem[];
@@ -37,7 +37,7 @@ export function ShoppingCartProvider({
 
   const cartQuantity = cartItems.reduce(
     (quantity, item) => quantity + item.quantity,
-    0,
+    0
   );
 
   const openCart = () => setIsOpen(true);
@@ -47,14 +47,14 @@ export function ShoppingCartProvider({
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
-  function increaseCartQuantity(id: string) {
+  function increaseCartQuantity(id: string, quantityToAdd: number) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id) == null) {
-        return [...currItems, { id, quantity: 5 }];
+        return [...currItems, { id, quantity: quantityToAdd }];
       } else {
         return currItems.map((item) => {
           if (item.id === id) {
-            return { ...item, quantity: item.quantity + 5 };
+            return { ...item, quantity: item.quantity + quantityToAdd };
           } else {
             return item;
           }
@@ -63,14 +63,14 @@ export function ShoppingCartProvider({
     });
   }
 
-  function decreaseCartQuantity(id: string) {
+  function decreaseCartQuantity(id: string, quantityToDecrease: number) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
         return currItems.filter((item) => item.id !== id);
       } else {
         return currItems.map((item) => {
           if (item.id === id) {
-            return { ...item, quantity: item.quantity - 5 };
+            return { ...item, quantity: item.quantity - quantityToDecrease };
           } else {
             return item;
           }

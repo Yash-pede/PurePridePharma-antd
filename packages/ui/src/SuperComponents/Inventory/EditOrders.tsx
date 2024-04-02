@@ -136,7 +136,7 @@ export const EditOrders = () => {
               type: "confirm",
             });
           }}
-          style={{ width: "10%" }}
+          style={{ width: "10rem" }}
         >
           <Select.Option value={OrderStatus.PENDING}>Pending</Select.Option>
           <Select.Option value={OrderStatus.DEFECTED}>Defcted</Select.Option>
@@ -155,7 +155,10 @@ export const EditOrders = () => {
         gap="20px"
         style={{ marginTop: "20px" }}
       >
-        <Space direction="vertical" style={{ marginTop: "20px" }}>
+        <Space
+          direction="vertical"
+          style={{ marginTop: "20px", width: "100%" }}
+        >
           <Form
             {...formProps}
             onFinish={(values: any) => {
@@ -255,6 +258,26 @@ export const EditOrders = () => {
                       >
                         <InputNumber />
                       </Form.Item>
+                    );
+                  }
+                  return <NumberField value={value} />;
+                }}
+              />
+              <Table.Column
+                title="Scheme"
+                dataIndex={"quantity"}
+                render={(value, record: any) => {
+                  if (isEditing(record.key)) {
+                    return (
+                      <div>
+                        <Form.Item
+                          name="quantity"
+                          style={{ margin: 0 }}
+                          initialValue={record.quantity}
+                        >
+                          <InputNumber />
+                        </Form.Item>
+                      </div>
                     );
                   }
                   return <NumberField value={value} />;

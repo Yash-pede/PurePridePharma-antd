@@ -23,11 +23,6 @@ export const CreateStock = () => {
     meta: {
       mutationMode: "pessimistic",
       gqlQuery: INSERT_INTO_STOCKS_MUTATION,
-    },
-    onMutationSuccess: () => {
-      go({
-        to: { action: "list", resource: "inventory" },
-      })
     }
   });
   // const productIdFromUrl = useLocation().search.split("=")[1];
@@ -68,7 +63,7 @@ export const CreateStock = () => {
             name="product_id"
             hidden
             label="Product"
-            initialValue={productIdFromUrl}
+            initialValue={productIdFromUrl[0]}
           >
             <Input style={{ width: "100%" }} readOnly />
           </Form.Item>

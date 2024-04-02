@@ -21,3 +21,9 @@ export enum UserRoleTypes {
   CUSTOMERS = "CUSTOMERS",
   UNDEFINED = "UNDEFINED",
 }
+
+export type challanProductAddingType = {
+  product_id: string;
+  quantity: number;
+  discount: number;
+};

@@ -11,18 +11,15 @@ import {
 } from "antd";
 import { ShoppingCartItem } from "./ShoppingCartItem";
 import { useList, useCreate } from "@refinedev/core";
-import { GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
+import { Database, GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
 import { IconShoppingBagCheck } from "@tabler/icons-react";
 import { authProvider } from "@repo/ui";
 import { OrderStatus } from "@repo/utility";
 
 export const ShoppingCart = ({ isOpen }: { isOpen: boolean }) => {
   const { cartItems, closeCart, clearCart } = useShoppingCart();
-  const { data } = useList({
+  const { data } = useList<Database["public"]["Tables"]["PRODUCTS"]["Row"]>({
     resource: "PRODUCTS",
-    meta: {
-      gqlQuery: GET_ALL_pRODUCTS_QUERY,
-    },
   });
   const { mutate, error } = useCreate();
   const HandleCheckout = async () => {
@@ -37,15 +34,24 @@ export const ShoppingCart = ({ isOpen }: { isOpen: boolean }) => {
       mutate({
         resource: "ORDERS",
         values: {
-          order: cartItems.map((item, index) => ({
-            key: index + 1,
-            quantity: item.quantity + item.quantity / 5,
-            product_id: item.id,
-          })),
+          order: cartItems.map((item, index) => {
+            const baseQ = data?.data.find((d) => d.id === item.id)?.base_q;
+            const quantity =
+              baseQ !== null && baseQ !== undefined
+                ? item.quantity + item.quantity / baseQ
+                : item.quantity;
+
+            return {
+              key: index + 1,
+              quantity: quantity,
+              product_id: item.id,
+            };
+          }),
           status: OrderStatus.PENDING,
           distributor_id: userId.id,
         },
       });
+
       if (!error) {
         clearCart();
       }

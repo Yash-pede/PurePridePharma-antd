@@ -1,12 +1,9 @@
 import React from "react";
-import { Show } from "@refinedev/antd";
+import { DateField, Show } from "@refinedev/antd";
 import { HttpError, useOne } from "@refinedev/core";
 import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
-import { ProductCardPublic } from "@repo/ui";
-import { Button, Divider, Flex, Skeleton, Table } from "antd";
+import { Divider, Flex, Skeleton, Table, Typography } from "antd";
 import { AnyObject } from "antd/es/_util/type";
-import Paragraph from "antd/es/typography/Paragraph";
-import Title from "antd/lib/typography/Title";
 import { useLocation } from "react-router-dom";
 
 export const ShowInventoryD = () => {
@@ -37,54 +34,50 @@ export const ShowInventoryD = () => {
         align="center"
         style={{ padding: "16px", width: "100%" }}
       >
-        <Title level={3}>order Id: {inventory?.data?.id}</Title>
+        <Typography.Title level={3}>
+          order Id: {inventory?.data?.id}
+        </Typography.Title>
         <Flex gap="16px" justify="space-around" wrap="wrap" align="center">
-          <Paragraph>Total quantity: {inventory?.data?.quantity}</Paragraph>
-          <Paragraph>Product: {products?.data?.name}</Paragraph>
+          <Typography.Title level={4}>Total quantity: {inventory?.data?.quantity}</Typography.Title>
+          <Typography.Paragraph>Product: {products?.data?.name}</Typography.Paragraph>
         </Flex>
       </Flex>
       <Divider />
-      <Title level={4}>Product Details</Title>
-      <Flex wrap="wrap" justify="space-around" align="start">
-        {isLoading ? (
-          <Skeleton active style={{ width: "40%" }} />
-        ) : (
-          <Table
-            size="large"
-            style={{ width: "50%" }}
-            dataSource={
-              (inventory?.data?.batch_info as readonly AnyObject[]) || []
-            }
-            pagination={false}
-            bordered
-            showHeader
-            columns={[
-              {
-                title: "Batch ID",
-                dataIndex: "batch_id",
-                key: "batch_id",
-              },
-              {
-                title: "Quantity",
-                dataIndex: "quantity",
-                key: "quantity",
-              },
-            ]}
-          />
-        )}
+      <Typography.Title level={4}>Product Details</Typography.Title>
 
-        {isLoadingProducts ? (
-          <Skeleton.Image active />
-        ) : (
-          <ProductCardPublic
-            isLoading={isLoadingProducts}
-            product={products?.data as any}
-            RenderButton={() => (
-              <Button style={{ width: "100%" }}>View Product</Button>
-            )}
-          />
-        )}
-      </Flex>
+      {isLoading ? (
+        <Skeleton active style={{ width: "40%" }} />
+      ) : (
+        <Table
+          size="large"
+          dataSource={
+            (inventory?.data?.batch_info as readonly AnyObject[]) || []
+          }
+          pagination={false}
+          bordered
+          showHeader
+          columns={[
+            {
+              title: "Batch ID",
+              dataIndex: "batch_id",
+              key: "batch_id",
+            },
+            {
+              title: "Quantity",
+              dataIndex: "quantity",
+              key: "quantity",
+            },
+            {
+              title: "Updated at",
+              dataIndex: "updated_at",
+              key: "updated_at",
+              render: (value) => (
+                <DateField value={value} format="DD/MM/YYYY" />
+              ),
+            },
+          ]}
+        />
+      )}
     </Show>
   );
 };

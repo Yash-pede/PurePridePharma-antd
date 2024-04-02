@@ -12,7 +12,10 @@ export const ProductPage = () => {
   const { pathname } = useLocation();
   const id = pathname.split("/").pop();
   const go = useGo();
-  const { data: Product, isLoading } = useList<Database["public"]["Tables"]["PRODUCTS"]["Row"], HttpError>({
+  const { data: Product, isLoading } = useList<
+    Database["public"]["Tables"]["PRODUCTS"]["Row"],
+    HttpError
+  >({
     resource: "PRODUCTS",
     meta: {
       gqlQuery: GET_ALL_pRODUCTS_QUERY,
@@ -58,11 +61,17 @@ export const ProductPage = () => {
                 <Descriptions.Item label="Selling price">
                   {Product?.data[0]?.selling_price}
                 </Descriptions.Item>
+                <Descriptions.Item label="Scheme">
+                  {Product?.data[0]?.base_q + " + " + Product?.data[0]?.free_q}
+                </Descriptions.Item>
                 <Descriptions.Item label="Price">
                   {Product?.data[0]?.mrp}
                 </Descriptions.Item>
                 <Descriptions.Item label="Updated at">
-                  <DateField value={Product?.data[0]?.created_at} format="DD/MM/YYYY"></DateField>
+                  <DateField
+                    value={Product?.data[0]?.created_at}
+                    format="DD/MM/YYYY"
+                  ></DateField>
                 </Descriptions.Item>
               </Descriptions>
               {admin && (
@@ -101,6 +110,7 @@ export const ProductPage = () => {
                   objectFit: "cover",
                   borderRadius: "3%",
                   overflow: "hidden",
+                  marginTop: "16px",
                 }}
               />
             </div>
@@ -122,7 +132,10 @@ export const ProductPage = () => {
                   {Product?.data[0]?.mrp}
                 </Descriptions.Item>
                 <Descriptions.Item label="Updated at">
-                  <DateField value={Product?.data[0]?.created_at} format="DD/MM/YYYY"></DateField>
+                  <DateField
+                    value={Product?.data[0]?.created_at}
+                    format="DD/MM/YYYY"
+                  ></DateField>
                 </Descriptions.Item>
               </Descriptions>
               {admin && (

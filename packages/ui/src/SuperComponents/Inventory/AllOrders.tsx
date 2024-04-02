@@ -8,20 +8,25 @@ import {
   FilterDropdown,
   useSelect,
 } from "@refinedev/antd";
-import { HttpError, useList, useExport, getDefaultFilter } from "@refinedev/core";
+import {
+  HttpError,
+  useList,
+  useExport,
+  getDefaultFilter,
+} from "@refinedev/core";
 import {
   Database,
   GET_ALL_ORDERS_QUERY,
   GET_ALL_PROFILES_QUERY,
 } from "@repo/graphql";
 import { OrderStatus, UserRoleTypes } from "@repo/utility";
-import { Form, Select, Space, Table, Button, Input } from "antd";
+import { Form, Select, Space, Table, Button, Input, Skeleton } from "antd";
 import React from "react";
 import dayjs from "dayjs";
 import { SearchOutlined } from "@ant-design/icons";
 
 export const AllOrders = () => {
-  const { tableProps, sorter, filters, } = useTable<
+  const { tableProps, sorter, filters, tableQueryResult } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
@@ -38,7 +43,7 @@ export const AllOrders = () => {
       ],
     },
   });
-  const { data: profiles } = useList({
+  const { data: profiles, isLoading: isLoadingProfiles } = useList({
     resource: "profiles",
     meta: {
       gqlQuery: GET_ALL_PROFILES_QUERY,
@@ -64,20 +69,6 @@ export const AllOrders = () => {
       },
     ],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
-  });
-
-  const { selectProps: selectFullnameProps } = useSelect({
-    resource: "profiles",
-    optionLabel: "full_name",
-    optionValue: "id",
-    filters: [
-      {
-        field: "userrole",
-        operator: "eq",
-        value: UserRoleTypes.DISTRIBUTORS,
-      },
-    ],
-    defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
   });
 
   const { isLoading: exportLoading, triggerExport } = useExport({
@@ -121,7 +112,7 @@ export const AllOrders = () => {
           filterIcon={<SearchOutlined />}
           filterDropdown={(props) => (
             <FilterDropdown {...props} mapValue={(value) => value}>
-              <Input placeholder="Enter ID"/>
+              <Input placeholder="Enter ID" />
             </FilterDropdown>
           )}
         />
@@ -139,31 +130,11 @@ export const AllOrders = () => {
             </FilterDropdown>
           )}
           render={(_, record) => {
+            if (isLoadingProfiles) return <Skeleton.Input />;
             return (
               profiles?.data.find(
                 (profile) => profile.id === record.distributor_id
               )?.username || "Unknown - " + record.distributor_id
-            );
-          }}
-        />
-        <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
-          dataIndex="distributor_id"
-          title="Full name"
-          filterIcon={<SearchOutlined />}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props} mapValue={(value) => value}>
-              <Select
-                style={{ minWidth: 200 }}
-                mode="multiple"
-                {...selectFullnameProps}
-              />
-            </FilterDropdown>
-          )}
-          render={(_, record) => {
-            return (
-              profiles?.data.find(
-                (profile) => profile.id === record.distributor_id
-              )?.full_name || "Unknown - " + record.distributor_id
             );
           }}
         />
@@ -253,7 +224,9 @@ export const AllOrders = () => {
           title="Created At"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
-          render={(_, record) => <DateField value={record.created_at} format="DD/MM//YYYY" />}
+          render={(_, record) => (
+            <DateField value={record.created_at} format="DD/MM//YYYY" />
+          )}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           title="Action"

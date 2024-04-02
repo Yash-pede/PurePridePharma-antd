@@ -14,7 +14,13 @@ import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
-import { BrowserRouter, Route, Routes, Outlet, HashRouter } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Outlet,
+  HashRouter,
+} from "react-router-dom";
 import routerBindings, {
   CatchAllNavigate,
   UnsavedChangesNotifier,
@@ -22,6 +28,7 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
 import {
+  ChallanHome,
   CheckRole,
   ColorModeContextProvider,
   CustomSidebar,
@@ -51,6 +58,7 @@ import { InventoryD } from "./pages/inventory/inventory";
 import { AllOrders_D } from "./components/orders/AllOrders";
 import { ShowInventoryD } from "./pages/inventory/ShowInventory";
 import { Header } from "./components/header/header";
+import CreateChallan from "./components/challan/CreateChallan";
 
 function App() {
   const GetUserEmail = () => {
@@ -87,22 +95,13 @@ function App() {
                 >
                   <ShoppingCartProvider>
                     <Routes>
-                      <Route
-                        loader={() => <Loader />}
-                        path="/register"
-                        element={<Register />}
-                      />
-                      <Route
-                        loader={() => <Loader />}
-                        path="/login"
-                        element={<Login />}
-                      />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/login" element={<Login />} />
                       <Route
                         path="/forgot-password"
                         element={<ForgotPassord />}
                       />
                       <Route
-                        loader={() => <Loader />}
                         element={
                           <Authenticated
                             key={"authenticated-layout"}
@@ -113,9 +112,11 @@ function App() {
                               userType={UserRoleTypes.DISTRIBUTORS}
                             >
                               <ThemedLayoutV2
-                                Header={() => <>
-                                <Header appName="Distributor"/>
-                                </>}
+                                Header={() => (
+                                  <>
+                                    <Header appName="Distributor" />
+                                  </>
+                                )}
                                 Sider={() => (
                                   <CustomSidebar
                                     Title={() => (
@@ -139,41 +140,39 @@ function App() {
                           </Authenticated>
                         }
                       >
-                        <Route
-                          loader={() => <Loader />}
-                          index
-                          element={<Home />}
-                        />
-                        <Route loader={() => <Loader />} path="/products">
+                        <Route index element={<Home />} />
+                        <Route path="/products">
                           <Route index element={<AllAvalableProducts />} />
                           <Route path=":id" element={<ProductPage />} />
                         </Route>
-                        <Route loader={() => <Loader />} path="/orders">
+                        <Route path="/orders">
                           <Route index element={<AllOrders_D />} />
                           <Route path=":id" element={<ShowOrders />} />
                           {/* <Route path="edit/:id" element={<EditOrders />} /> */}
                         </Route>
-                        <Route loader={() => <Loader />} path="/customer">
+                        <Route path="/customer">
                           <Route index element={<CustomerHome />} />
                           <Route path="edit/:id" element={<CustomerEdit />} />
                           <Route path="create" element={<CustomerCreate />} />
                           <Route path=":id" element={<CustomerShow />} />
                         </Route>
-                        <Route loader={() => <Loader />} path="/sales">
+                        <Route path="/sales">
                           <Route index element={<SalesHome />} />
                           <Route path="edit/:id" element={<SalesEdit />} />
                           <Route path="create" element={<SalesCreate />} />
                           <Route path=":id" element={<SalesShow />} />
                         </Route>
-                        <Route loader={() => <Loader />} path="/inventory">
+                        <Route path="/inventory">
                           <Route index element={<InventoryD />} />
                           <Route path=":id" element={<ShowInventoryD />} />
                         </Route>
-                        <Route
-                          loader={() => <Loader />}
-                          path="/me"
-                          element={<Profile />}
-                        />
+                        <Route path="/challan">
+                          <Route index element={<ChallanHome />} />
+                          <Route path="create" element={<CreateChallan />} />
+                          <Route path=":id" element={<ShowInventoryD />} />
+                          <Route path="challan/:id" element={<ShowInventoryD />} />
+                        </Route>
+                        <Route path="/me" element={<Profile />} />
                       </Route>
                     </Routes>
                   </ShoppingCartProvider>

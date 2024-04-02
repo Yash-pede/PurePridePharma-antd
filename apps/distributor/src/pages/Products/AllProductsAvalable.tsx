@@ -1,22 +1,21 @@
 import { useList } from "@refinedev/core";
-import { GET_ALL_STOCKS_QUERY, GET_ALL_pRODUCTS_QUERY } from "@repo/graphql";
+import { Database, GET_ALL_STOCKS_QUERY } from "@repo/graphql";
 import { Button, Card, Flex, InputNumber } from "antd";
 import { IconShoppingCart } from "@tabler/icons-react";
 import { ProductCardPublic } from "@repo/ui";
 import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
 import { Show } from "@refinedev/antd";
 export const AllAvalableProducts = () => {
-  const { data: StockInventory, isLoading } = useList({
+  const { data: StockInventory, isLoading } = useList<
+    Database["public"]["Tables"]["STOCKS"]["Row"]
+  >({
     resource: "STOCKS",
     meta: {
       gqlQuery: GET_ALL_STOCKS_QUERY,
     },
   });
-  const { data } = useList({
+  const { data } = useList<Database["public"]["Tables"]["PRODUCTS"]["Row"]>({
     resource: "PRODUCTS",
-    meta: {
-      gqlQuery: GET_ALL_pRODUCTS_QUERY,
-    },
     filters: [
       {
         field: "id",
@@ -90,7 +89,7 @@ export const AllAvalableProducts = () => {
           alignItems: "center",
         }}
       >
-        {data?.data.map((product: any) => (
+        {data?.data.map((product) => (
           <ProductCardPublic
             product={product}
             isLoading={isLoading}
@@ -115,7 +114,7 @@ export const AllAvalableProducts = () => {
                     }}
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.preventDefault();
-                      increaseCartQuantity(product.id);
+                      increaseCartQuantity(product.id, product.base_q || 1);
                     }}
                   >
                     <IconShoppingCart /> Add to Cart
@@ -143,7 +142,9 @@ export const AllAvalableProducts = () => {
                       <Button
                         type="primary"
                         disabled={getItemsQuantity(product.id) <= 5}
-                        onClick={() => decreaseCartQuantity(product.id)}
+                        onClick={() =>
+                          decreaseCartQuantity(product.id, product.base_q || 1)
+                        }
                       >
                         -
                       </Button>
@@ -154,7 +155,9 @@ export const AllAvalableProducts = () => {
                       />
                       <Button
                         type="primary"
-                        onClick={() => increaseCartQuantity(product.id)}
+                        onClick={() =>
+                          increaseCartQuantity(product.id, product.base_q || 1)
+                        }
                       >
                         +
                       </Button>

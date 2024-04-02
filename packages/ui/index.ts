@@ -16,3 +16,4 @@ export * from "./src/SuperComponents/Products/ProductCard";
 export * from "./src/SuperComponents/loader/Loader";
 export { CustomSidebar } from "./src/SuperComponents/Layouts/Sidebar";
 export * from "./src/SuperComponents/providers/auditLogProvider";
+export { ChallanHome } from "./src/SuperComponents/challan/ChallanHome";

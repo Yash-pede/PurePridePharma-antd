@@ -12,19 +12,14 @@ import "@refinedev/antd/dist/reset.css";
 
 import { dataProvider, liveProvider } from "@refinedev/supabase";
 import { App as AntdApp, ConfigProvider } from "antd";
-import {
-  Route,
-  Routes,
-  Outlet,
-  HashRouter,
-} from "react-router-dom";
+import { Route, Routes, Outlet, HashRouter } from "react-router-dom";
 import routerBindings, {
   CatchAllNavigate,
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
-import { Header } from "@repo/ui/src/components/header";
+import { Header } from "@repo/ui";
 import {
   AllInventory,
   AllOrders,
@@ -33,7 +28,7 @@ import {
   ColorModeContextProvider,
   CreateStock,
   EditOrders,
-  Loader,
+  ChallanHome,
   ProductPage,
   SUPABASE_PROJECT_ID,
   ShowOrders,
@@ -74,6 +69,9 @@ function App() {
                   resources={resources}
                   options={{
                     liveMode: "auto",
+                    breadcrumb: true,
+                    disableTelemetry: true,
+                    mutationMode: "undoable",
                     syncWithLocation: true,
                     warnWhenUnsavedChanges: true,
                     useNewQueryKeys: true,
@@ -88,7 +86,6 @@ function App() {
                       element={<ForgotPassord />}
                     />
                     <Route
-                      loader={() => <Loader />}
                       element={
                         <Authenticated
                           key={"authenticated-layout"}
@@ -123,26 +120,27 @@ function App() {
                         </Authenticated>
                       }
                     >
-                      <Route
-                        loader={() => <Loader />}
-                        index
-                        element={<Home />}
-                      />
-                      <Route loader={() => <Loader />} path="/products">
+                      <Route index element={<Home />} />
+                      <Route path="/products">
                         <Route index element={<AllProducts />} />
                         <Route path=":id" element={<ProductPage />} />
-                        <Route path="create" element={<>U r not su admin</>} />
                       </Route>
-                      <Route loader={() => <Loader />} path="/orders">
+                      <Route path="/orders">
                         <Route index element={<AllOrders />} />
                         <Route path=":id" element={<ShowOrders />} />
                         <Route path="edit/:id" element={<EditOrders />} />
                       </Route>
-                      <Route loader={() => <Loader />} path="/inventory">
+                      <Route path="/inventory">
                         <Route index element={<AllInventory />} />
                         <Route path="create" element={<CreateStock />} />
                       </Route>
-                      <Route loader={() => <Loader />} path="/profiles">
+                      <Route path="/challan">
+                        <Route index element={<ChallanHome />} />
+                        {/* <Route path=":id" element={} /> */}
+                      </Route>
+                    </Route>
+                    <Route>
+                      <Route path="/profiles">
                         <Route index element={<Users />} />
                         <Route path="create" element={<CreateUsers />} />
                       </Route>

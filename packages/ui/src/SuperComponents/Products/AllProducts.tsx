@@ -18,25 +18,32 @@ import {
   message,
 } from "antd";
 import { IconShoppingCart } from "@tabler/icons-react";
-import { InboxOutlined, PlusCircleTwoTone } from "@ant-design/icons";
+import {
+  InboxOutlined,
+  PlusCircleOutlined,
+  PlusCircleTwoTone,
+} from "@ant-design/icons";
 import { Create, useDrawerForm } from "@refinedev/antd";
 import { supabaseClient } from "../../utility";
 import { ProductCardPublic } from "./ProductCard";
 
 export const AllProducts = () => {
-  const { data, isLoading } = useList<Database["public"]["Tables"]["PRODUCTS"], HttpError>({
+  const { data, isLoading } = useList<
+    Database["public"]["Tables"]["PRODUCTS"],
+    HttpError
+  >({
     resource: "PRODUCTS",
     meta: {
       gqlQuery: GET_ALL_pRODUCTS_QUERY,
     },
   });
   type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-  const { formProps, drawerProps, show, saveButtonProps } = useDrawerForm({
+  const { formProps, drawerProps, show, saveButtonProps } = useDrawerForm<
+    Database["public"]["Tables"]["PRODUCTS"]["Insert"],
+    HttpError
+  >({
     action: "create",
     resource: "PRODUCTS",
-    meta: {
-      gqlMutation: INSERT_INTO_PRODUCTS_MUTATION,
-    },
   });
   const { Dragger } = Upload;
   const go = useGo();
@@ -138,7 +145,7 @@ export const AllProducts = () => {
           }}
           onClick={() => show()}
         >
-          <PlusCircleTwoTone /> Add Products
+          <PlusCircleOutlined /> Add Products
         </Button>
         <Button
           type="primary"
@@ -243,6 +250,28 @@ export const AllProducts = () => {
               ]}
             >
               <Input.TextArea />
+            </Form.Item>
+            <Form.Item
+              label="Base Quantity"
+              name="base_q"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <InputNumber style={{ width: "100%" }}/>
+            </Form.Item>
+            <Form.Item 
+              label="Free Quantity"
+              name="free_q"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <InputNumber style={{ width: "100%" }}/>
             </Form.Item>
             <Form.Item
               label="Image"

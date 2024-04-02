@@ -1,0 +1,1 @@
+npx supabase gen types typescript --project-id "krtkfjphiovnpjawcxwo" --schema public > packages/graphql/database.types.ts

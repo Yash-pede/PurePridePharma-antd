@@ -1,5 +1,6 @@
 import { IResourceItem } from "@refinedev/core";
 import {
+  IconCurrencyRupeeNepalese,
   IconDashboard,
   IconDeviceHeartMonitor,
   IconPackage,
@@ -67,5 +68,15 @@ export const resources: IResourceItem[] = [
       icon: <IconDeviceHeartMonitor />,
     },
     show: "/inventory/:id",
+  },
+  {
+    name: "challan",
+    list: "/challan",
+    meta: {
+      label: "Challan",
+      icon: <IconCurrencyRupeeNepalese />,
+    },
+    show: "/challan/:id",
+    create: "/challan/create",
   },
 ];

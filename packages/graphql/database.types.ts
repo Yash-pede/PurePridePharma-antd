@@ -9,8 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      challan: {
+        Row: {
+          created_at: string
+          distributor_id: string
+          id: number
+          pending_amt: number
+          product_info: Json[]
+          received_amt: number
+          sales_id: string | null
+          total_amt: number
+        }
+        Insert: {
+          created_at?: string
+          distributor_id: string
+          id?: number
+          pending_amt: number
+          product_info: Json[]
+          received_amt: number
+          sales_id?: string | null
+          total_amt: number
+        }
+        Update: {
+          created_at?: string
+          distributor_id?: string
+          id?: number
+          pending_amt?: number
+          product_info?: Json[]
+          received_amt?: number
+          sales_id?: string | null
+          total_amt?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_challan_distributor_id_fkey"
+            columns: ["distributor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_challan_sales_id_fkey"
+            columns: ["sales_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       CUSTOMERS: {
         Row: {
+          address: string | null
           created_at: string
           distributor_id: string
           email: string | null
@@ -20,6 +69,7 @@ export type Database = {
           sales_id: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
           distributor_id: string
           email?: string | null
@@ -29,6 +79,7 @@ export type Database = {
           sales_id: string
         }
         Update: {
+          address?: string | null
           created_at?: string
           distributor_id?: string
           email?: string | null
@@ -99,6 +150,42 @@ export type Database = {
           },
         ]
       }
+      logs: {
+        Row: {
+          action: string
+          author: Json
+          created_at: string
+          data: Json
+          id: number
+          meta: Json | null
+          name: string | null
+          previousData: Json | null
+          resource: string
+        }
+        Insert: {
+          action: string
+          author: Json
+          created_at?: string
+          data: Json
+          id?: number
+          meta?: Json | null
+          name?: string | null
+          previousData?: Json | null
+          resource: string
+        }
+        Update: {
+          action?: string
+          author?: Json
+          created_at?: string
+          data?: Json
+          id?: number
+          meta?: Json | null
+          name?: string | null
+          previousData?: Json | null
+          resource?: string
+        }
+        Relationships: []
+      }
       ORDERS: {
         Row: {
           created_at: string
@@ -133,8 +220,10 @@ export type Database = {
       }
       PRODUCTS: {
         Row: {
+          base_q: number | null
           created_at: string
           description: string | null
+          free_q: number | null
           id: string
           imageURL: string
           mrp: number
@@ -142,8 +231,10 @@ export type Database = {
           selling_price: number
         }
         Insert: {
+          base_q?: number | null
           created_at?: string
           description?: string | null
+          free_q?: number | null
           id?: string
           imageURL: string
           mrp: number
@@ -151,8 +242,10 @@ export type Database = {
           selling_price: number
         }
         Update: {
+          base_q?: number | null
           created_at?: string
           description?: string | null
+          free_q?: number | null
           id?: string
           imageURL?: string
           mrp?: number
