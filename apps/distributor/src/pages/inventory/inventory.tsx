@@ -64,7 +64,7 @@ export const InventoryD = () => {
 
   return (
     <List title="Inventory" breadcrumb>
-      <Table {...tableProps}>
+      <Table {...tableProps} rowKey={"id"}>
         <Table.Column
           dataIndex={"id"}
           title="ID"

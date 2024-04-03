@@ -63,7 +63,7 @@ export const AllOrders_D = () => {
           }),
       }}
     >
-      <Table {...tableProps}>
+      <Table {...tableProps} rowKey={"id"}>
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex="id"
           title="ID"

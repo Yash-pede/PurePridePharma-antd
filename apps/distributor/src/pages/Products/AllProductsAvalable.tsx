@@ -29,7 +29,7 @@ export const AllAvalableProducts = () => {
       <div
         style={{
           display: "flex",
-          flexWrap: "wrap",
+          flexDirection: "column",
           gap: "16px",
         }}
       >

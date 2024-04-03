@@ -59,7 +59,6 @@ import { AllOrders_D } from "./components/orders/AllOrders";
 import { ShowInventoryD } from "./pages/inventory/ShowInventory";
 import { Header } from "./components/header/header";
 import CreateChallan from "./components/challan/CreateChallan";
-import ShowChallan from "./components/challan/ShowChallan";
 
 function App() {
   const GetUserEmail = () => {
@@ -170,7 +169,7 @@ function App() {
                         <Route path="/challan">
                           <Route index element={<ChallanHome />} />
                           <Route path="create" element={<CreateChallan />} />
-                          <Route path=":id" element={<ShowChallan />} />
+                          {/* <Route path=":id" element={<ShowChallan />} /> */}
                           <Route path="challan/:id" element={<ShowInventoryD />} />
                         </Route>
                         <Route path="/me" element={<Profile />} />

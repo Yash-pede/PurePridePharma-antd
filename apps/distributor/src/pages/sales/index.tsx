@@ -15,9 +15,7 @@ import {
 import { getDefaultFilter, useExport, useGetIdentity, useGo } from "@refinedev/core";
 import {
   Database,
-  GET_ALL_PROFILES_QUERY,
   PROFILES_QUERY,
-  Profiles,
 } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Flex, Form, Input, InputNumber, Select, Space, Table } from "antd";
@@ -25,7 +23,6 @@ import dayjs from "dayjs";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
   const { data: User } = useGetIdentity<any>();
-  const go = useGo();
   const {
     tableProps,
     formProps,
