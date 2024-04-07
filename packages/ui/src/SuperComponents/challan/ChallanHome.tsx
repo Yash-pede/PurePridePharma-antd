@@ -1,16 +1,21 @@
 import React from "react";
-import { Modal, Table } from "antd";
 import {
-  List,
-  ShowButton,
-  useEditableTable,
-  useModal,
-  useTable,
-} from "@refinedev/antd";
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Table,
+  Typography,
+} from "antd";
+import { List, ShowButton, useModal, useTable } from "@refinedev/antd";
 import { Database } from "@repo/graphql";
-import { useGetIdentity } from "@refinedev/core";
+import { useGetIdentity, useUpdate } from "@refinedev/core";
+import FormItem from "antd/lib/form/FormItem";
 
 export const ChallanHome = () => {
+  const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
   const { data: User } = useGetIdentity<any>();
   const { tableProps, tableQueryResult, filters, sorter } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
@@ -36,7 +41,24 @@ export const ChallanHome = () => {
       ],
     },
   });
+  const [form] = Form.useForm();
   const { close, modalProps, show } = useModal();
+  const { mutate, isLoading, isSuccess } = useUpdate<any>();
+  form.submit = async () => {
+    mutate({
+      resource: "challan",
+      id: IdToUpdateReceived,
+      values: {
+        received_amt:
+          tableQueryResult.data?.data.find(
+            (item) => item.id === IdToUpdateReceived
+          )?.received_amt + form.getFieldValue("received_amt"),
+      },
+    });
+    close();
+    form.resetFields();
+    setIdToUpdateReceived(null);
+  };
   return (
     <List>
       <Table {...tableProps} rowKey="id">
@@ -45,15 +67,54 @@ export const ChallanHome = () => {
         <Table.Column dataIndex="pending_amt" title="Pending" />
         <Table.Column dataIndex="received_amt" title="Received" />
         <Table.Column
+          title="Action"
           render={(row) => (
-            <>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Button
+                onClick={() => {
+                  setIdToUpdateReceived(row.id);
+                  show();
+                }}
+              >
+                Update
+              </Button>
               <ShowButton recordItemId={row.id} />
-            </>
+            </div>
           )}
         />
       </Table>
-      <Modal {...modalProps} title="Challan" footer={null}>
-
+      <Modal
+        visible={IdToUpdateReceived !== null}
+        okButtonProps={{ onClick: () => form.submit(), htmlType: "submit" }}
+        onCancel={() => {
+          setIdToUpdateReceived(null);
+          close();
+        }}
+        {...modalProps}
+        title="Update Recevied Amount"
+      >
+        <Typography.Paragraph>
+          For Challan Id : {IdToUpdateReceived}
+        </Typography.Paragraph>
+        <Form layout="vertical" form={form} disabled={isLoading}>
+          <FormItem
+            initialValue={0}
+            name="received_amt"
+            rules={[
+              {
+                required: true,
+                min: 1,
+                type: "number",
+                message: "Please enter a valid received amount",
+                max: tableQueryResult.data?.data.find(
+                  (item) => item.id === IdToUpdateReceived
+                )?.pending_amt,
+              },
+            ]}
+          >
+            <InputNumber defaultValue={0} />
+          </FormItem>
+        </Form>
       </Modal>
     </List>
   );

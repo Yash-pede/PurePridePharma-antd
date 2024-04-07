@@ -35,6 +35,7 @@ import {
   Loader,
   ProductPage,
   SUPABASE_PROJECT_ID,
+  ShowChallan,
   ShowOrders,
   authProvider,
   supabaseClient,
@@ -169,7 +170,7 @@ function App() {
                         <Route path="/challan">
                           <Route index element={<ChallanHome />} />
                           <Route path="create" element={<CreateChallan />} />
-                          {/* <Route path=":id" element={<ShowChallan />} /> */}
+                          <Route path=":id" element={<ShowChallan />} />
                           <Route path="challan/:id" element={<ShowInventoryD />} />
                         </Route>
                         <Route path="/me" element={<Profile />} />

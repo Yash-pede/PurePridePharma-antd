@@ -1,89 +1,90 @@
-// File Path: src/components/PdfLayout.tsx
-
+import React, { useEffect } from "react";
 import {
   Document,
   Image,
+  PDFDownloadLink,
   Page,
   StyleSheet,
-  View,
   Text,
-  PDFViewer,
+  View,
 } from "@react-pdf/renderer";
-import { challanProductAddingType } from "@repo/utility";
-import {
-  PurePrideInvoiceLogo,
-  PurePrideSignature,
-} from "../../../../../packages/Shared";
-import { useList, useOne } from "@refinedev/core";
-import { Loading3QuartersOutlined } from "@ant-design/icons";
+import { PurePrideInvoiceLogo, PurePrideSignature } from "@repo/shared";
+import { HttpError, useOne } from "@refinedev/core";
 import { Database } from "@repo/graphql";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { supabaseClient } from "../../utility";
+import { challanProductAddingType } from "@repo/utility";
+import dayjs from "dayjs";
 
-type PdfProps = {
-  customerId: string;
-  billInfo: challanProductAddingType[];
-  invoiceId?: number;
-};
+export const ShowChallan = () => {
+  const challanId = useLocation().pathname.split("/")[2];
 
-export const PdfLayout: React.FC<PdfProps> = ({
-  customerId,
-  billInfo,
-  invoiceId,
-}) => {
-  const { data: products, isLoading } = useList<
-    Database["public"]["Tables"]["PRODUCTS"]["Row"]
+  const { data: challanData, isLoading: challanLoading } = useOne<
+    Database["public"]["Tables"]["challan"]["Row"],
+    HttpError
   >({
-    resource: "PRODUCTS",
-    filters: [
-      {
-        field: "id",
-        operator: "in",
-        value: billInfo.map(
-          (bill: challanProductAddingType) => bill.product_id
-        ),
-      },
-    ],
+    resource: "challan",
+    id: challanId,
   });
-  const { data: customer, isLoading: customerLoading } = useOne<
-    Database["public"]["Tables"]["CUSTOMERS"]["Row"]
-  >({
-    resource: "CUSTOMERS",
-    id: customerId,
-    queryOptions: {
-      enabled: !!customerId,
-    },
-  });
-  if (isLoading || customerLoading)
-    return (
-      <div style={{ display: "grid", width: "100%", height: "100%" }}>
-        <Loading3QuartersOutlined
-          style={{
-            animation: "spin 1s linear infinite",
-            width: "100%",
-            height: "100%",
-            transition: "all 1s ease-in-out",
-          }}
-        />
-      </div>
-    );
-  const date = new Date();
 
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear();
-  const totalAmount = billInfo.reduce((total, item) => {
-    const product = products?.data.find(
-      (product: any) => product.id === item.product_id
-    );
-    if (product) {
-      const subtotal = item.quantity * (product.selling_price || 0);
-      const discountAmount = subtotal * (item.discount * 0.01 || 0);
-      return total + subtotal - discountAmount;
+  const [billInfo, setBillInfo] = React.useState<challanProductAddingType[]>();
+
+  const [customer, setCustomer] = React.useState<any>();
+
+  const [products, setProducts] = React.useState<any>();
+
+  const [totalAmount, setTotalAmount] = React.useState<any>();
+
+  useEffect(() => {
+    if (challanData) {
+      const fetchCustomer = async () => {
+        const { data: Customer, error: CustomerError } = await supabaseClient
+          .from("CUSTOMERS")
+          .select("*")
+          .eq("id", challanData?.data.customer_id);
+        // console.log(Customer[0]);
+        setCustomer(Customer[0]);
+      };
+      const fetchProducts = async () => {
+        const { data: products, error: productsError } = await supabaseClient
+          .from("PRODUCTS")
+          .select("*")
+          .in(
+            "id",
+            challanData?.data.product_info.map((item: any) => item.product_id)
+          );
+        setProducts(products);
+      };
+      fetchCustomer();
+      fetchProducts();
+      if (challanData) {
+        setBillInfo(challanData?.data.product_info as any);
+      }
     }
-    return total;
-  }, 0);
+  }, [challanData]);
+
+  useEffect(() => {
+    if (billInfo && products) {
+      const total = billInfo.reduce((total, item) => {
+        const product = products.find((product: { id: string; }) => product.id === item.product_id);
+        if (product) {
+          const subtotal = item.quantity * (product.selling_price || 0);
+          const discountAmount = subtotal * (item.discount * 0.01 || 0);
+          return total + subtotal - discountAmount;
+        }
+        return total;
+      }, 0);
+      setTotalAmount(total);
+    }
+  }, [billInfo, products]);
   
-  return (
-    <PDFViewer style={styles.viewer}>
+
+  const MyDoc = () => {
+    if (!customer || !products) {
+      return <div>Loading...</div>;
+    }
+    return (
       <Document>
         <Page style={styles.page} size="A4">
           <View style={styles.invoiceHeader}>
@@ -104,17 +105,18 @@ export const PdfLayout: React.FC<PdfProps> = ({
               <Text style={{ fontStyle: "italic", fontSize: 14 }}>
                 Bill To:
               </Text>
-              <Text style={{ fontSize: 14 }}>{customer?.data?.full_name}</Text>
-              <Text style={{ fontSize: 14 }}>+91 {customer?.data.phone}</Text>
-              <Text style={{ fontSize: 14 }}>{customer?.data.address}</Text>
+              <Text style={{ fontSize: 14 }}>{customer.full_name}</Text>
+              <Text style={{ fontSize: 14 }}>+91 {customer.phone}</Text>
+              <Text style={{ fontSize: 14 }}>{customer.address}</Text>
             </View>
             <View style={styles.billTo}>
               <Text style={{ textAlign: "right", margin: "auto" }}>
-                Invoice No: {invoiceId ?? "-"}
+                Invoice No: {challanId}
               </Text>
-              <Text
-                style={{ textAlign: "right" }}
-              >{`${day}/${month}/${year}`}</Text>
+              <Text style={{ textAlign: "right" }}>
+                Date :{" "}
+                {dayjs(challanData?.data.created_at).format("DD/MM/YYYY")}
+              </Text>
             </View>
           </View>
           <View style={styles.table}>
@@ -127,12 +129,12 @@ export const PdfLayout: React.FC<PdfProps> = ({
               <Text style={styles.tableHeaderItem}>Discount</Text>
               <Text style={styles.tableHeaderItem}>Amount</Text>
             </View>
-            {billInfo.map((item, index) => (
+            {billInfo?.map((item, index) => (
               <View key={index} style={styles.tableRow}>
                 <Text style={styles.tableCol}>{index + 1}</Text>
                 <Text style={styles.tableCol}>
                   {
-                    products?.data.find(
+                    products.find(
                       (product: any) => product.id === item.product_id
                     )?.name
                   }
@@ -140,14 +142,14 @@ export const PdfLayout: React.FC<PdfProps> = ({
                 <Text style={styles.tableCol}>{item.quantity}</Text>
                 <Text style={styles.tableCol}>
                   {
-                    products?.data.find(
+                    products.find(
                       (product: any) => product.id === item.product_id
                     )?.selling_price
                   }
                 </Text>
                 <Text style={styles.tableCol}>
                   {item.quantity *
-                    (products?.data.find(
+                    (products.find(
                       (product: any) => product.id === item.product_id
                     )?.selling_price || 0)}
                 </Text>
@@ -155,11 +157,11 @@ export const PdfLayout: React.FC<PdfProps> = ({
                 <Text style={styles.tableCol}>
                   {(
                     item.quantity *
-                      (products?.data.find(
+                      (products.find(
                         (product: any) => product.id === item.product_id
                       )?.selling_price || 0) -
                     item.quantity *
-                      (products?.data.find(
+                      (products.find(
                         (product: any) => product.id === item.product_id
                       )?.selling_price || 0) *
                       (item.discount * 0.01 || 0)
@@ -172,30 +174,38 @@ export const PdfLayout: React.FC<PdfProps> = ({
             <View style={styles.subtotalTableRow}>
               <Text style={styles.subtotalTableCol}>TOTAL:</Text>
               <Text style={styles.subtotalTableCol}>
-                {totalAmount.toFixed(2)}
+                {totalAmount?.toFixed(2)}
               </Text>
             </View>
             <View style={styles.subtotalTableRow}>
               <Text style={styles.subtotalTableCol}>RECEIVED:</Text>
-              <Text style={styles.subtotalTableCol}>0</Text>
+              <Text style={styles.subtotalTableCol}>{challanData?.data.received_amt}</Text>
             </View>
             <View style={styles.subtotalTableRow}>
               <Text style={styles.subtotalTableCol}>BALANCE:</Text>
-              <Text style={styles.subtotalTableCol}>0</Text>
+              <Text style={styles.subtotalTableCol}>{challanData?.data.pending_amt}</Text>
             </View>
           </View>
-
           <View>
-            <Text>For, Purepride</Text>
-            <Image
-              src={PurePrideSignature}
-              style={{ width: "150px", height: "auto", paddingLeft: "-50px" }}
-            />
-            <Text>Authorized Signatory</Text>
-          </View>
+          <Text>For, Purepride</Text>
+          <Image
+            src={PurePrideSignature}
+            style={{ width: "150px", height: "auto", paddingLeft: "-50px" }}
+          />
+          <Text>Authorized Signatory</Text>
+        </View>
         </Page>
       </Document>
-    </PDFViewer>
+    );
+  };
+  return (
+    <div>
+      <PDFDownloadLink document={<MyDoc />} fileName={`Challan-${challanId}.pdf`}>
+        {({ blob, url, loading, error }) =>
+          loading ? "Loading document..." : "Download now!"
+        }
+      </PDFDownloadLink>
+    </div>
   );
 };
 
