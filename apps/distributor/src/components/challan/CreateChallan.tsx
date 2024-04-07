@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useCreate, useGetIdentity, useGo, useList } from "@refinedev/core";
 import { Create, useForm, useModal, useSelect } from "@refinedev/antd";
 import { Database } from "@repo/graphql";
@@ -20,11 +20,10 @@ import { Link } from "react-router-dom";
 
 const CreateChallan = () => {
   const go = useGo();
-  const [challan, setChallan] = React.useState<challanProductAddingType[] | []>(
-    []
-  );
+  const [challan, setChallan] = React.useState<any>([]);
   const [avalableqty, setAvalableqty] = React.useState<any>();
   const [customer, setCustomer] = React.useState<any>();
+  const [totalAmount, setTotalAmount] = React.useState<any>();
   const { show, close, modalProps } = useModal();
   const { data: User } = useGetIdentity<any>();
 
@@ -93,19 +92,29 @@ const CreateChallan = () => {
       },
     ],
   });
-  const onChallanCreate = () => {
-    const totalAmount = challan.reduce((total, item) => {
-      const product = allProducts?.data.find(
-        (product: any) => product.id === item.product_id
+  useEffect(() => {
+    if (challan && allProducts?.data) {
+      const newTotalAmount: number = challan.reduce(
+        (total: number, item: any) => {
+          const product = allProducts.data.find(
+            (product: any) => product.id === item.product_id
+          );
+          if (product) {
+            const subtotal: number =
+              item.quantity * (product.selling_price || 0);
+            const discountAmount: number =
+              subtotal * (item.discount * 0.01 || 0);
+            return total + subtotal - discountAmount;
+          }
+          return total;
+        },
+        0 as number
       );
-      if (product) {
-        const subtotal = item.quantity * (product.selling_price || 0);
-        const discountAmount = subtotal * (item.discount * 0.01 || 0);
-        return total + subtotal - discountAmount;
-      }
-      return total;
-    }, 0);
+      setTotalAmount(newTotalAmount);
+    }
+  }, [challan, allProducts?.data]);
 
+  const onChallanCreate = () => {
     mutate({
       resource: "challan",
       values: {

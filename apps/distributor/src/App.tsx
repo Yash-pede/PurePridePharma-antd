@@ -171,7 +171,7 @@ function App() {
                           <Route index element={<ChallanHome />} />
                           <Route path="create" element={<CreateChallan />} />
                           <Route path=":id" element={<ShowChallan />} />
-                          <Route path="challan/:id" element={<ShowInventoryD />} />
+                          {/* <Route path="challan/:id" element={<ShowInventoryD />} /> */}
                         </Route>
                         <Route path="/me" element={<Profile />} />
                       </Route>
