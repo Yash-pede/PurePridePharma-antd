@@ -24,6 +24,7 @@ const CreateChallan = () => {
   const [avalableqty, setAvalableqty] = React.useState<any>();
   const [customer, setCustomer] = React.useState<any>();
   const [totalAmount, setTotalAmount] = React.useState<any>();
+  const [billAmount, setBillAmount] = React.useState<any>();
   const { show, close, modalProps } = useModal();
   const { data: User } = useGetIdentity<any>();
 
@@ -110,6 +111,22 @@ const CreateChallan = () => {
         },
         0 as number
       );
+      const newBillAmount: number = challan.reduce(
+        (total: number, item: any) => {
+          const product = allProducts.data.find(
+            (product: any) => product.id === item.product_id
+          );
+          if (product) {
+            const subtotal: number =
+              item.quantity * (product.selling_price || 0);
+            return total + subtotal;
+          }
+          return total;
+        },
+        0 as number
+      );
+
+      setBillAmount(newBillAmount);
       setTotalAmount(newTotalAmount);
     }
   }, [challan, allProducts?.data]);
@@ -124,6 +141,7 @@ const CreateChallan = () => {
         received_amt: 0,
         pending_amt: totalAmount,
         customer_id: customer,
+        bill_amt: billAmount,
       },
     });
     if (!isError) {

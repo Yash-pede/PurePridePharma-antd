@@ -11,8 +11,9 @@ export type Database = {
     Tables: {
       challan: {
         Row: {
+          bill_amt: number | null
           created_at: string
-          customer_id: number | null
+          customer_id: number
           distributor_id: string
           id: number
           pending_amt: number
@@ -22,8 +23,9 @@ export type Database = {
           total_amt: number
         }
         Insert: {
+          bill_amt?: number | null
           created_at?: string
-          customer_id?: number | null
+          customer_id: number
           distributor_id: string
           id?: number
           pending_amt: number
@@ -33,8 +35,9 @@ export type Database = {
           total_amt: number
         }
         Update: {
+          bill_amt?: number | null
           created_at?: string
-          customer_id?: number | null
+          customer_id?: number
           distributor_id?: string
           id?: number
           pending_amt?: number
@@ -328,6 +331,41 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "PRODUCTS"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      targets: {
+        Row: {
+          created_at: string
+          distributor_id: string | null
+          id: number
+          month: string
+          target: number | null
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          distributor_id?: string | null
+          id?: number
+          month: string
+          target?: number | null
+          total: number
+        }
+        Update: {
+          created_at?: string
+          distributor_id?: string | null
+          id?: number
+          month?: string
+          target?: number | null
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_targets_distributor_id_fkey"
+            columns: ["distributor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
