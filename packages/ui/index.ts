@@ -18,3 +18,5 @@ export { CustomSidebar } from "./src/SuperComponents/Layouts/Sidebar";
 export * from "./src/SuperComponents/providers/auditLogProvider";
 export { ChallanHome } from "./src/SuperComponents/challan/ChallanHome";
 export { ShowChallan } from "./src/SuperComponents/challan/ShowChallan";
+export { Targets } from "./src/SuperComponents/targets/Targets";
+export { CreateTarget } from "./src/SuperComponents/targets/Create";

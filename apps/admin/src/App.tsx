@@ -19,7 +19,7 @@ import routerBindings, {
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
-import { Header } from "@repo/ui";
+import { CreateTarget, Header, Targets } from "@repo/ui";
 import {
   AllInventory,
   AllOrders,
@@ -137,6 +137,10 @@ function App() {
                       <Route path="/challan">
                         <Route index element={<ChallanHome />} />
                         {/* <Route path=":id" element={} /> */}
+                      </Route>
+                      <Route path="/targets">
+                        <Route index element={<Targets />} />
+                        <Route path="create" element={<CreateTarget />} />
                       </Route>
                     </Route>
                     <Route>

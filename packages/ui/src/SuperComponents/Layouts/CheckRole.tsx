@@ -3,6 +3,7 @@ import { useUserRoleCheck } from "../hooks/UseCheckRole";
 import "./CheckRole.css";
 import { FloatButton } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export const CheckRole = ({
   userType,
@@ -13,6 +14,7 @@ export const CheckRole = ({
   email: string;
   children: React.ReactNode;
 }) => {
+  const navigate = useNavigate();
   // console.log(email);
   const isUserValid = useUserRoleCheck(email, userType);
   if (!isUserValid) {
@@ -20,7 +22,7 @@ export const CheckRole = ({
       <>
         <FloatButton
           icon={<ReloadOutlined />}
-          onClick={() => window.location.reload()}
+          onClick={() => navigate(0)}
           shape="circle"
         >
           If this page dosnt load redirect automatically, Try Refreshing the
