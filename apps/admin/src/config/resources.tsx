@@ -60,15 +60,15 @@ export const resources: IResourceItem[] = [
     create: "/challan/create",
   },
   {
-    name: "targets",
-    list: "/targets",
+    name: "target",
+    list: "/target",
     meta: {
-      label: "targets",
+      label: "target",
     },
     icon: <IconTargetArrow />,
-    show: "/targets/:id",
-    edit: "/targets/edit/:id",
-    create: "/targets/create",
+    show: "/target/:id",
+    edit: "/target/edit/:id",
+    create: "/target/create",
   },
   {
     name: "profiles",

@@ -15,7 +15,6 @@ import routerBindings, {
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { authProvider } from "./authProvider";
 import { supabaseClient } from "./utility";
-import { auditLogProvider } from "./SuperComponents/providers/auditLogProvider";
 
 function App() {
   return (

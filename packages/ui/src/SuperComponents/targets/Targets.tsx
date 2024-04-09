@@ -26,6 +26,7 @@ export const Targets = () => {
     HttpError
   >({
     resource: "targets",
+    undoableTimeout: 2000,
     pagination: {
       pageSize: 10,
     },
@@ -70,20 +71,13 @@ export const Targets = () => {
         >
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             dataIndex={"user_id"}
-            title="User name  "  width={100}
+            title="User name  "
+            width={100}
             render={(value, record) => {
-              if (isEditing(record.id)) {
-                return (
-                  <Form.Item name="user_id" style={{ margin: 0 }} initialValue={  Profiles?.data.find((p) => p.id === value)?.username}>
-                    <Input width={"100%"}
-                      readOnly
-                     style={{ width: "100px" }}
-                    />
-                  </Form.Item>
-                );
-              }
               return (
-                <TextField style={{ minWidth: "100px" }}
+                <Input
+                  style={{ minWidth: "100px" }}
+                  readOnly
                   value={Profiles?.data.find((p) => p.id === value)?.username}
                 />
               );
@@ -95,7 +89,11 @@ export const Targets = () => {
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
-                  <Form.Item name="total" style={{ margin: 0 }} initialValue={value}>
+                  <Form.Item
+                    name="total"
+                    style={{ margin: 0 }}
+                    initialValue={value}
+                  >
                     <InputNumber />
                   </Form.Item>
                 );
@@ -110,7 +108,11 @@ export const Targets = () => {
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
-                  <Form.Item name="target" style={{ margin: 0 }} initialValue={value}>
+                  <Form.Item
+                    name="target"
+                    style={{ margin: 0 }}
+                    initialValue={value}
+                  >
                     <InputNumber />
                   </Form.Item>
                 );
@@ -123,15 +125,6 @@ export const Targets = () => {
             dataIndex={"month"}
             title="Month/Year"
             render={(value, record) => {
-              if (isEditing(record.id)) {
-                return (
-                  <Form.Item name="month" initialValue={dayjs(value).format("MMMM / YYYY")} style={{ margin: 0 }}>
-                    <Input
-                      readOnly
-                    />
-                  </Form.Item>
-                );
-              }
               return <TextField value={dayjs(value).format("MMMM / YYYY")} />;
             }}
           />
