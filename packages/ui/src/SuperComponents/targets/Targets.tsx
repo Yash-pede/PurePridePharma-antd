@@ -125,7 +125,7 @@ export const Targets = () => {
             dataIndex={"month"}
             title="Month/Year"
             render={(value, record) => {
-              return <TextField value={dayjs(value).format("MMMM / YYYY")} />;
+              return <TextField value={value} />;
             }}
           />
 
