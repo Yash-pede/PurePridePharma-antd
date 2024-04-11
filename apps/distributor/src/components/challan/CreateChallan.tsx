@@ -12,11 +12,11 @@ import {
   type FormProps,
   Typography,
   InputNumber,
+  Flex,
 } from "antd";
 import { challanProductAddingType } from "@repo/utility";
 import { PdfLayout } from "./ChallanPreview";
-import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
-import { Link } from "react-router-dom";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
 const CreateChallan = () => {
   const go = useGo();
@@ -49,7 +49,9 @@ const CreateChallan = () => {
       {
         field: "id",
         operator: "in",
-        value: inventory?.data?.map((stock: any) => stock.product_id),
+        value: inventory?.data
+          ?.filter((stock) => (stock.quantity ?? 0) > 0)
+          .map((stock) => stock.product_id),
       },
     ],
     onSearch: (value) => {
@@ -85,13 +87,6 @@ const CreateChallan = () => {
     Database["public"]["Tables"]["PRODUCTS"]["Row"]
   >({
     resource: "PRODUCTS",
-    filters: [
-      {
-        field: "id",
-        operator: "in",
-        value: challan.map((bill: challanProductAddingType) => bill.product_id),
-      },
-    ],
   });
   useEffect(() => {
     if (challan && allProducts?.data) {
@@ -168,7 +163,30 @@ const CreateChallan = () => {
       },
     ],
   });
-
+  const [form] = Form.useForm();
+  const handleProductIncrement = (productId: any) => {
+    form.setFieldValue(
+      "quantity",
+      form.getFieldValue("quantity") +
+        ((allProducts?.data.find((d) => d.id === productId)?.base_q ?? 0) +
+          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0))
+    );
+  };
+  const handleProductDecrement = (productId: any) => {
+    if (
+      (allProducts?.data.find((d) => d.id === productId)?.base_q ?? 0) +
+        (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0) ===
+      form?.getFieldValue("quantity")
+    ) {
+      return;
+    }
+    form?.setFieldValue(
+      "quantity",
+      form.getFieldValue("quantity") -
+        ((allProducts?.data.find((d) => d.id === productId)?.base_q ?? 0) +
+          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0))
+    );
+  };
   return (
     <>
       <Create
@@ -235,6 +253,7 @@ const CreateChallan = () => {
       </Create>
       <Modal {...modalProps} okButtonProps={{ style: { display: "none" } }}>
         <Form
+          form={form}
           name="Product Challan"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
@@ -247,11 +266,11 @@ const CreateChallan = () => {
             );
           }}
         >
-          {avalableqty && (
+          {avalableqty ? (
             <Button type="text" style={{ width: "100%" }}>
               Avalable Quantity {avalableqty}
             </Button>
-          )}
+          ) : null}
           <Form.Item<challanProductAddingType>
             label="Product"
             name="product_id"
@@ -263,6 +282,7 @@ const CreateChallan = () => {
           <Form.Item<challanProductAddingType>
             label="Quantity"
             name="quantity"
+            initialValue={0}
             rules={[
               {
                 required: true,
@@ -270,7 +290,25 @@ const CreateChallan = () => {
               },
             ]}
           >
-            <InputNumber style={{ width: "100%" }} />
+            <Flex align="center" gap="10px">
+              <Button
+                onClick={() =>
+                  handleProductDecrement(form.getFieldValue("product_id"))
+                }
+              >
+                <MinusOutlined />
+              </Button>
+              <Form.Item name="quantity" style={{ margin: 0 }}>
+                <InputNumber readOnly />
+              </Form.Item>
+              <Button
+                onClick={() =>
+                  handleProductIncrement(form.getFieldValue("product_id"))
+                }
+              >
+                <PlusOutlined />
+              </Button>
+            </Flex>
           </Form.Item>
           <Form.Item<challanProductAddingType>
             label="discount"
@@ -291,12 +329,6 @@ const CreateChallan = () => {
         style={{ width: "100% !important" }}
         okButtonProps={{ style: { display: "none" } }}
       >
-        {/* <PDFDownloadLink
-          document={<PdfLayout billInfo={challan} customerId={customer} />}
-          fileName="InvoicePreview.pdf"
-        >
-         hii
-        </PDFDownloadLink> */}
         <PdfLayout billInfo={challan} customerId={customer} />
       </Modal>
     </>

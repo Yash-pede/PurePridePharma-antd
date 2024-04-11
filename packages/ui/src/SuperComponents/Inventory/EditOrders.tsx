@@ -4,6 +4,7 @@ import {
   EditButton,
   NumberField,
   SaveButton,
+  TextField,
   useEditableTable,
 } from "@refinedev/antd";
 import { HttpError, useGo, useList, useOne, useUpdate } from "@refinedev/core";
@@ -23,6 +24,7 @@ import {
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import { OrderStatus } from "@repo/utility";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
 export const EditOrders = () => {
   const go = useGo();
@@ -46,7 +48,7 @@ export const EditOrders = () => {
         {
           field: "id",
           operator: "eq",
-          value: orderId,
+          value: orderId ?? "",
         },
       ],
     },
@@ -89,7 +91,10 @@ export const EditOrders = () => {
     resource: "profiles",
     id: order.data?.data[0].distributor_id,
   });
-  const { data: products, isLoading: productsLoading } = useList({
+  const { data: products, isLoading: productsLoading } = useList<
+    Database["public"]["Tables"]["PRODUCTS"]["Row"],
+    HttpError
+  >({
     resource: "PRODUCTS",
     meta: {
       gqlQuery: GET_ALL_ORDERS_QUERY,
@@ -117,6 +122,42 @@ export const EditOrders = () => {
         status: value,
       },
     });
+  };
+
+  const handleProductIncrement = (recordKey: any) => {
+    formProps.form?.setFieldValue(
+      "quantity",
+      formProps.form.getFieldValue("quantity") +
+        ((products?.data.find(
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+        )?.base_q ?? 0) +
+          (products?.data.find(
+            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+          )?.free_q ?? 0))
+    );
+  };
+  const handleProductDecrement = (recordKey: any) => {
+    if (
+      (products?.data.find(
+        (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+      )?.base_q ?? 0) +
+        (products?.data.find(
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+        )?.free_q ?? 0) ===
+      formProps.form?.getFieldValue("quantity")
+    ) {
+      return;
+    }
+    formProps.form?.setFieldValue(
+      "quantity",
+      formProps.form.getFieldValue("quantity") -
+        ((products?.data.find(
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+        )?.base_q ?? 0) +
+          (products?.data.find(
+            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+          )?.free_q ?? 0))
+    );
   };
 
   return (
@@ -269,18 +310,51 @@ export const EditOrders = () => {
                 render={(value, record: any) => {
                   if (isEditing(record.key)) {
                     return (
-                      <div>
-                        <Form.Item
-                          name="quantity"
-                          style={{ margin: 0 }}
-                          initialValue={record.quantity}
+                      <Flex align="center" gap="10px">
+                        <Button
+                          onClick={() => handleProductDecrement(record.key)}
                         >
-                          <InputNumber />
+                          <MinusOutlined />
+                        </Button>
+                        <Form.Item name="quantity" style={{ margin: 0 }}>
+                          <InputNumber readOnly />
                         </Form.Item>
-                      </div>
+                        <Button
+                          onClick={() => handleProductIncrement(record.key)}
+                        >
+                          <PlusOutlined />
+                        </Button>
+                      </Flex>
                     );
                   }
-                  return <NumberField value={value} />;
+                  return (
+                    <TextField
+                      value={
+                        value -
+                        (products?.data.find(
+                          (product) => product.id === record.product_id
+                        )?.free_q ?? 0) *
+                          (value /
+                            ((products?.data.find(
+                              (product) => product.id === record.product_id
+                            )?.free_q ?? 0) +
+                              (products?.data.find(
+                                (product) => product.id === record.product_id
+                              )?.base_q ?? 0))) +
+                        "  +  " +
+                        (value /
+                          ((products?.data.find(
+                            (product) => product.id === record.product_id
+                          )?.free_q ?? 0) +
+                            (products?.data.find(
+                              (product) => product.id === record.product_id
+                            )?.base_q ?? 0))) *
+                          (products?.data.find(
+                            (product) => product.id === record.product_id
+                          )?.free_q ?? 0)
+                      }
+                    />
+                  );
                 }}
               />
               <Table.Column

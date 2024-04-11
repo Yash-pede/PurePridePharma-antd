@@ -47,7 +47,6 @@ import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
 import { AllAvalableProducts } from "./pages/Products/AllProductsAvalable";
 import { CustomerHome } from "./pages/customer";
-import { CustomerEdit } from "./pages/customer/Edit";
 import { CustomerCreate } from "./pages/customer/create";
 import { CustomerShow } from "./pages/customer/show";
 import { SalesHome } from "./pages/sales";
@@ -87,7 +86,7 @@ function App() {
                   notificationProvider={useNotificationProvider}
                   resources={resources}
                   options={{
-                    liveMode: "auto",
+                    liveMode: "auto", 
                     syncWithLocation: true,
                     warnWhenUnsavedChanges: true,
                     useNewQueryKeys: true,
@@ -153,7 +152,7 @@ function App() {
                         </Route>
                         <Route path="/customer">
                           <Route index element={<CustomerHome />} />
-                          <Route path="edit/:id" element={<CustomerEdit />} />
+                          {/* <Route path="edit/:id" element={<CustomerEdit />} /> */}
                           <Route path="create" element={<CustomerCreate />} />
                           <Route path=":id" element={<CustomerShow />} />
                         </Route>

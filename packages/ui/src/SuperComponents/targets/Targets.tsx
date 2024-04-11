@@ -130,6 +130,24 @@ export const Targets = () => {
           />
 
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
+            title="Achived%"
+            render={(_, record) => {
+              if (!record.target) return "No target";
+              return (
+                <TextField
+                  style={
+                    Number(((record.total / record.target) * 100).toFixed(2)) >
+                    100
+                      ? { color: "green" }
+                      : { color: "red" }
+                  }
+                  value={((record.total / record.target) * 100).toFixed(2) + " %"}
+                />
+              );
+            }}
+          />
+
+          <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             title="Achived"
             render={(_, record) => {
               return (

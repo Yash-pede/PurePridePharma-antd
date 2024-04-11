@@ -6,6 +6,7 @@ import {
   FilterDropdown,
   List,
   SaveButton,
+  ShowButton,
   TextField,
   useEditableTable,
   useSelect,
@@ -18,7 +19,7 @@ import {
 } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Form, Input, Select, Space, Table } from "antd";
+import { Button, Flex, Form, Input, Row, Select, Space, Table } from "antd";
 import dayjs from "dayjs";
 
 export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
@@ -330,11 +331,14 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
                     );
                   }
                   return (
-                    <EditButton
-                      {...editButtonProps(record.id)}
-                      hideText
-                      size="small"
-                    />
+                    <Flex gap={15}>
+                      <EditButton
+                        {...editButtonProps(record.id)}
+                        hideText
+                        size="small"
+                      />
+                      <ShowButton size="small" recordItemId={record.id} />
+                    </Flex>
                   );
                 }}
               />

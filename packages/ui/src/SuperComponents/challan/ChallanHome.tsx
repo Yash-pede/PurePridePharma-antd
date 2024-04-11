@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Button,
+  Flex,
   Form,
   Input,
   InputNumber,
@@ -17,12 +18,9 @@ import FormItem from "antd/lib/form/FormItem";
 export const ChallanHome = () => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
   const { data: User } = useGetIdentity<any>();
-  const { tableProps, tableQueryResult, filters, sorter } = useTable<
+  const { tableProps, tableQueryResult } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
-    pagination: {
-      pageSize: 10,
-    },
     filters: {
       permanent: [
         {
@@ -61,7 +59,21 @@ export const ChallanHome = () => {
   };
   return (
     <List>
-      <Table {...tableProps} rowKey="id">
+      <Flex justify="space-between" align="center" gap={2} >
+        <Typography.Paragraph>
+          Total:{" "}
+          {tableQueryResult.data?.data.reduce((a, b) => a + b.total_amt, 0)}
+        </Typography.Paragraph>
+        <Typography.Paragraph>
+          Pending:{" "}
+          {tableQueryResult.data?.data.reduce((a, b) => a + b.pending_amt, 0)}
+        </Typography.Paragraph>
+        <Typography.Paragraph>
+          Received:{" "}
+          {tableQueryResult.data?.data.reduce((a, b) => a + b.received_amt, 0)}
+        </Typography.Paragraph>
+      </Flex>
+      <Table {...tableProps} rowKey="id" bordered>
         <Table.Column dataIndex="id" title="ID" />
         <Table.Column dataIndex="total_amt" title="Total" />
         <Table.Column dataIndex="pending_amt" title="Pending" />

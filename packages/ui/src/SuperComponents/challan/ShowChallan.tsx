@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
+  BlobProvider,
   Document,
   Image,
   PDFDownloadLink,
+  PDFViewer,
   Page,
   StyleSheet,
   Text,
   View,
+  usePDF,
 } from "@react-pdf/renderer";
 import { PurePrideInvoiceLogo, PurePrideSignature } from "@repo/shared";
 import { HttpError, useOne } from "@refinedev/core";
@@ -16,8 +19,14 @@ import axios from "axios";
 import { supabaseClient } from "../../utility";
 import { challanProductAddingType } from "@repo/utility";
 import dayjs from "dayjs";
+import { Viewer, Worker } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import { ColorModeContext } from "../../contexts/color-mode";
 
 export const ShowChallan = () => {
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const challanId = useLocation().pathname.split("/")[2];
 
   const { data: challanData, isLoading: challanLoading } = useOne<
@@ -31,8 +40,11 @@ export const ShowChallan = () => {
   const [billInfo, setBillInfo] = React.useState<challanProductAddingType[]>();
 
   const [customer, setCustomer] = React.useState<any>();
+  const [distributor, setDistributor] =
+    React.useState<Database["public"]["Tables"]["profiles"]["Row"]>();
 
-  const [products, setProducts] = React.useState<any>();
+  const [products, setProducts] =
+    React.useState<Database["public"]["Tables"]["PRODUCTS"]["Row"][]>();
 
   const [totalAmount, setTotalAmount] = React.useState<any>();
 
@@ -46,6 +58,14 @@ export const ShowChallan = () => {
         // console.log(Customer[0]);
         setCustomer(Customer[0]);
       };
+      const fetchDistributor = async () => {
+        const { data } = await supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", challanData?.data.distributor_id);
+        // console.log(Customer[0]);
+        setDistributor(data[0]);
+      };
       const fetchProducts = async () => {
         const { data: products, error: productsError } = await supabaseClient
           .from("PRODUCTS")
@@ -58,6 +78,7 @@ export const ShowChallan = () => {
       };
       fetchCustomer();
       fetchProducts();
+      fetchDistributor();
       if (challanData) {
         setBillInfo(challanData?.data.product_info as any);
       }
@@ -67,7 +88,9 @@ export const ShowChallan = () => {
   useEffect(() => {
     if (billInfo && products) {
       const total = billInfo.reduce((total, item) => {
-        const product = products.find((product: { id: string; }) => product.id === item.product_id);
+        const product = products.find(
+          (product: { id: string }) => product.id === item.product_id
+        );
         if (product) {
           const subtotal = item.quantity * (product.selling_price || 0);
           const discountAmount = subtotal * (item.discount * 0.01 || 0);
@@ -78,7 +101,6 @@ export const ShowChallan = () => {
       setTotalAmount(total);
     }
   }, [billInfo, products]);
-  
 
   const MyDoc = () => {
     if (!customer || !products) {
@@ -90,13 +112,20 @@ export const ShowChallan = () => {
           <View style={styles.invoiceHeader}>
             <View style={styles.companyInfo}>
               <Text style={styles.invoiceHeadingText}>Purepride</Text>
-              <Text style={styles.invoiceLineSpacing}>Mob: 9876540123</Text>
-              <Text style={styles.invoiceLineSpacing}>Address: Raipur</Text>
+              <Text style={styles.invoiceLineSpacing}>
+                {distributor?.full_name}
+              </Text>
+              <Text style={styles.invoiceLineSpacing}>
+                Mob: {distributor?.phone}
+              </Text>
+              <Text style={styles.invoiceLineSpacing}>
+                Email: {distributor?.email}
+              </Text>
             </View>
             <Image style={styles.logo} src={PurePrideInvoiceLogo} />
           </View>
           <View style={styles.invoiceBody}>
-            <Text style={styles.invoiceText}>INVOICE</Text>
+            <Text style={styles.invoiceText}>CHALLAN</Text>
           </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -111,7 +140,7 @@ export const ShowChallan = () => {
             </View>
             <View style={styles.billTo}>
               <Text style={{ textAlign: "right", margin: "auto" }}>
-                Invoice No: {challanId}
+                Challan No: {challanId}
               </Text>
               <Text style={{ textAlign: "right" }}>
                 Date :{" "}
@@ -139,7 +168,30 @@ export const ShowChallan = () => {
                     )?.name
                   }
                 </Text>
-                <Text style={styles.tableCol}>{item.quantity}</Text>
+                <Text style={styles.tableCol}>
+                  {item.quantity -
+                    (products.find(
+                      (product: any) => product.id === item.product_id
+                    )?.free_q ?? 0) *
+                      (item.quantity /
+                        ((products.find(
+                          (product: any) => product.id === item.product_id
+                        )?.base_q ?? 0) +
+                          (products.find(
+                            (product: any) => product.id === item.product_id
+                          )?.free_q ?? 0))) +
+                    "  +  " +
+                    (item.quantity /
+                      ((products.find(
+                        (product: any) => product.id === item.product_id
+                      )?.base_q ?? 0) +
+                        (products.find(
+                          (product: any) => product.id === item.product_id
+                        )?.free_q ?? 0))) *
+                      (products.find(
+                        (product: any) => product.id === item.product_id
+                      )?.free_q ?? 0)}
+                </Text>
                 <Text style={styles.tableCol}>
                   {
                     products.find(
@@ -179,32 +231,49 @@ export const ShowChallan = () => {
             </View>
             <View style={styles.subtotalTableRow}>
               <Text style={styles.subtotalTableCol}>RECEIVED:</Text>
-              <Text style={styles.subtotalTableCol}>{challanData?.data.received_amt}</Text>
+              <Text style={styles.subtotalTableCol}>
+                {challanData?.data.received_amt}
+              </Text>
             </View>
             <View style={styles.subtotalTableRow}>
               <Text style={styles.subtotalTableCol}>BALANCE:</Text>
-              <Text style={styles.subtotalTableCol}>{challanData?.data.pending_amt}</Text>
+              <Text style={styles.subtotalTableCol}>
+                {challanData?.data.pending_amt}
+              </Text>
             </View>
           </View>
           <View>
-          <Text>For, Purepride</Text>
-          <Image
-            src={PurePrideSignature}
-            style={{ width: "150px", height: "auto", paddingLeft: "-50px" }}
-          />
-          <Text>Authorized Signatory</Text>
-        </View>
+            <Text>For, Purepride</Text>
+            <Image
+              src={PurePrideSignature}
+              style={{ width: "150px", height: "auto", paddingLeft: "-50px" }}
+            />
+            <Text>Authorized Signatory</Text>
+          </View>
         </Page>
       </Document>
     );
   };
+  const [instance, updateInstance] = usePDF({ document: <MyDoc /> });
+  useEffect(() => {
+    updateInstance(<MyDoc />);
+  }, [billInfo, customer, challanData, totalAmount, challanId]);
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <div>
-      <PDFDownloadLink document={<MyDoc />} fileName={`Challan-${challanId}.pdf`}>
-        {({ blob, url, loading, error }) =>
-          loading ? "Loading document..." : "Download now!"
-        }
-      </PDFDownloadLink>
+      {instance.loading || !instance.url ? (
+        "Loading"
+      ) : (
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+          <Viewer
+            enableSmoothScroll
+            theme={mode}  
+            fileUrl={instance.url}
+            plugins={[defaultLayoutPluginInstance]}
+          />
+        </Worker>
+      )}
     </div>
   );
 };
