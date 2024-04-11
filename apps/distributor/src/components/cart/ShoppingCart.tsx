@@ -1,6 +1,5 @@
 import { useShoppingCart } from "../../contexts/cart/ShoppingCartContext";
 import {
-  Alert,
   Button,
   Col,
   Drawer,
@@ -80,13 +79,6 @@ export const ShoppingCart = ({ isOpen }: { isOpen: boolean }) => {
       >
         <IconShoppingBagCheck /> Checkout
       </Button>
-      <Alert
-        style={{ margin: "10px 0" }}
-        message="Quantity Scheme: 5 + 1"
-        description="For every 5 products ordered, the actual quantity will be increased by 1."
-        showIcon
-        type="info"
-      />
       {cartItems.length > 0 ? (
         <>
           <Col span={24}>
