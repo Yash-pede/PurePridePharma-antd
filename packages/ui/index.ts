@@ -10,6 +10,8 @@ export * from "./src/SuperComponents/Inventory/AllOrders";
 export * from "./src/SuperComponents/Inventory/EditOrders";
 export * from "./src/SuperComponents/Inventory/ShowOrders";
 export * from "./src/SuperComponents/Inventory/CreateStock";
+export * from "./src/SuperComponents/Inventory/Product-wise";
+export * from "./src/SuperComponents/Inventory/PastInventory";
 export * from "./src/components/index";
 export * from "./src/SuperComponents/Layouts/CheckRole";
 export * from "./src/SuperComponents/Products/ProductCard";

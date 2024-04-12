@@ -19,7 +19,7 @@ import routerBindings, {
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
 import { UserRoleTypes } from "@repo/utility";
-import { CreateTarget, Header,Targets } from "@repo/ui";
+import { CreateTarget, Header, PastInventory, ProductWiseInventory, Targets } from "@repo/ui";
 import {
   AllInventory,
   AllOrders,
@@ -132,6 +132,14 @@ function App() {
                       </Route>
                       <Route path="/inventory">
                         <Route index element={<AllInventory />} />
+                        <Route
+                          path="product-wise"
+                          element={<ProductWiseInventory />}
+                        />
+                        <Route
+                          path="past"
+                          element={<PastInventory />}
+                        />
                         <Route path="create" element={<CreateStock />} />
                       </Route>
                       <Route path="/challan">

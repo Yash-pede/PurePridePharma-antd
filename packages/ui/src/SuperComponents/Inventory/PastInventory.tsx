@@ -26,7 +26,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 
-export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
+export const PastInventory = ({ children }: { children?: React.ReactNode }) => {
   const go = useGo();
   const {
     tableProps,
@@ -48,7 +48,7 @@ export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
       permanent: [
         {
           field: "avalable_quantity",
-          operator: "gt",
+          operator: "eq",
           value: 0,
         },
       ],
@@ -83,7 +83,7 @@ export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
       },
       {
         field: "avalable_quantity",
-        operator: "gt",
+        operator: "eq",
         value: 0,
       },
     ],
@@ -102,7 +102,7 @@ export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
       };
     },
     exportOptions: {
-      filename: "inventory",
+      filename: "inventory-past",
     },
   });
   const { selectProps } = useSelect({
@@ -120,15 +120,9 @@ export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <>
-      <Show
+      <Show title="Past Inventory"
         headerButtons={
           <Flex gap={10}>
-            <Button
-              type="primary"
-              onClick={() => go({ to: "/inventory/past" })}
-            >
-              Past
-            </Button>
             <Button
               type="primary"
               onClick={() => go({ to: "/inventory/product-wise" })}
