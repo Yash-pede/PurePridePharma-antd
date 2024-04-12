@@ -23,17 +23,17 @@ export const CreateStock = () => {
     meta: {
       mutationMode: "pessimistic",
       gqlQuery: INSERT_INTO_STOCKS_MUTATION,
-    }
+    },
   });
   // const productIdFromUrl = useLocation().search.split("=")[1];
   const queryParams = useLocation().search;
-  const productIdFromUrl = queryParams.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
-
-  if (!productIdFromUrl) return <ErrorComponent />
+  const productIdFromUrl = queryParams.match(
+    /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+  );
 
   const { data: productById, isLoading: isLoadingProductById } = useOne({
     resource: "PRODUCTS",
-    id: productIdFromUrl[0],
+    id: productIdFromUrl ? productIdFromUrl[0] : "",
     queryOptions: {
       enabled: !!productIdFromUrl,
     },
@@ -63,7 +63,7 @@ export const CreateStock = () => {
             name="product_id"
             hidden
             label="Product"
-            initialValue={productIdFromUrl[0]}
+            initialValue={productIdFromUrl?.[0]}
           >
             <Input style={{ width: "100%" }} readOnly />
           </Form.Item>

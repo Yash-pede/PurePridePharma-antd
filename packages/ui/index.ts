@@ -22,3 +22,4 @@ export { ChallanHome } from "./src/SuperComponents/challan/ChallanHome";
 export { ShowChallan } from "./src/SuperComponents/challan/ShowChallan";
 export * from "./src/SuperComponents/targets/Targets";
 export * from "./src/SuperComponents/targets/Create";
+export * from "./src/SuperComponents/profiles/AllUsers";

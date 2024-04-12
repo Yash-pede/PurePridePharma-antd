@@ -18,7 +18,7 @@ import { challanProductAddingType } from "@repo/utility";
 import { PdfLayout } from "./ChallanPreview";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
-const CreateChallan = () => {
+const   CreateChallan = () => {
   const go = useGo();
   const [challan, setChallan] = React.useState<any>([]);
   const [avalableqty, setAvalableqty] = React.useState<any>();

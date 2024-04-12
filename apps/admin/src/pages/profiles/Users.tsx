@@ -1,13 +1,11 @@
 import { Database, GET_ALL_PROFILES_QUERY, PROFILES_QUERY } from "@repo/graphql";
 import {
-  CreateButton,
   DeleteButton,
   EditButton,
   ExportButton,
   FilterDropdown,
   List,
   SaveButton,
-  Show,
   TextField,
   useEditableTable,
   useSelect,
@@ -33,9 +31,6 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     pagination: {
       pageSize: 10,
-    },
-    meta: {
-      gqlQuery: PROFILES_QUERY,
     },
     filters: {
       permanent: [

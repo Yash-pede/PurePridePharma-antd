@@ -1,5 +1,6 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { useGetIdentity, useGo, useList, useOne } from "@refinedev/core";
+import { Database } from "@repo/graphql";
 import { Button, Card, Col, Flex, Row, Skeleton, Statistic } from "antd";
 import dayjs from "dayjs";
 
@@ -9,51 +10,88 @@ export const Home = () => {
   const currentYear = dayjs().year();
 
   const { data: User } = useGetIdentity<any>();
-  const { data: targetsData, isLoading: isLoadingTargets } = useList({
+  const { data: targetsData, isLoading: isLoadingTargets } = useList<
+    Database["public"]["Tables"]["targets"]["Row"]
+  >({
     resource: "targets",
     filters: [
       {
-        field: "distributor_id",
+        field: "user_id",
         operator: "eq",
         value: User?.id || "",
       },
       {
-        field: "month",
-        operator: "in",
-        value: `${currentYear}-${currentMonth.toString().padStart(2, "0")}`,
+        operator: "or",
+        value: [
+          {
+            field: "month",
+            operator: "eq",
+            value: dayjs(new Date())
+              .format("MM/YYYY")
+              .toString()
+              .padStart(2, "0"),
+          },
+          {
+            field: "month",
+            operator: "eq",
+            value: dayjs(new Date())
+              .subtract(1, "month")
+              .format("MM/YYYY")
+              .toString()
+              .padStart(2, "0"),
+          },
+        ],
       },
     ],
   });
-  
-  console.log(targetsData);
+
+  console.log(targetsData?.data);
+  console.log(
+    dayjs(new Date())
+      .subtract(1, "month")
+      .format("MM/YYYY")
+      .toString()
+      .padStart(2, "0")
+  );
 
   return (
     <div>
       <div className="">
         <Row gutter={16}>
           <Col span={12}>
-            <Card bordered={false}>
-              <Statistic
-                title="This month"
-                value={11.28}
-                precision={2}
-                valueStyle={{ color: "#3f8600" }}
-                prefix={<ArrowUpOutlined />}
-                suffix="%"
-              />
-            </Card>
+            {targetsData?.data[0] ? (
+              <Card bordered={false}>
+                <Statistic
+                  title="Target Achived"
+                  value={
+                    (targetsData?.data[0].target ??
+                      0 / targetsData?.data[0].total) * 100
+                  }
+                  precision={2}
+                  valueStyle={{ color: "#3f8600" }}
+                  prefix={<ArrowUpOutlined />}
+                  suffix="%"
+                />
+              </Card>
+            ) : (
+              <Skeleton.Node active />
+            )}
           </Col>
           <Col span={12}>
-            <Card bordered={false}>
-              <Statistic
-                title="Last month"
-                value={9.3}
-                precision={2}
-                valueStyle={{ color: "#cf1322" }}
-                prefix={<ArrowDownOutlined />}
-                suffix="%"
-              />
-            </Card>
+            {targetsData?.data[1] ? (
+              <Card bordered={false}>
+                <Statistic
+                  title="Last month"
+                  value={9.3}
+                  precision={2}
+                  valueStyle={{ color: "#cf1322" }}
+                  prefix={<ArrowDownOutlined />}
+                  suffix="%"
+                />
+              </Card>
+            ) : (
+              <Skeleton.Node active />
+            )}
           </Col>
         </Row>
       </div>
