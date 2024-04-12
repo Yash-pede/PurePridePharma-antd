@@ -1,11 +1,16 @@
 import React, { useEffect } from "react";
-import { useCreate, useGetIdentity, useGo, useList } from "@refinedev/core";
-import { Create, useForm, useModal, useSelect } from "@refinedev/antd";
+import {
+  useCreate,
+  useGetIdentity,
+  useGo,
+  useList,
+  useOne,
+} from "@refinedev/core";
+import { Create, useModal, useSelect } from "@refinedev/antd";
 import { Database } from "@repo/graphql";
 import {
   Button,
   Form,
-  Input,
   Modal,
   Select,
   Table,
@@ -18,7 +23,7 @@ import { challanProductAddingType } from "@repo/utility";
 import { PdfLayout } from "./ChallanPreview";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
-const   CreateChallan = () => {
+export const CreateChallan = ({ sales }: { sales?: boolean }) => {
   const go = useGo();
   const [challan, setChallan] = React.useState<any>([]);
   const [avalableqty, setAvalableqty] = React.useState<any>();
@@ -28,6 +33,16 @@ const   CreateChallan = () => {
   const { show, close, modalProps } = useModal();
   const { data: User } = useGetIdentity<any>();
 
+  const { data: bossData, isLoading: isLoadingBossId } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: !!User && sales,
+    },
+  });
+
   const { data: inventory } = useList<
     Database["public"]["Tables"]["D_INVENTORY"]["Row"]
   >({
@@ -36,7 +51,7 @@ const   CreateChallan = () => {
       {
         field: "distributor_id",
         operator: "eq",
-        value: User?.id,
+        value: sales ? bossData?.data?.boss_id : User?.id,
       },
     ],
   });
@@ -81,7 +96,7 @@ const   CreateChallan = () => {
     show: showPdfModal,
     modalProps: pdfModalProps,
   } = useModal();
-  const { data, isLoading, mutate, isError } =
+  const { mutate, isError } =
     useCreate<Database["public"]["Tables"]["challan"]["Insert"]>();
   const { data: allProducts, isLoading: allProductsLoading } = useList<
     Database["public"]["Tables"]["PRODUCTS"]["Row"]
@@ -130,13 +145,14 @@ const   CreateChallan = () => {
     mutate({
       resource: "challan",
       values: {
-        distributor_id: User?.id,
+        distributor_id: sales ? bossData?.data?.boss_id : User?.id,
         product_info: challan,
         total_amt: totalAmount,
         received_amt: 0,
         pending_amt: totalAmount,
         customer_id: customer,
         bill_amt: billAmount,
+        sales_id: sales ? User?.id : null,
       },
     });
     if (!isError) {
@@ -159,7 +175,7 @@ const   CreateChallan = () => {
       {
         field: "distributor_id",
         operator: "eq",
-        value: User?.id,
+        value: sales ? bossData?.data?.boss_id : User?.id,
       },
     ],
   });
@@ -334,5 +350,3 @@ const   CreateChallan = () => {
     </>
   );
 };
-
-export default CreateChallan;

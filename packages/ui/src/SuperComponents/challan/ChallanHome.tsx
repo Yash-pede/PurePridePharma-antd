@@ -12,21 +12,32 @@ import {
 } from "antd";
 import { List, ShowButton, useModal, useTable } from "@refinedev/antd";
 import { Database } from "@repo/graphql";
-import { useGetIdentity, useUpdate } from "@refinedev/core";
+import { useGetIdentity, useOne, useUpdate } from "@refinedev/core";
 import FormItem from "antd/lib/form/FormItem";
 
-export const ChallanHome = () => {
+export const ChallanHome = ({ sales }: { sales?: boolean }) => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
   const { data: User } = useGetIdentity<any>();
+
+  const { data: bossData, isLoading: isLoadingBossId } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: !!User && sales,
+    },
+  });
+
   const { tableProps, tableQueryResult } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
     filters: {
       permanent: [
         {
-          field: "distributor_id",
+          field: sales ? "sales_id" : "distributor_id",
           operator: "eq",
-          value: User?.id,
+          value: sales ? User?.id : bossData?.data?.boss_id,
         },
       ],
     },
@@ -41,7 +52,7 @@ export const ChallanHome = () => {
   });
   const [form] = Form.useForm();
   const { close, modalProps, show } = useModal();
-  const { mutate, isLoading, isSuccess } = useUpdate<any>();
+  const { mutate, isLoading } = useUpdate<any>();
   form.submit = async () => {
     mutate({
       resource: "challan",
@@ -58,8 +69,8 @@ export const ChallanHome = () => {
     setIdToUpdateReceived(null);
   };
   return (
-    <List>
-      <Flex justify="space-between" align="center" gap={2} >
+    <List canCreate>
+      <Flex justify="space-between" align="center" gap={2}>
         <Typography.Paragraph>
           Total:{" "}
           {tableQueryResult.data?.data.reduce((a, b) => a + b.total_amt, 0)}

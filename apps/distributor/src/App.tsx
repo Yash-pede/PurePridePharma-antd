@@ -39,6 +39,9 @@ import {
   ShowOrders,
   authProvider,
   supabaseClient,
+  InventoryD,
+  ShowInventoryD,
+  CreateChallan,
 } from "@repo/ui";
 import { resources } from "./config/resources";
 import { ForgotPassord, Home } from "./pages";
@@ -54,11 +57,8 @@ import { SalesEdit } from "./pages/sales/Edit";
 import { SalesCreate } from "./pages/sales/create";
 import { SalesShow } from "./pages/sales/show";
 import { ShoppingCartProvider } from "./contexts/cart/ShoppingCartContext";
-import { InventoryD } from "./pages/inventory/inventory";
 import { AllOrders_D } from "./components/orders/AllOrders";
-import { ShowInventoryD } from "./pages/inventory/ShowInventory";
 import { Header } from "./components/header/header";
-import CreateChallan from "./components/challan/CreateChallan";
 
 function App() {
   const GetUserEmail = () => {
@@ -86,7 +86,7 @@ function App() {
                   notificationProvider={useNotificationProvider}
                   resources={resources}
                   options={{
-                    liveMode: "auto", 
+                    liveMode: "auto",
                     syncWithLocation: true,
                     warnWhenUnsavedChanges: true,
                     useNewQueryKeys: true,
@@ -170,7 +170,6 @@ function App() {
                           <Route index element={<ChallanHome />} />
                           <Route path="create" element={<CreateChallan />} />
                           <Route path=":id" element={<ShowChallan />} />
-                          {/* <Route path="challan/:id" element={<ShowInventoryD />} /> */}
                         </Route>
                         <Route path="/me" element={<Profile />} />
                       </Route>

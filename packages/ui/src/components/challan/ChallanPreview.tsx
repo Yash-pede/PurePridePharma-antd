@@ -13,7 +13,7 @@ import { challanProductAddingType } from "@repo/utility";
 import {
   PurePrideInvoiceLogo,
   PurePrideSignature,
-} from "../../../../../packages/Shared";
+} from "@repo/shared";
 import { useList, useOne } from "@refinedev/core";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
 import { Database } from "@repo/graphql";

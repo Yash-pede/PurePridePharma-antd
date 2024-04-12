@@ -13,13 +13,26 @@ import {
   useGetIdentity,
   useGo,
   useList,
+  useOne,
 } from "@refinedev/core";
 import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
 import { Button, Skeleton, Table, Select, Input } from "antd";
+import { useEffect } from "react";
 
-export const InventoryD = () => {
+export const InventoryD = ({ sales }: { sales?: boolean }) => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
+
+  const { data: bossData, isLoading: isLoadingBossId } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: !!User && sales,
+    },
+  });
+
   const {
     tableProps,
     tableQueryResult: inventory,
@@ -32,7 +45,7 @@ export const InventoryD = () => {
         {
           field: "distributor_id",
           operator: "eq",
-          value: User?.id,
+          value: sales ? bossData?.data?.boss_id : User?.id,
         },
         {
           field: "quantity",
@@ -89,7 +102,7 @@ export const InventoryD = () => {
                 {...selectProps}
               />
             </FilterDropdown>
-          )} 
+          )}
           render={(value) => {
             if (isLoadingProducts) return <Skeleton.Input active />;
             const product = products?.data.find(
