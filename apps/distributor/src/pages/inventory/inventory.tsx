@@ -3,7 +3,6 @@ import {
   DateField,
   FilterDropdown,
   List,
-  Show,
   TextField,
   getDefaultSortOrder,
   useSelect,
@@ -28,9 +27,6 @@ export const InventoryD = () => {
     filters,
   } = useTable<Database["public"]["Tables"]["D_INVENTORY"]["Row"]>({
     resource: "D_INVENTORY",
-    meta: {
-      gqlQuery: GET_ALL_D_INVENTORY_QUERY,
-    },
     filters: {
       permanent: [
         {
@@ -38,14 +34,16 @@ export const InventoryD = () => {
           operator: "eq",
           value: User?.id,
         },
+        {
+          field: "quantity",
+          operator: "gt",
+          value: 0,
+        },
       ],
     },
   });
   const { data: products, isLoading: isLoadingProducts } = useList({
     resource: "PRODUCTS",
-    meta: {
-      gqlQuery: GET_ALL_D_INVENTORY_QUERY,
-    },
     filters: [
       {
         field: "id",
@@ -77,6 +75,7 @@ export const InventoryD = () => {
           )}
           filterIcon={<SearchOutlined />}
           render={(value) => <TextField value={value} />}
+          hidden
         />
         <Table.Column
           dataIndex="product_id"
@@ -90,7 +89,7 @@ export const InventoryD = () => {
                 {...selectProps}
               />
             </FilterDropdown>
-          )}
+          )} 
           render={(value) => {
             if (isLoadingProducts) return <Skeleton.Input active />;
             const product = products?.data.find(
