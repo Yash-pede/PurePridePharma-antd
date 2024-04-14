@@ -42,6 +42,9 @@ import {
   InventoryD,
   ShowInventoryD,
   CreateChallan,
+  CustomerHome,
+  CustomerCreate,
+  CustomerShow,
 } from "@repo/ui";
 import { resources } from "./config/resources";
 import { ForgotPassord, Home } from "./pages";
@@ -49,9 +52,6 @@ import { Profile } from "./components/profile/Profile";
 import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
 import { AllAvalableProducts } from "./pages/Products/AllProductsAvalable";
-import { CustomerHome } from "./pages/customer";
-import { CustomerCreate } from "./pages/customer/create";
-import { CustomerShow } from "./pages/customer/show";
 import { SalesHome } from "./pages/sales";
 import { SalesEdit } from "./pages/sales/Edit";
 import { SalesCreate } from "./pages/sales/create";

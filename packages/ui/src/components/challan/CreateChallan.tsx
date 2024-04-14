@@ -177,6 +177,11 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
         operator: "eq",
         value: sales ? bossData?.data?.boss_id : User?.id,
       },
+      {
+        field: "sales_id",
+        operator: "eq",
+        value: sales ? User?.id : null, 
+      },
     ],
   });
   const [form] = Form.useForm();

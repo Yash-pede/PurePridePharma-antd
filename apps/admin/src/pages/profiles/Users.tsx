@@ -1,5 +1,10 @@
-import { Database, GET_ALL_PROFILES_QUERY, PROFILES_QUERY } from "@repo/graphql";
 import {
+  Database,
+  GET_ALL_PROFILES_QUERY,
+  PROFILES_QUERY,
+} from "@repo/graphql";
+import {
+  CreateButton,
   DeleteButton,
   EditButton,
   ExportButton,
@@ -10,7 +15,7 @@ import {
   useEditableTable,
   useSelect,
 } from "@refinedev/antd";
-import { Button, Form, Input, Select, Space, Table } from "antd";
+import { Button, Flex, Form, Input, Select, Space, Table } from "antd";
 import { getDefaultFilter, useExport } from "@refinedev/core";
 import { SearchOutlined } from "@ant-design/icons";
 import React from "react";
@@ -105,7 +110,10 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
   return (
     <List
       headerButtons={
-        <ExportButton onClick={triggerExport} loading={exportLoading} />
+        <Flex gap={15}>
+          <CreateButton />
+          <ExportButton onClick={triggerExport} loading={exportLoading} />
+        </Flex>
       }
     >
       <Form {...formProps}>
@@ -193,7 +201,8 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                 {...props}
                 filters={tableQueryResult?.data?.filters}
               >
-                <Select style={{ width: "10rem" }}
+                <Select
+                  style={{ width: "10rem" }}
                   placeholder="Select a role"
                   options={[
                     {
@@ -285,10 +294,14 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                       type: "error",
                     }}
                   />
-                  <Button style={{
-                    borderColor: "#F4C430",
-                    color: " #F4C430"
-                  }} type="dashed" size="small">
+                  <Button
+                    style={{
+                      borderColor: "#F4C430",
+                      color: " #F4C430",
+                    }}
+                    type="dashed"
+                    size="small"
+                  >
                     Ban
                   </Button>
                 </Space>

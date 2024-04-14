@@ -16,14 +16,30 @@ import {
   useExport,
   useGetIdentity,
   useList,
+  useOne,
 } from "@refinedev/core";
 import { Database, GET_ALL_PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Button, Flex, Form, Input, Row, Select, Space, Table } from "antd";
 import dayjs from "dayjs";
 
-export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
+export const CustomerHome = ({
+  children,
+  sales,
+}: {
+  children?: React.ReactNode;
+  sales?: boolean;
+}) => {
   const { data: User } = useGetIdentity<any>();
+  const { data: bossData, isLoading: isLoadingBossId } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: sales,
+    },
+  });
   const {
     tableProps,
     formProps,
@@ -38,7 +54,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
     filters: {
       permanent: [
         {
-          field: "distributor_id",
+          field: sales ? "sales_id" : "distributor_id",
           operator: "eq",
           value: User?.id,
         },
@@ -66,7 +82,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
       {
         field: "boss_id",
         operator: "eq",
-        value: User?.id,
+        value: sales ? bossData?.data?.boss_id : User?.id,
       },
     ],
     sorters: [
@@ -75,6 +91,9 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
         order: "asc",
       },
     ],
+    queryOptions: {
+      enabled: !!!sales,
+    },
   });
 
   const { isLoading, triggerExport } = useExport({
@@ -277,6 +296,7 @@ export const CustomerHome = ({ children }: { children?: React.ReactNode }) => {
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="sales_id"
                 title="Sales Person"
+                hidden={sales}
                 filterIcon={<SearchOutlined />}
                 filterDropdown={(props) => (
                   <FilterDropdown {...props} mapValue={(value) => value}>

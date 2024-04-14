@@ -3,6 +3,7 @@ import {
   IconCurrencyRupeeNepalese,
   IconDashboard,
   IconPackageImport,
+  IconUser,
 } from "@tabler/icons-react";
 
 export const resources: IResourceItem[] = [
@@ -21,6 +22,17 @@ export const resources: IResourceItem[] = [
       label: "Inventory",
       icon: <IconPackageImport />,
     },
+  },
+  {
+    name: "customer",
+    list: "/customer",
+    meta: {
+      label: "customer",
+      icon: <IconUser />,
+    },
+    show: "/customer/:id",
+    edit: "/customer/edit/:id",
+    create: "/customer/create",
   },
   {
     name: "challan",

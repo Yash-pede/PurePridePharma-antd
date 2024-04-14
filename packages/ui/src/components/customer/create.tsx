@@ -1,18 +1,36 @@
-import { Create, ThemedTitleV2 } from "@refinedev/antd";
+import { Create, ThemedTitleV2, useSelect } from "@refinedev/antd";
 import { Drawer, Form, Input, Select, Skeleton, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import { useCreate, useGetIdentity, useGo, useList } from "@refinedev/core";
+import {
+  useCreate,
+  useGetIdentity,
+  useGo,
+  useList,
+  useOne,
+} from "@refinedev/core";
 import { UserSwitchOutlined } from "@ant-design/icons";
 import { CustomerHome } from ".";
+import { Database } from "@repo/graphql";
 
-export const CustomerCreate = () => {
+export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
   const [form] = Form.useForm();
   const go = useGo();
   const { mutate } = useCreate();
   const { data: User } = useGetIdentity<any>();
 
-  const { data: SalesUserList, isLoading: SalesUserListLoading } = useList({
+  const { data: bossData, isLoading: isLoadingBossId } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
     resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: !!User && sales,
+    },
+  });
+  const { selectProps: salesSelectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "id",
     filters: [
       {
         field: "userrole",
@@ -25,12 +43,9 @@ export const CustomerCreate = () => {
         value: User?.id,
       },
     ],
-    sorters: [
-      {
-        field: "id",
-        order: "asc",
-      },
-    ],
+    queryOptions: {
+      enabled: !!!sales,
+    },
   });
 
   const CreateCustomer = async (
@@ -58,8 +73,8 @@ export const CustomerCreate = () => {
       values.email,
       values.phone,
       values.full_name,
-      User?.id,
-      values.sales_id
+      sales ? bossData?.data?.boss_id : User?.id,
+      sales ? User.id : values.sales_id
     );
 
     go({
@@ -67,6 +82,7 @@ export const CustomerCreate = () => {
       type: "push",
     });
   };
+  
   return (
     <CustomerHome>
       <Drawer
@@ -82,7 +98,7 @@ export const CustomerCreate = () => {
           title="Create Customer"
           saveButtonProps={{ onClick: () => form.submit(), htmlType: "submit" }}
         >
-          <Form form={form} layout="vertical" >
+          <Form form={form} layout="vertical">
             <Form.Item
               label="Email"
               name={"email"}
@@ -119,28 +135,20 @@ export const CustomerCreate = () => {
                 <Input style={{ width: "80%" }} placeholder="123456789" />
               </Space.Compact>
             </Form.Item>
-            <Form.Item
-              name="sales_id"
-              label={
-                <ThemedTitleV2
-                  text="Assign Sales Person"
-                  collapsed={false}
-                  icon={<UserSwitchOutlined />}
-                />
-              }
-            >
-              {SalesUserListLoading ? (
-                <Skeleton.Input style={{ width: "100%" }} active />
-              ) : (
-                <Select>
-                  {SalesUserList?.data.map((user) => (
-                    <Select.Option key={user.id} value={user.id}>
-                      {user.username}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
+            {!sales && (
+              <Form.Item
+                name="sales_id"
+                label={
+                  <ThemedTitleV2
+                    text="Assign Sales Person"
+                    collapsed={false}
+                    icon={<UserSwitchOutlined />}
+                  />
+                }
+              >
+                <Select {...salesSelectProps} />
+              </Form.Item>
+            )}
           </Form>
         </Create>
       </Drawer>

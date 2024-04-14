@@ -21,6 +21,9 @@ import routerBindings, {
 import { UserRoleTypes } from "@repo/utility";
 import {
   CreateChallan,
+  CustomerCreate,
+  CustomerHome,
+  CustomerShow,
   Header,
   InventoryD,
   ShowChallan,
@@ -127,6 +130,12 @@ function App() {
                         <Route path="create" element={<CreateChallan sales/>} />
                           <Route path=":id" element={<ShowChallan  />} />
                       </Route>
+                      <Route path="/customer">
+                          <Route index element={<CustomerHome sales />} />
+                          {/* <Route path="edit/:id" element={<CustomerEdit />} /> */}
+                          <Route path="create" element={<CustomerCreate sales />} />
+                          <Route path=":id" element={<CustomerShow sales />} />
+                        </Route>
                       <Route path="/me" element={<Profile />} />
                     </Route>
                   </Routes>

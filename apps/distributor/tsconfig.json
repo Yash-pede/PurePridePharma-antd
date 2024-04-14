@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "vite.config.ts", "../../packages/ui/src/components/inventory", "../../packages/ui/src/components/challan"],
+  "include": ["src", "vite.config.ts", "../../packages/ui/src/components/inventory", "../../packages/ui/src/components/challan", "../../packages/ui/src/components/customer"],
   "references": [
     {
       "path": "./tsconfig.node.json"
