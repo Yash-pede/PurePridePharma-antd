@@ -21,9 +21,11 @@ import routerBindings, {
 import { UserRoleTypes } from "@repo/utility";
 import {
   CreateChallan,
+  CreateFundTransfer,
   CustomerCreate,
   CustomerHome,
   CustomerShow,
+  FundsHome,
   Header,
   InventoryD,
   ShowChallan,
@@ -127,15 +129,25 @@ function App() {
                       </Route>
                       <Route path="/challan">
                         <Route index element={<ChallanHome sales />} />
-                        <Route path="create" element={<CreateChallan sales/>} />
-                          <Route path=":id" element={<ShowChallan  />} />
+                        <Route
+                          path="create"
+                          element={<CreateChallan sales />}
+                        />
+                        <Route path=":id" element={<ShowChallan />} />
+                      </Route>
+                      <Route path="/money">
+                        <Route index element={<FundsHome sales />} />
+                        <Route path="create" element={<CreateFundTransfer sales/>} />
                       </Route>
                       <Route path="/customer">
-                          <Route index element={<CustomerHome sales />} />
-                          {/* <Route path="edit/:id" element={<CustomerEdit />} /> */}
-                          <Route path="create" element={<CustomerCreate sales />} />
-                          <Route path=":id" element={<CustomerShow sales />} />
-                        </Route>
+                        <Route index element={<CustomerHome sales />} />
+                        {/* <Route path="edit/:id" element={<CustomerEdit />} /> */}
+                        <Route
+                          path="create"
+                          element={<CustomerCreate sales />}
+                        />
+                        <Route path=":id" element={<CustomerShow sales />} />
+                      </Route>
                       <Route path="/me" element={<Profile />} />
                     </Route>
                   </Routes>

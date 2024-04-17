@@ -90,6 +90,8 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
       }
       return [values];
     });
+    form.resetFields();
+    setAvalableqty(null);
   };
   const {
     close: closePdfModal,
@@ -173,17 +175,13 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
     optionLabel: "full_name",
     filters: [
       {
-        field: "distributor_id",
+        field: sales ? "sales_id" : "distributor_id",
         operator: "eq",
-        value: sales ? bossData?.data?.boss_id : User?.id,
-      },
-      {
-        field: "sales_id",
-        operator: "eq",
-        value: sales ? User?.id : null, 
+        value: User?.id,
       },
     ],
   });
+
   const [form] = Form.useForm();
   const handleProductIncrement = (productId: any) => {
     form.setFieldValue(
@@ -272,7 +270,15 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
           ]}
         />
       </Create>
-      <Modal {...modalProps} okButtonProps={{ style: { display: "none" } }}>
+      <Modal
+        {...modalProps}
+        okButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          form.resetFields();
+          setAvalableqty(null);
+          close();
+        }}
+      >
         <Form
           form={form}
           name="Product Challan"
@@ -309,6 +315,14 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
                 required: true,
                 message: "Quantity is required",
               },
+              {
+                validator(rule, value, callback) {
+                  if (value > avalableqty) {
+                    callback("Quantity should be less than avalable quantity");
+                  }
+                  callback();
+                },
+              }
             ]}
           >
             <Flex align="center" gap="10px">

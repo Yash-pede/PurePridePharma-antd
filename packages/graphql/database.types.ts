@@ -11,7 +11,7 @@ export type Database = {
     Tables: {
       challan: {
         Row: {
-          bill_amt: number | null
+          bill_amt: number
           created_at: string
           customer_id: number
           distributor_id: string
@@ -23,7 +23,7 @@ export type Database = {
           total_amt: number
         }
         Insert: {
-          bill_amt?: number | null
+          bill_amt: number
           created_at?: string
           customer_id: number
           distributor_id: string
@@ -35,7 +35,7 @@ export type Database = {
           total_amt: number
         }
         Update: {
-          bill_amt?: number | null
+          bill_amt?: number
           created_at?: string
           customer_id?: number
           distributor_id?: string
@@ -338,32 +338,100 @@ export type Database = {
       targets: {
         Row: {
           created_at: string
-          distributor_id: string | null
           id: number
           month: string
           target: number | null
           total: number
+          user_id: string
         }
         Insert: {
           created_at?: string
-          distributor_id?: string | null
           id?: number
           month: string
           target?: number | null
           total: number
+          user_id: string
         }
         Update: {
           created_at?: string
-          distributor_id?: string | null
           id?: number
           month?: string
           target?: number | null
           total?: number
+          user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "public_targets_distributor_id_fkey"
-            columns: ["distributor_id"]
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_id: number | null
+          description: string | null
+          from_user_id: string | null
+          id: number
+          status: Database["public"]["Enums"]["transfer_status"]
+          to_user_id: string | null
+          total_money: number | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_id?: number | null
+          description?: string | null
+          from_user_id?: string | null
+          id?: number
+          status?: Database["public"]["Enums"]["transfer_status"]
+          to_user_id?: string | null
+          total_money?: number | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_id?: number | null
+          description?: string | null
+          from_user_id?: string | null
+          id?: number
+          status?: Database["public"]["Enums"]["transfer_status"]
+          to_user_id?: string | null
+          total_money?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_transfers_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "CUSTOMERS"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_transfers_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_transfers_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_transfers_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -414,6 +482,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      approve_transfer: {
+        Args: {
+          p_transfer_id: number
+        }
+        Returns: undefined
+      }
+      initiate_transfer: {
+        Args: {
+          p_from_user_id: string
+          p_to_user_id: string
+          p_amount: number
+          p_description: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       orders_status:
@@ -422,6 +505,7 @@ export type Database = {
         | "Cancelled"
         | "InProcess"
         | "Defected"
+      transfer_status: "Credit" | "Debit" | "Requested" | "Approved"
       user_roles:
         | "SUPERADMIN"
         | "ADMIN"

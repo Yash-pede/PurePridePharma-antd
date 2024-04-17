@@ -24,6 +24,7 @@ import {
   Header,
   PastInventory,
   ProductWiseInventory,
+  RequestsMoney,
   Targets,
 } from "@repo/ui";
 import {
@@ -47,6 +48,8 @@ import { CreateUsers, ForgotPassord, Home, Users } from "./pages";
 import { Profile } from "./components/profile/Profile";
 import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
+import { MoneyHome } from "./components/money/MoneyHome";
+import AllTransactions from "./components/money/AllTransactions";
 
 function App() {
   const GetUserEmail = () => {
@@ -151,6 +154,14 @@ function App() {
                       <Route path="/target">
                         <Route index element={<Targets />} />
                         <Route path="create" element={<CreateTarget />} />
+                      </Route>
+                      <Route path="/money">
+                        <Route index element={<MoneyHome />} />
+                        <Route path="requests" element={<RequestsMoney />} />
+                        <Route
+                          path="all-transactions"
+                          element={<AllTransactions />}
+                        />
                       </Route>
                       <Route path="/profiles">
                         <Route index element={<Users />} />

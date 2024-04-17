@@ -176,7 +176,7 @@ export const CustomerHome = ({
   const { selectProps: selectPersonProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
-    optionValue: "username",
+    optionValue: "id",
     filters: [
       {
         field: "userrole",

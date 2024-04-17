@@ -2,6 +2,7 @@ import { IResourceItem } from "@refinedev/core";
 import {
   IconCurrencyRupeeNepalese,
   IconDashboard,
+  IconMoneybag,
   IconPackageImport,
   IconUser,
 } from "@tabler/icons-react";
@@ -43,5 +44,15 @@ export const resources: IResourceItem[] = [
     },
     show: "/challan/:id",
     create: "/challan/create",
+  },
+  {
+    name: "money",
+    list: "/money",
+    meta: {
+      label: "Funds",
+      icon: <IconMoneybag />,
+    },
+    show: "/money/:id",
+    create: "/money/create",
   },
 ];

@@ -45,6 +45,9 @@ import {
   CustomerHome,
   CustomerCreate,
   CustomerShow,
+  FundsHome,
+  CreateFundTransfer,
+  RequestsMoney,
 } from "@repo/ui";
 import { resources } from "./config/resources";
 import { ForgotPassord, Home } from "./pages";
@@ -170,6 +173,14 @@ function App() {
                           <Route index element={<ChallanHome />} />
                           <Route path="create" element={<CreateChallan />} />
                           <Route path=":id" element={<ShowChallan />} />
+                        </Route>
+                        <Route path="/money">
+                          <Route index element={<FundsHome />} />
+                        <Route path="requests" element={<RequestsMoney />} />
+                          <Route
+                            path="create"
+                            element={<CreateFundTransfer />}
+                          />
                         </Route>
                         <Route path="/me" element={<Profile />} />
                       </Route>

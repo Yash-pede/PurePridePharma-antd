@@ -2,6 +2,7 @@ import { IResourceItem } from "@refinedev/core";
 import {
   IconCurrencyRupeeNepalese,
   IconDashboard,
+  IconMoneybag,
   IconPackage,
   IconPackageExport,
   IconPackageImport,
@@ -80,5 +81,15 @@ export const resources: IResourceItem[] = [
     show: "/profiles/:id",
     edit: "/profiles/edit/:id",
     create: "/profiles/create",
+  },
+  {
+    name: "money",
+    list: "/money",
+    meta: {
+      label: "Funds",
+      icon: <IconMoneybag />,
+    },
+    show: "/money/:id",
+    create: "/money/create",
   },
 ];

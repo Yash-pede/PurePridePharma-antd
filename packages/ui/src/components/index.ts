@@ -7,3 +7,6 @@ export { CustomerEdit } from "./customer/Edit";
 export { CustomerCreate } from "./customer/create";
 export { CustomerHome } from "./customer/index";
 export { CustomerShow } from "./customer/show";
+export { FundsHome } from "./money/index";
+export { CreateFundTransfer } from "./money/Create";
+export { RequestsMoney } from "./money/Requests";
