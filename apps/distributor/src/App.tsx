@@ -67,7 +67,7 @@ function App() {
   const GetUserEmail = () => {
     try {
       const email = JSON.parse(
-        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}"
+        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}",
       )?.user.email as string;
       return email;
     } catch (e) {
@@ -176,7 +176,7 @@ function App() {
                         </Route>
                         <Route path="/money">
                           <Route index element={<FundsHome />} />
-                        <Route path="requests" element={<RequestsMoney />} />
+                          <Route path="requests" element={<RequestsMoney />} />
                           <Route
                             path="create"
                             element={<CreateFundTransfer />}

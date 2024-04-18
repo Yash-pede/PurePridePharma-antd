@@ -10,10 +10,7 @@ import {
   PDFViewer,
 } from "@react-pdf/renderer";
 import { challanProductAddingType } from "@repo/utility";
-import {
-  PurePrideInvoiceLogo,
-  PurePrideSignature,
-} from "@repo/shared";
+import { PurePrideInvoiceLogo, PurePrideSignature } from "@repo/shared";
 import { useList, useOne } from "@refinedev/core";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
 import { Database } from "@repo/graphql";
@@ -38,7 +35,7 @@ export const PdfLayout: React.FC<PdfProps> = ({
         field: "id",
         operator: "in",
         value: billInfo.map(
-          (bill: challanProductAddingType) => bill.product_id
+          (bill: challanProductAddingType) => bill.product_id,
         ),
       },
     ],
@@ -72,7 +69,7 @@ export const PdfLayout: React.FC<PdfProps> = ({
   let year = date.getFullYear();
   const totalAmount = billInfo.reduce((total, item) => {
     const product = products?.data.find(
-      (product: any) => product.id === item.product_id
+      (product: any) => product.id === item.product_id,
     );
     if (product) {
       const subtotal = item.quantity * (product.selling_price || 0);
@@ -81,7 +78,7 @@ export const PdfLayout: React.FC<PdfProps> = ({
     }
     return total;
   }, 0);
-  
+
   return (
     <PDFViewer style={styles.viewer}>
       <Document>
@@ -133,7 +130,7 @@ export const PdfLayout: React.FC<PdfProps> = ({
                 <Text style={styles.tableCol}>
                   {
                     products?.data.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.name
                   }
                 </Text>
@@ -141,14 +138,14 @@ export const PdfLayout: React.FC<PdfProps> = ({
                 <Text style={styles.tableCol}>
                   {
                     products?.data.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.selling_price
                   }
                 </Text>
                 <Text style={styles.tableCol}>
                   {item.quantity *
                     (products?.data.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.selling_price || 0)}
                 </Text>
                 <Text style={styles.tableCol}>{item.discount}%</Text>
@@ -156,11 +153,11 @@ export const PdfLayout: React.FC<PdfProps> = ({
                   {(
                     item.quantity *
                       (products?.data.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.selling_price || 0) -
                     item.quantity *
                       (products?.data.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.selling_price || 0) *
                       (item.discount * 0.01 || 0)
                   ).toFixed(2)}

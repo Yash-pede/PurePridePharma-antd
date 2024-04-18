@@ -5,8 +5,15 @@ import { Database } from "@repo/graphql";
 
 export const useUserRoleCheck = (email: string, userType: UserRoleTypes) => {
   const [isUserValid, setIsUserValid] = useState(false);
-  const { data: user, isFetching: isUserFetching, error } = useGetIdentity<{ id: string; email: string }>();
-  const { data: User_DB } = useOne<Database["public"]["Tables"]["profiles"]["Row"], HttpError>({
+  const {
+    data: user,
+    isFetching: isUserFetching,
+    error,
+  } = useGetIdentity<{ id: string; email: string }>();
+  const { data: User_DB } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"],
+    HttpError
+  >({
     resource: "profiles",
     id: user?.id,
   });
@@ -15,7 +22,9 @@ export const useUserRoleCheck = (email: string, userType: UserRoleTypes) => {
 
   useEffect(() => {
     if (!isUserFetching && user && User_DB) {
-      const isUserAuthorized = user.email === email && (User_DB.data.userrole as UserRoleTypes) === userType;
+      const isUserAuthorized =
+        user.email === email &&
+        (User_DB.data.userrole as UserRoleTypes) === userType;
       setIsUserValid(isUserAuthorized);
     }
   }, [isUserFetching, user, User_DB, email, userType]);

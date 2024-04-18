@@ -106,7 +106,7 @@ export const InventoryD = ({ sales }: { sales?: boolean }) => {
           render={(value) => {
             if (isLoadingProducts) return <Skeleton.Input active />;
             const product = products?.data.find(
-              (product: any) => product.id === value
+              (product: any) => product.id === value,
             );
             return <TextField value={product?.name} />;
           }}

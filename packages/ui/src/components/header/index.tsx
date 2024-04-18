@@ -21,9 +21,11 @@ interface HeaderProps {
   sticky?: boolean | undefined;
   appName?: string;
 }
-export const Header: React.FC<
-  HeaderProps
-> = ({ isSticky, sticky, appName }) => {
+export const Header: React.FC<HeaderProps> = ({
+  isSticky,
+  sticky,
+  appName,
+}) => {
   const { mode, setMode } = useContext(ColorModeContext);
   const changeTheme = () => {
     if (mode === "light") {

@@ -1,2 +1,2 @@
 export * from "./supabaseClient";
-export * from "./functions"
+export * from "./functions";

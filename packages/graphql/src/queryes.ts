@@ -22,7 +22,7 @@ export const PROFILES_QUERY: any = gql`
           email
           full_name
           userrole
-          phone 
+          phone
           updated_at
           boss_id
         }
@@ -110,4 +110,3 @@ export const GET_ALL_D_INVENTORY_QUERY: any = gql`
     }
   }
 `;
-

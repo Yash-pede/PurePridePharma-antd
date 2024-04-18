@@ -72,7 +72,7 @@ export const ShowChallan = () => {
           .select("*")
           .in(
             "id",
-            challanData?.data.product_info.map((item: any) => item.product_id)
+            challanData?.data.product_info.map((item: any) => item.product_id),
           );
         setProducts(products);
       };
@@ -89,7 +89,7 @@ export const ShowChallan = () => {
     if (billInfo && products) {
       const total = billInfo.reduce((total, item) => {
         const product = products.find(
-          (product: { id: string }) => product.id === item.product_id
+          (product: { id: string }) => product.id === item.product_id,
         );
         if (product) {
           const subtotal = item.quantity * (product.selling_price || 0);
@@ -164,45 +164,45 @@ export const ShowChallan = () => {
                 <Text style={styles.tableCol}>
                   {
                     products.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.name
                   }
                 </Text>
                 <Text style={styles.tableCol}>
                   {item.quantity -
                     (products.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.free_q ?? 0) *
                       (item.quantity /
                         ((products.find(
-                          (product: any) => product.id === item.product_id
+                          (product: any) => product.id === item.product_id,
                         )?.base_q ?? 0) +
                           (products.find(
-                            (product: any) => product.id === item.product_id
+                            (product: any) => product.id === item.product_id,
                           )?.free_q ?? 0))) +
                     "  +  " +
                     (item.quantity /
                       ((products.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.base_q ?? 0) +
                         (products.find(
-                          (product: any) => product.id === item.product_id
+                          (product: any) => product.id === item.product_id,
                         )?.free_q ?? 0))) *
                       (products.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.free_q ?? 0)}
                 </Text>
                 <Text style={styles.tableCol}>
                   {
                     products.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.selling_price
                   }
                 </Text>
                 <Text style={styles.tableCol}>
                   {item.quantity *
                     (products.find(
-                      (product: any) => product.id === item.product_id
+                      (product: any) => product.id === item.product_id,
                     )?.selling_price || 0)}
                 </Text>
                 <Text style={styles.tableCol}>{item.discount}%</Text>
@@ -210,11 +210,11 @@ export const ShowChallan = () => {
                   {(
                     item.quantity *
                       (products.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.selling_price || 0) -
                     item.quantity *
                       (products.find(
-                        (product: any) => product.id === item.product_id
+                        (product: any) => product.id === item.product_id,
                       )?.selling_price || 0) *
                       (item.discount * 0.01 || 0)
                   ).toFixed(2)}
@@ -268,7 +268,7 @@ export const ShowChallan = () => {
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
           <Viewer
             enableSmoothScroll
-            theme={mode}  
+            theme={mode}
             fileUrl={instance.url}
             plugins={[defaultLayoutPluginInstance]}
           />

@@ -38,8 +38,12 @@ export const ShowInventoryD = () => {
           order Id: {inventory?.data?.id}
         </Typography.Title>
         <Flex gap="16px" justify="space-around" wrap="wrap" align="center">
-          <Typography.Title level={4}>Total quantity: {inventory?.data?.quantity}</Typography.Title>
-          <Typography.Paragraph>Product: {products?.data?.name}</Typography.Paragraph>
+          <Typography.Title level={4}>
+            Total quantity: {inventory?.data?.quantity}
+          </Typography.Title>
+          <Typography.Paragraph>
+            Product: {products?.data?.name}
+          </Typography.Paragraph>
         </Flex>
       </Flex>
       <Divider />

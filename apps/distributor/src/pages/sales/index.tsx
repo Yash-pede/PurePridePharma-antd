@@ -12,13 +12,24 @@ import {
   useEditableTable,
   useSelect,
 } from "@refinedev/antd";
-import { getDefaultFilter, useExport, useGetIdentity, useGo } from "@refinedev/core";
 import {
-  Database,
-  PROFILES_QUERY,
-} from "@repo/graphql";
+  getDefaultFilter,
+  useExport,
+  useGetIdentity,
+  useGo,
+} from "@refinedev/core";
+import { Database, PROFILES_QUERY } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Flex, Form, Input, InputNumber, Select, Space, Table } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import dayjs from "dayjs";
 
 export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
@@ -49,7 +60,6 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
           operator: "eq",
           value: User?.id,
         },
-        
       ],
     },
     sorters: {
@@ -64,11 +74,13 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
 
   const { isLoading, triggerExport } = useExport({
     resource: "profiles",
-    filters: [{
-      field: "userrole",
-      operator: "eq",
-      value: UserRoleTypes.SALES,
-    },],
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+    ],
     sorters: [
       {
         field: "updated_at",
@@ -86,27 +98,29 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
         userrole: record.userrole,
         phone: record.phone || "-",
         updated_at: dayjs(record.updated_at).format("DD/MM/YYYY"),
-      }
+      };
     },
     exportOptions: {
       filename: "Sales Details",
     },
-  })
+  });
 
   const { selectProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
     optionValue: "username",
-    filters: [{
-      field: "boss_id",
-      operator: "eq",
-      value: User.id,
-    },
-    {
-      field: "userrole",
-      operator: "eq",
-      value: UserRoleTypes.SALES,
-    }],
+    filters: [
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User.id,
+      },
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.username", filters, "in"),
   });
 
@@ -114,16 +128,18 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "email",
     optionValue: "email",
-    filters: [{
-      field: "boss_id",
-      operator: "eq",
-      value: User.id,
-    },
-    {
-      field: "userrole",
-      operator: "eq",
-      value: UserRoleTypes.SALES,
-    }],
+    filters: [
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User.id,
+      },
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.email", filters, "in"),
   });
 
@@ -131,16 +147,18 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
     resource: "profiles",
     optionLabel: "phone",
     optionValue: "phone",
-    filters: [{
-      field: "boss_id",
-      operator: "eq",
-      value: User.id,
-    },
-    {
-      field: "userrole",
-      operator: "eq",
-      value: UserRoleTypes.SALES,
-    }],
+    filters: [
+      {
+        field: "boss_id",
+        operator: "eq",
+        value: User.id,
+      },
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.SALES,
+      },
+    ],
     defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
   });
 
@@ -174,7 +192,7 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
               title="Username"
               defaultFilteredValue={getDefaultFilter(
                 "username",
-                tableQueryResult?.data?.filters
+                tableQueryResult?.data?.filters,
               )}
               filterIcon={<SearchOutlined />}
               filterDropdown={(props) => (
@@ -202,7 +220,7 @@ export const SalesHome = ({ children }: { children?: React.ReactNode }) => {
               title="email"
               defaultFilteredValue={getDefaultFilter(
                 "email",
-                tableQueryResult?.data?.filters
+                tableQueryResult?.data?.filters,
               )}
               filterIcon={<SearchOutlined />}
               filterDropdown={(props) => (

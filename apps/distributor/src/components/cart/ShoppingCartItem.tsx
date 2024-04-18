@@ -17,7 +17,7 @@ export const ShoppingCartItem = ({
   const { removeFromCart } = useShoppingCart();
   const item = products.find(
     (product: Database["public"]["Tables"]["PRODUCTS"]["Row"]) =>
-      product.id === id
+      product.id === id,
   );
   if (!item) return null;
   return (

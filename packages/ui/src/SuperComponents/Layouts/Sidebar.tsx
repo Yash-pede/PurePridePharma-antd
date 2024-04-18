@@ -25,7 +25,7 @@ import {
   TitleProps,
 } from "@refinedev/core";
 
-import { useThemedLayoutContext,ThemedTitleV2 } from "@refinedev/antd";
+import { useThemedLayoutContext, ThemedTitleV2 } from "@refinedev/antd";
 
 type sidebarProps = {
   Title: React.FC<TitleProps>;
@@ -35,13 +35,13 @@ type sidebarProps = {
   activeItemDisabled?: boolean;
 };
 const drawerButtonStyles: CSSProperties = {
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    position: "fixed",
-    top: 64,
-    zIndex: 999,
-  };
-  
+  borderTopLeftRadius: 0,
+  borderBottomLeftRadius: 0,
+  position: "fixed",
+  top: 64,
+  zIndex: 999,
+};
+
 export const CustomSidebar: React.FC<sidebarProps> = ({
   Title: TitleFromProps,
   render,
@@ -152,8 +152,8 @@ export const CustomSidebar: React.FC<sidebarProps> = ({
       const confirm = window.confirm(
         translate(
           "warnWhenUnsavedChanges",
-          "Are you sure you want to leave? You have unsaved changes."
-        )
+          "Are you sure you want to leave? You have unsaved changes.",
+        ),
       );
 
       if (confirm) {
@@ -349,7 +349,7 @@ export const CustomSidebar: React.FC<sidebarProps> = ({
             fontSize: "14px",
           }}
         >
-          <RenderToTitle collapsed={true}  />
+          <RenderToTitle collapsed={true} />
         </div>
         {renderMenu()}
       </Layout.Sider>

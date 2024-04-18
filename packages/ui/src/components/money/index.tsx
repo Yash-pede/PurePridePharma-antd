@@ -4,7 +4,6 @@ import { Database } from "@repo/graphql";
 import { Button, Empty, Flex, Skeleton, Table, Typography } from "antd";
 import React from "react";
 import { transactionStatusColor } from "../../utility";
-import { IconLocationDiscount } from "@tabler/icons-react";
 
 export const FundsHome = () => {
   const { data: User } = useGetIdentity<any>();
@@ -76,7 +75,14 @@ export const FundsHome = () => {
     <List
       headerButtons={
         <Flex gap={5}>
-          <Button onClick={() => go({ to: "/money/requests" })}>
+          <Button
+            hidden={
+              !!tableQueryResult.data?.data.find(
+                (item) => item.status === "Requested"
+              )
+            }
+            onClick={() => go({ to: "/money/requests" })}
+          >
             Requests
           </Button>
           <CreateButton />

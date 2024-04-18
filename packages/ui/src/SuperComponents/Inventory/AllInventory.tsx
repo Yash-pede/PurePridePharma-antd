@@ -203,7 +203,7 @@ export const AllInventory = ({ children }: { children?: React.ReactNode }) => {
                   >
                     {
                       products?.data.find(
-                        (item) => item.id === record.product_id
+                        (item) => item.id === record.product_id,
                       )?.name
                     }
                   </Button>

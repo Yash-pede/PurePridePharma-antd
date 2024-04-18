@@ -23,7 +23,7 @@ export const SalesCreate = () => {
     phNo: string,
     password: string,
     full_name: string,
-    boss_id: string
+    boss_id: string,
   ) => {
     open &&
       open({
@@ -96,7 +96,7 @@ export const SalesCreate = () => {
       values.phone,
       values.password,
       values.full_name,
-      User?.id
+      User?.id,
     );
   };
   return (
@@ -153,7 +153,8 @@ export const SalesCreate = () => {
               <Space.Compact>
                 <Input
                   style={{ width: "20%" }}
-                  defaultValue="+91" readOnly
+                  defaultValue="+91"
+                  readOnly
                   contentEditable={false}
                 />
                 <Input style={{ width: "80%" }} placeholder="123456789" />

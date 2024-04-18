@@ -129,20 +129,20 @@ export const EditOrders = () => {
       "quantity",
       formProps.form.getFieldValue("quantity") +
         ((products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
         )?.base_q ?? 0) +
           (products?.data.find(
-            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-          )?.free_q ?? 0))
+            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
+          )?.free_q ?? 0)),
     );
   };
   const handleProductDecrement = (recordKey: any) => {
     if (
       (products?.data.find(
-        (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+        (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
       )?.base_q ?? 0) +
         (products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
         )?.free_q ?? 0) ===
       formProps.form?.getFieldValue("quantity")
     ) {
@@ -152,11 +152,11 @@ export const EditOrders = () => {
       "quantity",
       formProps.form.getFieldValue("quantity") -
         ((products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
+          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
         )?.base_q ?? 0) +
           (products?.data.find(
-            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-          )?.free_q ?? 0))
+            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id,
+          )?.free_q ?? 0)),
     );
   };
 
@@ -215,7 +215,7 @@ export const EditOrders = () => {
                     }) =>
                       item.key === values.key
                         ? { ...item, quantity: values.quantity }
-                        : item
+                        : item,
                   ),
                 },
               });
@@ -332,25 +332,25 @@ export const EditOrders = () => {
                       value={
                         value -
                         (products?.data.find(
-                          (product) => product.id === record.product_id
+                          (product) => product.id === record.product_id,
                         )?.free_q ?? 0) *
                           (value /
                             ((products?.data.find(
-                              (product) => product.id === record.product_id
+                              (product) => product.id === record.product_id,
                             )?.free_q ?? 0) +
                               (products?.data.find(
-                                (product) => product.id === record.product_id
+                                (product) => product.id === record.product_id,
                               )?.base_q ?? 0))) +
                         "  +  " +
                         (value /
                           ((products?.data.find(
-                            (product) => product.id === record.product_id
+                            (product) => product.id === record.product_id,
                           )?.free_q ?? 0) +
                             (products?.data.find(
-                              (product) => product.id === record.product_id
+                              (product) => product.id === record.product_id,
                             )?.base_q ?? 0))) *
                           (products?.data.find(
-                            (product) => product.id === record.product_id
+                            (product) => product.id === record.product_id,
                           )?.free_q ?? 0)
                       }
                     />

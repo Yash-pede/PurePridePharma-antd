@@ -35,7 +35,7 @@ export const ProductPage = () => {
   } = useOne({
     resource: "profiles",
     id: JSON.parse(
-      localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}"
+      localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}",
     )?.user.id as string,
   });
   useEffect(() => {

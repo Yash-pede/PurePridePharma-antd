@@ -141,7 +141,9 @@ export const Targets = () => {
                       ? { color: "green" }
                       : { color: "red" }
                   }
-                  value={((record.total / record.target) * 100).toFixed(2) + " %"}
+                  value={
+                    ((record.total / record.target) * 100).toFixed(2) + " %"
+                  }
                 />
               );
             }}

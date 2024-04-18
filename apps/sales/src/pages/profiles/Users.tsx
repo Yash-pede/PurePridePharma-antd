@@ -1,4 +1,8 @@
-import { Database, GET_ALL_PROFILES_QUERY, PROFILES_QUERY } from "@repo/graphql";
+import {
+  Database,
+  GET_ALL_PROFILES_QUERY,
+  PROFILES_QUERY,
+} from "@repo/graphql";
 import {
   DeleteButton,
   EditButton,
@@ -128,7 +132,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="Username"
             defaultFilteredValue={getDefaultFilter(
               "username",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
@@ -156,7 +160,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="email"
             defaultFilteredValue={getDefaultFilter(
               "email",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
@@ -185,7 +189,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="Role"
             defaultFilteredValue={getDefaultFilter(
               "userrole",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             // filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
@@ -193,7 +197,8 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                 {...props}
                 filters={tableQueryResult?.data?.filters}
               >
-                <Select style={{ width: "10rem" }}
+                <Select
+                  style={{ width: "10rem" }}
                   placeholder="Select a role"
                   options={[
                     {
@@ -285,10 +290,14 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                       type: "error",
                     }}
                   />
-                  <Button style={{
-                    borderColor: "#F4C430",
-                    color: " #F4C430"
-                  }} type="dashed" size="small">
+                  <Button
+                    style={{
+                      borderColor: "#F4C430",
+                      color: " #F4C430",
+                    }}
+                    type="dashed"
+                    size="small"
+                  >
                     Ban
                   </Button>
                 </Space>

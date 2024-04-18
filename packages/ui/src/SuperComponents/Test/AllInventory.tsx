@@ -111,7 +111,10 @@ export const AllInventory = () => {
             },
           })}
         >
-          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]> dataIndex={"id"} title="Batch No" />
+          <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
+            dataIndex={"id"}
+            title="Batch No"
+          />
 
           <Table.Column<Database["public"]["Tables"]["STOCKS"]["Row"]>
             dataIndex={"product_id"}

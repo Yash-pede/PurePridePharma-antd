@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 
 export const CustomerShow = ({ sales }: { sales?: boolean }) => {
   const customerId = useLocation().pathname.split("/").pop();
-  
+
   const { tableProps, tableQueryResult: challan } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({

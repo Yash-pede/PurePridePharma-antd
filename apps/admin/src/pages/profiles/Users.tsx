@@ -136,7 +136,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="Username"
             defaultFilteredValue={getDefaultFilter(
               "username",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
@@ -164,7 +164,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="email"
             defaultFilteredValue={getDefaultFilter(
               "email",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (
@@ -193,7 +193,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
             title="Role"
             defaultFilteredValue={getDefaultFilter(
               "userrole",
-              tableQueryResult?.data?.filters
+              tableQueryResult?.data?.filters,
             )}
             // filterIcon={<SearchOutlined />}
             filterDropdown={(props) => (

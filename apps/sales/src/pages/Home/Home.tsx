@@ -18,7 +18,6 @@ export const Home = () => {
                 prefix={<ArrowUpOutlined />}
                 suffix="%"
               />
-              
             </Card>
           </Col>
           <Col span={12}>

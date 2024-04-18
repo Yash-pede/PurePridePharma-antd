@@ -133,7 +133,7 @@ export const AllOrders = () => {
             if (isLoadingProfiles) return <Skeleton.Input />;
             return (
               profiles?.data.find(
-                (profile) => profile.id === record.distributor_id
+                (profile) => profile.id === record.distributor_id,
               )?.username || "Unknown - " + record.distributor_id
             );
           }}

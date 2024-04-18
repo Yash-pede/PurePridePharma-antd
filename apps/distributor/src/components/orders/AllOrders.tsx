@@ -74,10 +74,10 @@ export const AllOrders_D = () => {
               {...props}
               filters={tableQueryResult?.data?.filters}
             >
-              <Input placeholder="Enter ID"  />
+              <Input placeholder="Enter ID" />
             </FilterDropdown>
           )}
-          filterIcon={<SearchOutlined/>}
+          filterIcon={<SearchOutlined />}
         />
         <Table.Column<Database["public"]["Tables"]["ORDERS"]["Row"]>
           dataIndex={"status"}

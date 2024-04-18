@@ -51,7 +51,7 @@ export const Home = () => {
       .subtract(1, "month")
       .format("MM/YYYY")
       .toString()
-      .padStart(2, "0")
+      .padStart(2, "0"),
   );
 
   return (

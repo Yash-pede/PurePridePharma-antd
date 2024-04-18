@@ -10,7 +10,7 @@ export const useGetProducts = () => {
 export const useGetProductsById = (id: string) => {
   const { data } = useOne({
     resource: "PRODUCTS",
-    id: id, 
+    id: id,
   });
-  return data
+  return data;
 };

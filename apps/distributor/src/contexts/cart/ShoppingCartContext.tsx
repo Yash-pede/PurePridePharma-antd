@@ -37,7 +37,7 @@ export function ShoppingCartProvider({
 
   const cartQuantity = cartItems.reduce(
     (quantity, item) => quantity + item.quantity,
-    0
+    0,
   );
 
   const openCart = () => setIsOpen(true);

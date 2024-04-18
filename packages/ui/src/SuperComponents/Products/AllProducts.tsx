@@ -260,9 +260,9 @@ export const AllProducts = () => {
                 },
               ]}
             >
-              <InputNumber style={{ width: "100%" }}/>
+              <InputNumber style={{ width: "100%" }} />
             </Form.Item>
-            <Form.Item 
+            <Form.Item
               label="Free Quantity"
               name="free_q"
               rules={[
@@ -271,7 +271,7 @@ export const AllProducts = () => {
                 },
               ]}
             >
-              <InputNumber style={{ width: "100%" }}/>
+              <InputNumber style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
               label="Image"

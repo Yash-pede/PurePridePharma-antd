@@ -120,7 +120,8 @@ export const PastInventory = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <>
-      <Show title="Past Inventory"
+      <Show
+        title="Past Inventory"
         headerButtons={
           <Flex gap={10}>
             <Button
@@ -197,7 +198,7 @@ export const PastInventory = ({ children }: { children?: React.ReactNode }) => {
                   >
                     {
                       products?.data.find(
-                        (item) => item.id === record.product_id
+                        (item) => item.id === record.product_id,
                       )?.name
                     }
                   </Button>

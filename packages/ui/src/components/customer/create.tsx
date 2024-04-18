@@ -53,7 +53,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
     phone: string,
     full_name: string,
     userId: string,
-    sales_id: string
+    sales_id: string,
   ) => {
     // console.log("CreateCustomer", email, phone, full_name, userId, sales_id);
     mutate({
@@ -74,7 +74,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
       values.phone,
       values.full_name,
       sales ? bossData?.data?.boss_id : User?.id,
-      sales ? User.id : values.sales_id
+      sales ? User.id : values.sales_id,
     );
 
     go({
@@ -82,7 +82,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
       type: "push",
     });
   };
-  
+
   return (
     <CustomerHome>
       <Drawer

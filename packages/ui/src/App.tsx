@@ -1,7 +1,5 @@
-import {
-  Refine,
-} from "@refinedev/core";
-import {RefineKbarProvider } from "@refinedev/kbar";
+import { Refine } from "@refinedev/core";
+import { RefineKbarProvider } from "@refinedev/kbar";
 
 import { useNotificationProvider } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";

@@ -31,9 +31,7 @@ export const CreateFundTransfer = () => {
   });
 
   return (
-    <Drawer
-      {...drawerProps}
-    >
+    <Drawer {...drawerProps}>
       <Create saveButtonProps={saveButtonProps}>
         <Form {...formProps}>
           <Form.Item
