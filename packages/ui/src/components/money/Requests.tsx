@@ -116,16 +116,6 @@ export const RequestsMoney = () => {
             {
               title: "Amount",
               dataIndex: "amount",
-              render: (value, record) => {
-                if (isEditing(record.id) && record.status === "Requested") {
-                  return (
-                    <Form.Item name="amount" style={{ margin: 0 }}>
-                      <Input />
-                    </Form.Item>
-                  );
-                }
-                return value;
-              },
             },
             {
               title: "To User",

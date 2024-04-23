@@ -81,7 +81,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
   });
 
   const onFinish: FormProps<challanProductAddingType>["onFinish"] = (
-    values,
+    values
   ) => {
     setChallan((prevChallan: any[]) => {
       close();
@@ -110,7 +110,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
       const newTotalAmount: number = challan.reduce(
         (total: number, item: any) => {
           const product = allProducts.data.find(
-            (product: any) => product.id === item.product_id,
+            (product: any) => product.id === item.product_id
           );
           if (product) {
             const subtotal: number =
@@ -121,12 +121,12 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
           }
           return total;
         },
-        0 as number,
+        0 as number
       );
       const newBillAmount: number = challan.reduce(
         (total: number, item: any) => {
           const product = allProducts.data.find(
-            (product: any) => product.id === item.product_id,
+            (product: any) => product.id === item.product_id
           );
           if (product) {
             const subtotal: number =
@@ -135,7 +135,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
           }
           return total;
         },
-        0 as number,
+        0 as number
       );
 
       setBillAmount(newBillAmount);
@@ -188,7 +188,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
       "quantity",
       form.getFieldValue("quantity") +
         ((allProducts?.data.find((d) => d.id === productId)?.base_q ?? 0) +
-          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0)),
+          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0))
     );
   };
   const handleProductDecrement = (productId: any) => {
@@ -203,7 +203,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
       "quantity",
       form.getFieldValue("quantity") -
         ((allProducts?.data.find((d) => d.id === productId)?.base_q ?? 0) +
-          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0)),
+          (allProducts?.data.find((d) => d.id === productId)?.free_q ?? 0))
     );
   };
   return (
@@ -288,8 +288,8 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
           onValuesChange={(values) => {
             setAvalableqty(
               inventory?.data.find(
-                (stock: any) => stock.product_id === values.product_id,
-              )?.quantity,
+                (stock: any) => stock.product_id === values.product_id
+              )?.quantity
             );
           }}
         >
@@ -327,6 +327,8 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
           >
             <Flex align="center" gap="10px">
               <Button
+                type="primary"
+                style={{ background: "red" }}
                 onClick={() =>
                   handleProductDecrement(form.getFieldValue("product_id"))
                 }
@@ -337,6 +339,7 @@ export const CreateChallan = ({ sales }: { sales?: boolean }) => {
                 <InputNumber readOnly />
               </Form.Item>
               <Button
+                type="primary"
                 onClick={() =>
                   handleProductIncrement(form.getFieldValue("product_id"))
                 }

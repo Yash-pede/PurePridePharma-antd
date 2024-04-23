@@ -1,13 +1,24 @@
 import { Create, useDrawerForm, useSelect } from "@refinedev/antd";
-import { useGetIdentity, useGo } from "@refinedev/core";
+import { useGetIdentity, useGo, useOne } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Drawer, Form, Input, InputNumber, Select } from "antd";
 import React from "react";
 
-export const CreateFundTransfer = () => {
+export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
+
+  const { data, isLoading } = useOne<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    id: User?.id,
+    queryOptions: {
+      enabled: !!User && sales,
+    },
+  });
+
   const { drawerProps, saveButtonProps, formProps } = useDrawerForm<
     Database["public"]["Tables"]["transfers"]["Row"]
   >({
@@ -25,9 +36,12 @@ export const CreateFundTransfer = () => {
       {
         field: "userrole",
         operator: "eq",
-        value: UserRoleTypes.ADMIN,
+        value: sales ? UserRoleTypes.DISTRIBUTORS : UserRoleTypes.ADMIN,
       },
     ],
+    queryOptions: {
+      enabled: sales ? !isLoading : !!UserRoleTypes.ADMIN,
+    },
   });
 
   return (

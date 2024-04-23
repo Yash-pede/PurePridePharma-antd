@@ -5,7 +5,7 @@ import { Button, Empty, Flex, Skeleton, Table, Typography } from "antd";
 import React from "react";
 import { transactionStatusColor } from "../../utility";
 
-export const FundsHome = () => {
+export const FundsHome = ({ sales }: { sales?: boolean }) => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
   const { tableProps, tableQueryResult } = useTable<
@@ -79,7 +79,7 @@ export const FundsHome = () => {
             hidden={
               !!tableQueryResult.data?.data.find(
                 (item) => item.status === "Requested"
-              )
+              ) || sales
             }
             onClick={() => go({ to: "/money/requests" })}
           >
