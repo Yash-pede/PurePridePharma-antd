@@ -19,7 +19,7 @@ import {
   useTable,
 } from "@refinedev/antd";
 import { Database } from "@repo/graphql";
-import { useGetIdentity, useOne, useUpdate } from "@refinedev/core";
+import { useGetIdentity, useList, useOne, useUpdate } from "@refinedev/core";
 import FormItem from "antd/lib/form/FormItem";
 import { SearchOutlined } from "@ant-design/icons";
 
@@ -36,6 +36,18 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
       enabled: !!User && sales,
     },
   });
+  const { data: Customers, isLoading: isLoadingCustomers } = useList<
+    Database["public"]["Tables"]["CUSTOMERS"]["Row"]
+  >({
+    resource: "CUSTOMERS",
+    filters: [
+      {
+        field: sales ? "sales_id" : "distributor_id",
+        operator: "eq",
+        value: User?.id,
+      },
+    ],
+  });
 
   const { tableProps, tableQueryResult, sorter } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
@@ -43,9 +55,9 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
     filters: {
       permanent: [
         {
-          field: sales ? "sales_id" : "distributor_id",
-          operator: "eq",
-          value: sales ? User?.id : bossData?.data?.boss_id,
+          field: "customer_id",
+          operator: "in",
+          value: Customers?.data?.map((item) => item.id),
         },
       ],
     },

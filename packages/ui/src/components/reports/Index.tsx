@@ -16,7 +16,7 @@ export const ReportsHome = () => {
         field: "distributor_id",
         operator: "eq",
         value: User?.id,
-      }
+      },
     ],
   });
 
@@ -55,6 +55,7 @@ export const ReportsHome = () => {
     <Show>
       <Table
         dataSource={dataAccMonth}
+        loading={isLoadingChallan}
         columns={[
           {
             title: "Month / Year",

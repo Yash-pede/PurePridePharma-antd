@@ -20,6 +20,7 @@ export { CustomSidebar } from "./src/SuperComponents/Layouts/Sidebar";
 export * from "./src/SuperComponents/providers/auditLogProvider";
 export { ChallanHome } from "./src/SuperComponents/challan/ChallanHome";
 export { ShowChallan } from "./src/SuperComponents/challan/ShowChallan";
+export { AllChallan } from "./src/SuperComponents/challan/AllChallan";
 export * from "./src/SuperComponents/targets/Targets";
 export * from "./src/SuperComponents/targets/Create";
 export * from "./src/SuperComponents/profiles/AllUsers";

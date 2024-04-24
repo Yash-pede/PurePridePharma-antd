@@ -1,5 +1,5 @@
 import { Create, useDrawerForm, useSelect } from "@refinedev/antd";
-import { useGetIdentity, useGo, useOne } from "@refinedev/core";
+import { useGetIdentity, useGo, useList, useOne } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
 import { Drawer, Form, Input, InputNumber, Select } from "antd";
@@ -28,10 +28,10 @@ export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
     defaultVisible: true,
   });
 
-  const { selectProps: selectUsernameProps } = useSelect({
+  const { data: users, isLoading: isLoadingUsers } = useList<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
     resource: "profiles",
-    optionLabel: "full_name",
-    optionValue: "id",
     filters: [
       {
         field: "userrole",
@@ -45,19 +45,37 @@ export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
   });
 
   return (
-    <Drawer {...drawerProps}>
-      <Create saveButtonProps={saveButtonProps}>
+    <Drawer
+      {...drawerProps}
+      title={`Transfer to - ${
+        sales
+          ? users?.data.find((user) => user.id == data?.data.boss_id)
+              ?.full_name || ""
+          : users?.data.find((user) => user.userrole === UserRoleTypes.ADMIN)
+              ?.userrole || ""
+      }`}
+    >
+      <Create saveButtonProps={saveButtonProps} title="Transfer">
         <Form {...formProps}>
           <Form.Item
             label="To"
             name="to_user_id"
+            hidden
+            initialValue={
+              sales
+                ? users?.data.find((user) => user.id == data?.data.boss_id)
+                    ?.id || ""
+                : users?.data.find(
+                    (user) => user.userrole === UserRoleTypes.ADMIN
+                  )?.id || ""
+            }
             rules={[
               {
                 required: true,
               },
             ]}
           >
-            <Select {...selectUsernameProps} />
+            <Input readOnly />
           </Form.Item>
           <Form.Item
             label="Amount"

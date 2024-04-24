@@ -222,39 +222,8 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
               </FilterDropdown>
             )}
             render={(value, record) => {
-              if (isEditing(record.id)) {
-                return (
-                  <Form.Item name="status" style={{ margin: 0 }}>
-                    <Select
-                      defaultValue={value}
-                      placeholder="Select a status"
-                      options={[
-                        {
-                          label: UserRoleTypes.CUSTOMERS,
-                          value: UserRoleTypes.CUSTOMERS,
-                        },
-                        {
-                          label: UserRoleTypes.SALES,
-                          value: UserRoleTypes.SALES,
-                        },
-                        {
-                          label: UserRoleTypes.DISTRIBUTORS,
-                          value: UserRoleTypes.DISTRIBUTORS,
-                        },
-                      ]}
-                    />
-                  </Form.Item>
-                );
-              }
               return (
-                <Select
-                  status="warning"
-                  style={{ width: "100%" }}
-                  value={value}
-                  onDropdownVisibleChange={() => {
-                    setEditId && setEditId(record.id);
-                  }}
-                />
+                <Input readOnly value={value} />
               );
             }}
           />
@@ -279,20 +248,6 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
                     {...editButtonProps(record.id)}
                     hideText
                     size="small"
-                  />
-                  {/* <DeleteButton hideText size="small" /> */}
-                  <DeleteButton
-                    hideText
-                    size="small"
-                    recordItemId={record.id}
-                    resource="STOCKS"
-                    mutationMode="undoable"
-                    errorNotification={{
-                      message: "Failed to delete",
-                      description:
-                        "Please ensure their is no stock in the batch",
-                      type: "error",
-                    }}
                   />
                   <Button
                     style={{
