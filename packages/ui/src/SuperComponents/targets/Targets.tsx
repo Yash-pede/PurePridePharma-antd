@@ -128,22 +128,23 @@ export const Targets = () => {
               return <TextField value={value} />;
             }}
           />
-
+          
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
-            title="Achived%"
+            title="Achieved%"
             render={(_, record) => {
-              if (!record.target) return "No target";
+              const achievedPercentage =
+                record.target && record.target !== 0
+                  ? ((record.total ?? 0) / record.target) * 100
+                  : 0;
+              const colorStyle =
+                achievedPercentage > 100
+                  ? { color: "green" }
+                  : { color: "red" };
+
               return (
                 <TextField
-                  style={
-                    Number(((record.total / record.target) * 100).toFixed(2)) >
-                    100
-                      ? { color: "green" }
-                      : { color: "red" }
-                  }
-                  value={
-                    ((record.total / record.target) * 100).toFixed(2) + " %"
-                  }
+                  style={colorStyle}
+                  value={`${achievedPercentage.toFixed(2)} %`}
                 />
               );
             }}

@@ -48,6 +48,7 @@ import {
   FundsHome,
   CreateFundTransfer,
   RequestsMoney,
+  ReportsHome,
 } from "@repo/ui";
 import { resources } from "./config/resources";
 import { ForgotPassord, Home } from "./pages";
@@ -67,7 +68,7 @@ function App() {
   const GetUserEmail = () => {
     try {
       const email = JSON.parse(
-        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}",
+        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}"
       )?.user.email as string;
       return email;
     } catch (e) {
@@ -174,6 +175,7 @@ function App() {
                           <Route path="create" element={<CreateChallan />} />
                           <Route path=":id" element={<ShowChallan />} />
                         </Route>
+                        <Route path="/reports" element={<ReportsHome />} />
                         <Route path="/money">
                           <Route index element={<FundsHome />} />
                           <Route path="requests" element={<RequestsMoney />} />

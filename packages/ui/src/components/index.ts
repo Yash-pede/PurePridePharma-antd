@@ -10,3 +10,4 @@ export { CustomerShow } from "./customer/show";
 export { FundsHome } from "./money/index";
 export { CreateFundTransfer } from "./money/Create";
 export { RequestsMoney } from "./money/Requests";
+export { ReportsHome } from "./reports/Index";

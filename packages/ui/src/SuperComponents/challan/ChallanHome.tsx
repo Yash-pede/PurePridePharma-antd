@@ -10,10 +10,18 @@ import {
   Table,
   Typography,
 } from "antd";
-import { List, ShowButton, useModal, useTable } from "@refinedev/antd";
+import {
+  FilterDropdown,
+  List,
+  ShowButton,
+  getDefaultSortOrder,
+  useModal,
+  useTable,
+} from "@refinedev/antd";
 import { Database } from "@repo/graphql";
 import { useGetIdentity, useOne, useUpdate } from "@refinedev/core";
 import FormItem from "antd/lib/form/FormItem";
+import { SearchOutlined } from "@ant-design/icons";
 
 export const ChallanHome = ({ sales }: { sales?: boolean }) => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
@@ -29,7 +37,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
     },
   });
 
-  const { tableProps, tableQueryResult } = useTable<
+  const { tableProps, tableQueryResult, sorter } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
     filters: {
@@ -45,7 +53,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
       initial: [
         {
           field: "created_at",
-          order: "asc",
+          order: "desc",
         },
       ],
     },
@@ -60,7 +68,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
       values: {
         received_amt:
           tableQueryResult.data?.data.find(
-            (item) => item.id === IdToUpdateReceived,
+            (item) => item.id === IdToUpdateReceived
           )?.received_amt + form.getFieldValue("received_amt"),
       },
     });
@@ -85,10 +93,36 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
         </Typography.Paragraph>
       </Flex>
       <Table {...tableProps} rowKey="id" bordered>
-        <Table.Column dataIndex="id" title="ID" />
-        <Table.Column dataIndex="total_amt" title="Total" />
-        <Table.Column dataIndex="pending_amt" title="Pending" />
-        <Table.Column dataIndex="received_amt" title="Received" />
+        <Table.Column
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input />
+            </FilterDropdown>
+          )}
+          dataIndex="id"
+          title="ID"
+        />
+        <Table.Column
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("total_amt", sorter)}
+          dataIndex="total_amt"
+          title="Total"
+        />
+        <Table.Column
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("pending_amt", sorter)}
+          dataIndex="pending_amt"
+          title="Pending"
+        />
+        <Table.Column
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("received_amt", sorter)}
+          dataIndex="received_amt"
+          title="Received"
+        />
         <Table.Column
           title="Action"
           render={(row) => (
@@ -130,7 +164,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
                 type: "number",
                 message: "Please enter a valid received amount",
                 max: tableQueryResult.data?.data.find(
-                  (item) => item.id === IdToUpdateReceived,
+                  (item) => item.id === IdToUpdateReceived
                 )?.pending_amt,
               },
             ]}

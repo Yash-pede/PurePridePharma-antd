@@ -6,6 +6,7 @@ import {
   IconPackage,
   IconPackageExport,
   IconPackageImport,
+  IconReportAnalytics,
   IconTargetArrow,
   IconUser,
 } from "@tabler/icons-react";
@@ -59,6 +60,14 @@ export const resources: IResourceItem[] = [
     },
     show: "/challan/:id",
     create: "/challan/create",
+  },
+  {
+    name: "Reports",
+    list: "/reports",
+    meta: {
+      label: "Reports",
+      icon: <IconReportAnalytics />,
+    },
   },
   {
     name: "target",

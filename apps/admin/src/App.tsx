@@ -163,6 +163,7 @@ function App() {
                           element={<AllTransactions />}
                         />
                       </Route>
+                      {/* <Route path="/reports" element={<Reports />} /> */}
                       <Route path="/profiles">
                         <Route index element={<Users />} />
                         <Route path="create" element={<CreateUsers />} />
