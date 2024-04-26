@@ -80,6 +80,7 @@ export type Database = {
           id: number;
           phone: number;
           sales_id: string;
+          specialization: string | null;
         };
         Insert: {
           address?: string | null;
@@ -90,6 +91,7 @@ export type Database = {
           id?: number;
           phone: number;
           sales_id: string;
+          specialization?: string | null;
         };
         Update: {
           address?: string | null;
@@ -100,6 +102,7 @@ export type Database = {
           id?: number;
           phone?: number;
           sales_id?: string;
+          specialization?: string | null;
         };
         Relationships: [
           {
@@ -479,12 +482,6 @@ export type Database = {
           product_id: string;
           batch_id: string;
           batch_quantity: number;
-        };
-        Returns: undefined;
-      };
-      approve_transfer: {
-        Args: {
-          p_transfer_id: number;
         };
         Returns: undefined;
       };

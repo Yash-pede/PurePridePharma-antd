@@ -244,6 +244,20 @@ export const CustomerHome = ({
               />
 
               <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
+                dataIndex="specialization"
+                title="specialization"
+                render={(value, record) => {
+                  if (isEditing(record.id)) {
+                    return (
+                      <Form.Item name="specialization" style={{ margin: 0 }}>
+                        <Input />
+                      </Form.Item>
+                    );
+                  }
+                  return <TextField value={value} />;
+                }}
+              />
+              <Table.Column<Database["public"]["Tables"]["CUSTOMERS"]["Row"]>
                 dataIndex="email"
                 title="Email"
                 filterIcon={<SearchOutlined />}

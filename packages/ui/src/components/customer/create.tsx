@@ -1,13 +1,7 @@
 import { Create, ThemedTitleV2, useSelect } from "@refinedev/antd";
 import { Drawer, Form, Input, Select, Skeleton, Space } from "antd";
 import { UserRoleTypes } from "@repo/utility";
-import {
-  useCreate,
-  useGetIdentity,
-  useGo,
-  useList,
-  useOne,
-} from "@refinedev/core";
+import { useCreate, useGetIdentity, useGo, useOne } from "@refinedev/core";
 import { UserSwitchOutlined } from "@ant-design/icons";
 import { CustomerHome } from ".";
 import { Database } from "@repo/graphql";
@@ -54,6 +48,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
     full_name: string,
     userId: string,
     sales_id: string,
+    specialization: string,
   ) => {
     // console.log("CreateCustomer", email, phone, full_name, userId, sales_id);
     mutate({
@@ -64,6 +59,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
         sales_id,
         phone,
         email,
+        specialization,
       },
     });
   };
@@ -75,6 +71,7 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
       values.full_name,
       sales ? bossData?.data?.boss_id : User?.id,
       sales ? User.id : values.sales_id,
+      values.specialization,
     );
 
     go({
@@ -110,6 +107,12 @@ export const CustomerCreate = ({ sales }: { sales?: boolean }) => {
             </Form.Item>
             <Form.Item label="Full Name" name={"full_name"}>
               <Input placeholder="Enter Full Name" />
+            </Form.Item>
+            <Form.Item label="specialization" name={"specialization"}>
+              <Input placeholder="Enter specialization" />
+            </Form.Item>
+            <Form.Item label="address" name={"address"}>
+              <Input placeholder="Enter address" />
             </Form.Item>
             <Form.Item
               label="Phone"
