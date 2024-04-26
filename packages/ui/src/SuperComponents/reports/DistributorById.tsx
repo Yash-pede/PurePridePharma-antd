@@ -102,7 +102,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
           expandedRowRender: (record) => (
             <Table
               size="small"
-              dataSource={record.product_info || []}
+              dataSource={record.product_info as any[]}
               rowKey={(record) => record.product_id}
               columns={[
                 {
