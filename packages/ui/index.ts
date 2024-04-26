@@ -24,3 +24,7 @@ export { AllChallan } from "./src/SuperComponents/challan/AllChallan";
 export * from "./src/SuperComponents/targets/Targets";
 export * from "./src/SuperComponents/targets/Create";
 export * from "./src/SuperComponents/profiles/AllUsers";
+export { Reports } from "./src/SuperComponents/reports/Reports";
+export { ChallanReport } from "./src/SuperComponents/reports/ChallanReport";
+export { DistributorReport } from "./src/SuperComponents/reports/Distributor";
+export { DistributorById } from "./src/SuperComponents/reports/DistributorById";

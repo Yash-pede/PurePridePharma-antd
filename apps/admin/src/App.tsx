@@ -21,11 +21,16 @@ import routerBindings, {
 import { UserRoleTypes } from "@repo/utility";
 import {
   AllChallan,
+  ChallanReport,
   CreateTarget,
+  DistributorById,
+  DistributorReport,
   Header,
   PastInventory,
   ProductWiseInventory,
+  Reports,
   RequestsMoney,
+  SalesById,
   ShowChallan,
   Targets,
 } from "@repo/ui";
@@ -57,7 +62,7 @@ function App() {
   const GetUserEmail = () => {
     try {
       const email = JSON.parse(
-        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}",
+        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}"
       )?.user.email as string;
       return email;
     } catch (e) {
@@ -152,7 +157,14 @@ function App() {
                       </Route>
                       <Route path="/challan">
                         <Route index element={<AllChallan />} />
-                          <Route path=":id" element={<ShowChallan />} />
+                        <Route path=":id" element={<ShowChallan />} />
+                      </Route>
+                      <Route path="/reports">
+                        <Route index element={<Reports />} />
+                        <Route path="distributor" element={<DistributorReport />} />
+                        <Route path="sales/:id" element={<DistributorById sales />} />
+                        <Route path="distributor/:id" element={<DistributorById />} />
+                        <Route path="challan" element={<ChallanReport />} />
                       </Route>
                       <Route path="/target">
                         <Route index element={<Targets />} />
