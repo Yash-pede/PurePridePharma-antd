@@ -30,7 +30,6 @@ import {
   ProductWiseInventory,
   Reports,
   RequestsMoney,
-  SalesById,
   ShowChallan,
   Targets,
 } from "@repo/ui";
