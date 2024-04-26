@@ -63,7 +63,11 @@ export const Home = () => {
               <Card bordered={false}>
                 <Statistic
                   title="Target Achived"
-                  value={((targetsData?.data[0].target ?? 0) / (targetsData?.data[0].total ?? 1)) * 100}
+                  value={
+                    ((targetsData?.data[0].target ?? 0) /
+                      (targetsData?.data[0].total ?? 1)) *
+                    100
+                  }
                   precision={2}
                   valueStyle={{ color: "#3f8600" }}
                   prefix={<ArrowUpOutlined />}

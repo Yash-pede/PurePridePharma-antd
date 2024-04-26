@@ -68,7 +68,7 @@ function App() {
   const GetUserEmail = () => {
     try {
       const email = JSON.parse(
-        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}"
+        localStorage.getItem(`sb-${SUPABASE_PROJECT_ID}-auth-token`) || "{}",
       )?.user.email as string;
       return email;
     } catch (e) {

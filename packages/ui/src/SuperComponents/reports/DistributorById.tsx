@@ -45,7 +45,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
         field: "id",
         operator: "in",
         value: tableQueryResult?.data?.data.flatMap((challan: any) =>
-          challan.product_info.map((item: any) => item.product_id)
+          challan.product_info.map((item: any) => item.product_id),
         ),
       },
     ],
@@ -102,7 +102,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
           expandedRowRender: (record) => (
             <Table
               size="small"
-              dataSource={record.product_info}
+              dataSource={record.product_info || []}
               rowKey={(record) => record.product_id}
               columns={[
                 {
@@ -117,7 +117,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
                         <Typography.Text>
                           {
                             products.data?.find(
-                              (product) => product.id === value
+                              (product) => product.id === value,
                             )?.name
                           }
                         </Typography.Text>
@@ -158,7 +158,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
               >
                 {
                   salesData?.data?.find(
-                    (salesData) => salesData.id === record.sales_id
+                    (salesData) => salesData.id === record.sales_id,
                   )?.full_name
                 }
               </Button>

@@ -222,9 +222,7 @@ export const Users = ({ children }: { children?: React.ReactNode }) => {
               </FilterDropdown>
             )}
             render={(value, record) => {
-              return (
-                <Input readOnly value={value} />
-              );
+              return <Input readOnly value={value} />;
             }}
           />
 

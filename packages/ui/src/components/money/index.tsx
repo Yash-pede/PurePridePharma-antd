@@ -78,7 +78,7 @@ export const FundsHome = ({ sales }: { sales?: boolean }) => {
           <Button
             hidden={
               !!tableQueryResult.data?.data.find(
-                (item) => item.status === "Requested"
+                (item) => item.status === "Requested",
               ) || sales
             }
             onClick={() => go({ to: "/money/requests" })}
@@ -169,7 +169,7 @@ export const FundsHome = ({ sales }: { sales?: boolean }) => {
                     <>
                       <Typography.Text>
                         {Customers.data?.find(
-                          (customer) => customer.id === value
+                          (customer) => customer.id === value,
                         )?.full_name ?? "-"}
                       </Typography.Text>
                     </>

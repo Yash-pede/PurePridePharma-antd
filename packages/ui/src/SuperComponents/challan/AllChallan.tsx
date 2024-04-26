@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Flex,
-  Input,
-  Table,
-  Typography,
-} from "antd";
+import { Flex, Input, Table, Typography } from "antd";
 import {
   FilterDropdown,
   List,
@@ -16,7 +11,6 @@ import { Database } from "@repo/graphql";
 import { SearchOutlined } from "@ant-design/icons";
 
 export const AllChallan = ({ sales }: { sales?: boolean }) => {
-
   const { tableProps, tableQueryResult, sorter } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({

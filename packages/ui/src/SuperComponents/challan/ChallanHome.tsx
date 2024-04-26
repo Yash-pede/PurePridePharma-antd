@@ -80,7 +80,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
       values: {
         received_amt:
           tableQueryResult.data?.data.find(
-            (item) => item.id === IdToUpdateReceived
+            (item) => item.id === IdToUpdateReceived,
           )?.received_amt + form.getFieldValue("received_amt"),
       },
     });
@@ -176,7 +176,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
                 type: "number",
                 message: "Please enter a valid received amount",
                 max: tableQueryResult.data?.data.find(
-                  (item) => item.id === IdToUpdateReceived
+                  (item) => item.id === IdToUpdateReceived,
                 )?.pending_amt,
               },
             ]}

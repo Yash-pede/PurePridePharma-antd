@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Skeleton,
-  Table,
-  TableColumnsType,
-  Typography,
-} from "antd";
+import { Skeleton, Table, TableColumnsType, Typography } from "antd";
 import { useList } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 
@@ -59,7 +54,15 @@ const ChallanReportDetails = ({ challans }: { challans: any }) => {
     { title: "Pending Amount", dataIndex: "pending_amt", key: "pending_amt" },
   ];
 
-  return <Table bordered size="small" columns={columns} dataSource={challans} pagination={false} />;
+  return (
+    <Table
+      bordered
+      size="small"
+      columns={columns}
+      dataSource={challans}
+      pagination={false}
+    />
+  );
 };
 
 export default ChallanReportDetails;

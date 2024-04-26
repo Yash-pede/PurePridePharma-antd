@@ -99,7 +99,7 @@ export const ChallanReport = () => {
             render: (value: any, record: any) => {
               const total = record.challans.reduce(
                 (acc: number, curr: any) => acc + curr.total_amt,
-                0
+                0,
               );
               return <>{total}</>;
             },
@@ -111,7 +111,7 @@ export const ChallanReport = () => {
             render: (value: any, record: any) => {
               const received = record.challans.reduce(
                 (acc: number, curr: any) => acc + curr.received_amt,
-                0
+                0,
               );
               return <>{received}</>;
             },
@@ -123,7 +123,7 @@ export const ChallanReport = () => {
             render: (value: any, record: any) => {
               const pending = record.challans.reduce(
                 (acc: number, curr: any) => acc + curr.pending_amt,
-                0
+                0,
               );
               return <>{pending}</>;
             },
@@ -135,7 +135,7 @@ export const ChallanReport = () => {
             render: (value: any, record: any) => {
               const bill_amt = record.challans.reduce(
                 (acc: number, curr: any) => acc + curr.bill_amt,
-                0
+                0,
               );
               return <>{bill_amt}</>;
             },

@@ -128,7 +128,7 @@ export const Targets = () => {
               return <TextField value={value} />;
             }}
           />
-          
+
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             title="Achieved%"
             render={(_, record) => {

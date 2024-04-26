@@ -66,7 +66,7 @@ export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
                 ? users?.data.find((user) => user.id == data?.data.boss_id)
                     ?.id || ""
                 : users?.data.find(
-                    (user) => user.userrole === UserRoleTypes.ADMIN
+                    (user) => user.userrole === UserRoleTypes.ADMIN,
                   )?.id || ""
             }
             rules={[
