@@ -24,6 +24,7 @@ import {
   ChallanReport,
   CreateTarget,
   DistributorById,
+  DistributorInventory,
   DistributorReport,
   Header,
   PastInventory,
@@ -31,6 +32,7 @@ import {
   Reports,
   RequestsMoney,
   ShowChallan,
+  ShowInventoryD,
   Targets,
 } from "@repo/ui";
 import {
@@ -168,10 +170,17 @@ function App() {
                           path="sales/:id"
                           element={<DistributorById sales />}
                         />
-                        <Route
-                          path="distributor/:id"
-                          element={<DistributorById />}
-                        />
+                        <Route path="distributor/:id">
+                          <Route index element={<DistributorById />} />
+                          <Route
+                            path="inventory/:id"
+                            element={<ShowInventoryD />}
+                          />
+                          <Route
+                            path="inventory"
+                            element={<DistributorInventory />}
+                          />
+                        </Route>
                         <Route path="challan" element={<ChallanReport />} />
                       </Route>
                       <Route path="/target">

@@ -14,7 +14,7 @@
     "supabase": "^1.150.0",
     "turbo": "latest"
   },
-  "packageManager": "pnpm@9.0.5",
+  "packageManager": "pnpm@9.0.6",
   "engines": {
     "node": ">=18"
   },

@@ -15,11 +15,16 @@ import {
   useList,
   useOne,
 } from "@refinedev/core";
-import { Database, GET_ALL_D_INVENTORY_QUERY } from "@repo/graphql";
+import { Database } from "@repo/graphql";
 import { Button, Skeleton, Table, Select, Input } from "antd";
-import { useEffect } from "react";
 
-export const InventoryD = ({ sales }: { sales?: boolean }) => {
+export const InventoryD = ({
+  sales,
+  DistributorId,
+}: {
+  sales?: boolean;
+  DistributorId?: string;
+}) => {
   const { data: User } = useGetIdentity<any>();
   const go = useGo();
 
@@ -45,7 +50,11 @@ export const InventoryD = ({ sales }: { sales?: boolean }) => {
         {
           field: "distributor_id",
           operator: "eq",
-          value: sales ? bossData?.data?.boss_id : User?.id,
+          value: DistributorId
+            ? DistributorId
+            : sales
+              ? bossData?.data?.boss_id
+              : User?.id,
         },
         {
           field: "quantity",
@@ -138,11 +147,7 @@ export const InventoryD = ({ sales }: { sales?: boolean }) => {
                   type="dashed"
                   onClick={() =>
                     go({
-                      to: {
-                        action: "show",
-                        id: resource.id,
-                        resource: "inventory",
-                      },
+                      to: `${resource.id}`,
                     })
                   }
                 >

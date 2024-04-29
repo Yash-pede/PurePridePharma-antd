@@ -14,26 +14,22 @@ import {
   useExport,
   getDefaultFilter,
 } from "@refinedev/core";
-import {
-  Database,
-  GET_ALL_ORDERS_QUERY,
-  GET_ALL_PROFILES_QUERY,
-} from "@repo/graphql";
+import { Database } from "@repo/graphql";
 import { OrderStatus, UserRoleTypes } from "@repo/utility";
-import { Form, Select, Space, Table, Button, Input, Skeleton } from "antd";
-import React from "react";
+import { Select, Space, Table, Input, Skeleton } from "antd";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import { SearchOutlined } from "@ant-design/icons";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 export const AllOrders = () => {
-  const { tableProps, sorter, filters, tableQueryResult } = useTable<
+  const [searchParams] = useSearchParams();
+
+  const { tableProps, sorter, filters, setFilters } = useTable<
     Database["public"]["Tables"]["ORDERS"]["Row"],
     HttpError
   >({
     resource: "ORDERS",
-    meta: {
-      gqlQuery: GET_ALL_ORDERS_QUERY,
-    },
     sorters: {
       initial: [
         {
@@ -45,9 +41,6 @@ export const AllOrders = () => {
   });
   const { data: profiles, isLoading: isLoadingProfiles } = useList({
     resource: "profiles",
-    meta: {
-      gqlQuery: GET_ALL_PROFILES_QUERY,
-    },
     filters: [
       {
         field: "userrole",
@@ -73,9 +66,6 @@ export const AllOrders = () => {
 
   const { isLoading: exportLoading, triggerExport } = useExport({
     resource: "ORDERS",
-    meta: {
-      gqlQuery: GET_ALL_ORDERS_QUERY,
-    },
     download: true,
     onError(error) {
       console.error(error);
@@ -96,6 +86,20 @@ export const AllOrders = () => {
       filename: "orders",
     },
   });
+
+  useEffect(() => {
+    const distributorIdParam = searchParams.get("distributor_id");
+
+    if (distributorIdParam) {
+      setFilters([
+        {
+          field: "distributor_id",
+          operator: "eq",
+          value: distributorIdParam,
+        },
+      ]);
+    }
+  }, [searchParams, setFilters]);
 
   return (
     <List

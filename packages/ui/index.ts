@@ -28,3 +28,4 @@ export { Reports } from "./src/SuperComponents/reports/Reports";
 export { ChallanReport } from "./src/SuperComponents/reports/ChallanReport";
 export { DistributorReport } from "./src/SuperComponents/reports/Distributor";
 export { DistributorById } from "./src/SuperComponents/reports/DistributorById";
+export { DistributorInventory } from "./src/SuperComponents/reports/DistributorInventory";

@@ -34,9 +34,9 @@ export const ShowInventoryD = () => {
         align="center"
         style={{ padding: "16px", width: "100%" }}
       >
-        <Typography.Title level={3}>
+        {/* <Typography.Title level={3}>
           order Id: {inventory?.data?.id}
-        </Typography.Title>
+        </Typography.Title> */}
         <Flex gap="16px" justify="space-around" wrap="wrap" align="center">
           <Typography.Title level={4}>
             Total quantity: {inventory?.data?.quantity}

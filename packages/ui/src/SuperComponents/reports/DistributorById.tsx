@@ -3,12 +3,25 @@ import { useGo, useList, useOne } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 import { Button, Flex, List, Skeleton, Table, Typography } from "antd";
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-export const DistributorById = ({ sales }: { sales?: boolean }) => {
+export const DistributorById = ({
+  sales,
+  children,
+}: {
+  sales?: boolean;
+  children?: React.ReactNode;
+}) => {
   const param = useLocation();
   const go = useGo();
-  const D_ID = param.pathname.split("/").pop();
+  const segments = param.pathname.split("/");
+  let D_ID = "";
+  if (segments[segments.length - 1] === "inventory") {
+    D_ID = segments[segments.length - 2];
+  } else {
+    D_ID = segments[segments.length - 1];
+  }
+
   const { data: distributor } = useOne({
     resource: "profiles",
     id: D_ID,
@@ -35,6 +48,9 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
         },
       ],
     },
+    queryOptions: {
+      enabled: !!D_ID,
+    },
   });
   const { data: products, isLoading: isLoadingProducts } = useList<
     Database["public"]["Tables"]["PRODUCTS"]["Row"]
@@ -45,7 +61,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
         field: "id",
         operator: "in",
         value: tableQueryResult?.data?.data.flatMap((challan: any) =>
-          challan.product_info.map((item: any) => item.product_id),
+          challan.product_info.map((item: any) => item.product_id)
         ),
       },
     ],
@@ -70,7 +86,23 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
   });
 
   return (
-    <List>
+    <List
+      header={
+        <Flex gap={15}>
+          <Button onClick={() => go({ to: "inventory" })}>See Inventory</Button>
+          <Button
+            onClick={() =>
+              go({
+                to: { action: "list", resource: "orders" },
+                query: { distributor_id: D_ID },
+              })
+            }
+          >
+            See Orders
+          </Button>
+        </Flex>
+      }
+    >
       <Typography.Title level={2}>
         {distributor?.data?.full_name}
       </Typography.Title>
@@ -117,7 +149,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
                         <Typography.Text>
                           {
                             products.data?.find(
-                              (product) => product.id === value,
+                              (product) => product.id === value
                             )?.name
                           }
                         </Typography.Text>
@@ -158,7 +190,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
               >
                 {
                   salesData?.data?.find(
-                    (salesData) => salesData.id === record.sales_id,
+                    (salesData) => salesData.id === record.sales_id
                   )?.full_name
                 }
               </Button>
@@ -215,6 +247,7 @@ export const DistributorById = ({ sales }: { sales?: boolean }) => {
           },
         ]}
       />
+      {children}
     </List>
   );
 };
