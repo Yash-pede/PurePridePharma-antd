@@ -27,15 +27,6 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
   const { data: User } = useGetIdentity<any>();
 
-  const { data: bossData, isLoading: isLoadingBossId } = useOne<
-    Database["public"]["Tables"]["profiles"]["Row"]
-  >({
-    resource: "profiles",
-    id: User?.id,
-    queryOptions: {
-      enabled: !!User && sales,
-    },
-  });
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
     Database["public"]["Tables"]["CUSTOMERS"]["Row"]
   >({
@@ -80,7 +71,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
       values: {
         received_amt:
           tableQueryResult.data?.data.find(
-            (item) => item.id === IdToUpdateReceived,
+            (item) => item.id === IdToUpdateReceived
           )?.received_amt + form.getFieldValue("received_amt"),
       },
     });
@@ -176,7 +167,7 @@ export const ChallanHome = ({ sales }: { sales?: boolean }) => {
                 type: "number",
                 message: "Please enter a valid received amount",
                 max: tableQueryResult.data?.data.find(
-                  (item) => item.id === IdToUpdateReceived,
+                  (item) => item.id === IdToUpdateReceived
                 )?.pending_amt,
               },
             ]}
