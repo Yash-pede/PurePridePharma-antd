@@ -1,14 +1,27 @@
+import { SearchOutlined } from "@ant-design/icons";
 import {
   EditButton,
+  FilterDropdown,
   List,
   SaveButton,
   TextField,
+  getDefaultSortOrder,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
-import { HttpError, useList } from "@refinedev/core";
+import { HttpError, getDefaultFilter, useList } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Button, Checkbox, Form, Input, InputNumber, Space, Table } from "antd";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import dayjs from "dayjs";
 
 export const Targets = () => {
@@ -21,6 +34,8 @@ export const Targets = () => {
     cancelButtonProps,
     editButtonProps,
     formLoading,
+    filters,
+    sorter,
   } = useEditableTable<
     Database["public"]["Tables"]["targets"]["Row"],
     HttpError
@@ -52,6 +67,21 @@ export const Targets = () => {
       },
     ],
   });
+
+  const { selectProps: selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "userrole",
+        operator: "eq",
+        value: UserRoleTypes.DISTRIBUTORS,
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
   return (
     <List>
       <Form {...formProps}>
@@ -73,6 +103,16 @@ export const Targets = () => {
             dataIndex={"user_id"}
             title="User name  "
             width={100}
+            filterIcon={<SearchOutlined />}
+            filterDropdown={(props) => (
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectProps}
+                />
+              </FilterDropdown>
+            )}
             render={(value, record) => {
               return (
                 <Input
@@ -86,6 +126,8 @@ export const Targets = () => {
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             dataIndex={"total"}
             title="Total"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("total", sorter)}
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
@@ -105,6 +147,8 @@ export const Targets = () => {
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             dataIndex={"target"}
             title="Target"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("target", sorter)}
             render={(value, record) => {
               if (isEditing(record.id)) {
                 return (
@@ -124,6 +168,8 @@ export const Targets = () => {
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
             dataIndex={"month"}
             title="Month/Year"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("month", sorter)}
             render={(value, record) => {
               return <TextField value={value} />;
             }}
@@ -140,7 +186,7 @@ export const Targets = () => {
                 achievedPercentage > 100
                   ? { color: "green" }
                   : { color: "red" };
-
+            
               return (
                 <TextField
                   style={colorStyle}
@@ -151,7 +197,7 @@ export const Targets = () => {
           />
 
           <Table.Column<Database["public"]["Tables"]["targets"]["Row"]>
-            title="Achived"
+            title="Achieved"
             render={(_, record) => {
               return (
                 <Checkbox
