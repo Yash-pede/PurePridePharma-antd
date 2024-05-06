@@ -54,16 +54,17 @@ const ChallanReportDetails = ({ challans }: { challans: any }) => {
       title: "Distributor ID",
       dataIndex: "distributor_id",
       key: "distributor_id",
-      filterIcon: <SearchOutlined />,
-      filterDropdown: (props) => (
-        <FilterDropdown {...props} mapValue={(value) => value}>
-          <Select
-            style={{ minWidth: 200 }}
-            // mode="tags"
-            {...selectProps}
-          />
-        </FilterDropdown>
-      ),
+      // onFilter: (value: any, record: any) => record.distributor_id == value,
+      // filterIcon: <SearchOutlined />,
+      // filterDropdown: (props) => (
+      //   <FilterDropdown {...props} mapValue={(value) => value}>
+      //     <Select
+      //       style={{ minWidth: 200 }}
+      //       // mode="tags"
+      //       {...selectProps}
+      //     />
+      //   </FilterDropdown>
+      // ),
       render: (value: any) => {
         if (!profiles || isLoadingProfiles) return <Skeleton.Input active />;
         return (
