@@ -22,7 +22,6 @@ import {
   Space,
   Table,
 } from "antd";
-import dayjs from "dayjs";
 
 export const Targets = () => {
   const {
