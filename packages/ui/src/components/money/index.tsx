@@ -76,11 +76,6 @@ export const FundsHome = ({ sales }: { sales?: boolean }) => {
       headerButtons={
         <Flex gap={5}>
           <Button
-            hidden={
-              !!tableQueryResult.data?.data.find(
-                (item) => item.status === "Requested",
-              ) || sales
-            }
             onClick={() => go({ to: "/money/requests" })}
           >
             Requests

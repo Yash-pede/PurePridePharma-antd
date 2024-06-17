@@ -1,8 +1,8 @@
-import { Create, useDrawerForm, useSelect } from "@refinedev/antd";
+import { Create, useDrawerForm } from "@refinedev/antd";
 import { useGetIdentity, useGo, useList, useOne } from "@refinedev/core";
 import { Database } from "@repo/graphql";
 import { UserRoleTypes } from "@repo/utility";
-import { Drawer, Form, Input, InputNumber, Select } from "antd";
+import { Button, Drawer, Form, Input, InputNumber } from "antd";
 import React from "react";
 
 export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
@@ -45,8 +45,7 @@ export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
   });
 
   return (
-    <Drawer
-      {...drawerProps}
+    <Create
       title={`Transfer to - ${
         sales
           ? users?.data.find((user) => user.id == data?.data.boss_id)
@@ -54,77 +53,76 @@ export const CreateFundTransfer = ({ sales }: { sales?: boolean }) => {
           : users?.data.find((user) => user.userrole === UserRoleTypes.ADMIN)
               ?.userrole || ""
       }`}
+      saveButtonProps={{ ...saveButtonProps }}
     >
-      <Create saveButtonProps={saveButtonProps} title="Transfer">
-        <Form {...formProps}>
-          <Form.Item
-            label="To"
-            name="to_user_id"
-            hidden
-            initialValue={
-              sales
-                ? users?.data.find((user) => user.id == data?.data.boss_id)
-                    ?.id || ""
-                : users?.data.find(
-                    (user) => user.userrole === UserRoleTypes.ADMIN,
-                  )?.id || ""
-            }
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input readOnly />
-          </Form.Item>
-          <Form.Item
-            label="Amount"
-            name="amount"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <InputNumber />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            hidden
-            name="user_id"
-            initialValue={User?.id}
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input readOnly />
-          </Form.Item>
-          <Form.Item
-            hidden
-            name="from_user_id"
-            initialValue={User?.id}
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input readOnly />
-          </Form.Item>
-        </Form>
-      </Create>
-    </Drawer>
+      <Form {...formProps}>
+        <Form.Item
+          label="To"
+          name="to_user_id"
+          hidden
+          initialValue={
+            sales
+              ? users?.data.find((user) => user.id == data?.data.boss_id)?.id ||
+                ""
+              : users?.data.find(
+                  (user) => user.userrole === UserRoleTypes.ADMIN
+                )?.id || ""
+          }
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item
+          label="Amount"
+          name="amount"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <InputNumber />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item
+          hidden
+          name="user_id"
+          initialValue={User?.id}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item
+          hidden
+          name="from_user_id"
+          initialValue={User?.id}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input readOnly />
+        </Form.Item>
+      </Form>
+    </Create>
   );
 };
